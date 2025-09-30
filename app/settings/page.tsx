@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSelectedColorScheme, getSelectedFont } from "@/lib/server/settings-helpers";
 
-
 const SettingsPage = async () => {
 	const selectedFont = await getSelectedFont();
 	const selectedColorScheme = await getSelectedColorScheme();

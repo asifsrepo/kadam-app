@@ -42,15 +42,8 @@
 				"useSortedClasses": {
 					"level": "on",
 					"options": {
-						"attributes": [
-							"classList"
-						],
-						"functions": [
-							"clsx",
-							"cva",
-							"tw",
-							"tw.*"
-						]
+						"attributes": ["classList"],
+						"functions": ["clsx", "cva", "tw", "tw.*"]
 					}
 				}
 			}
@@ -73,14 +66,7 @@
 				"organizeImports": {
 					"level": "on",
 					"options": {
-						"groups": [
-							":PACKAGE:",
-							"",
-							"@/**",
-							"~/**",
-							"",
-							":RELATIVE:"
-						]
+						"groups": [":PACKAGE:", "", "@/**", "~/**", "", ":RELATIVE:"]
 					}
 				}
 			}
