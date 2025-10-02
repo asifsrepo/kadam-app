@@ -1,0 +1,98 @@
+---
+globs: *.tsx,*.jsx
+description: Component development guidelines and patterns
+---
+
+# Component Development
+
+## Component Structure
+
+Follow these patterns when creating components:
+
+```tsx
+"use client"; // Add when needed (hooks, interactivity)
+
+import { useState } from "react";
+
+import type { ComponentProps } from "@/types/props";
+
+import { CustomButton } from "@custom/CustomButton";
+
+import { cn } from "@/lib/utils";
+
+// Arrow functions required by biome
+const MyComponent = ({ className, ...props }: ComponentProps) => {
+    const [state, setState] = useState(false);
+
+    return (
+        <div className={cn("bg-background text-foreground", className)}>
+            {/* Mobile-first layout */}
+        </div>
+    );
+};
+
+export default MyComponent;
+```
+
+## Custom Components First
+
+**Always use existing custom components** from [components/custom/](mdc:components/custom) before creating new ones:
+
+### Form Elements
+- `CustomInput` - Text inputs with consistent styling
+- `CustomSelect` - Select dropdowns
+- `CustomTextArea` - Multi-line text inputs
+- `CustomCheckbox` - Checkboxes with labels
+- `CustomRadioGroup` - Radio button groups
+- `CustomSwitch` - Toggle switches
+- `CustomDatePicker` - Date selection
+- `CustomFileInput` - File uploads
+- `MultipleSelector` - Multi-select component
+- `SubmitButton` - Form submit buttons with loading states
+- `FormFieldWrapper` - Wrapper for form fields with labels/errors
+
+### UI Components
+- `ConfirmationDialog` - Confirmation modals
+- `CopyButton` - Copy to clipboard button
+- `CustomBreadcrumb` - Breadcrumb navigation
+- `CustomPagination` - Pagination controls
+- `CustomSearchInput` - Search input with debouncing
+- `LoadingOverlay` - Loading state overlay
+- `TooltipWrapper` - Tooltip wrapper component
+
+### Usage Example
+```tsx
+import CustomInput from "@custom/form-elements/CustomInput";
+import { LoadingOverlay } from "@custom/LoadingOverlay";
+
+const MyForm = () => {
+    return (
+        <>
+            <CustomInput name="email" type="email" label="Email" />
+            <LoadingOverlay isLoading={loading} />
+        </>
+    );
+};
+```
+
+## Mobile-First Component Layout
+
+Structure components for mobile, then enhance:
+
+```tsx
+const MobileCard = () => {
+    return (
+        <div className="flex flex-col gap-4 rounded-lg bg-card p-4 md:flex-row md:gap-6 md:p-6">
+            {/* Mobile: Stack vertically */}
+            {/* Desktop: Horizontal layout */}
+        </div>
+    );
+};
+```
+
+## Styling Rules
+
+1. **No static colors** - Use CSS variables only
+2. **Mobile-first** - Start with mobile, add breakpoints for larger screens
+3. **Use cn() utility** - For conditional classes: `cn("base-class", className)`
+4. **Sorted classes** - Biome auto-sorts, but group logically for readability

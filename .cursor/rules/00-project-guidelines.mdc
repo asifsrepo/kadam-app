@@ -1,0 +1,69 @@
+---
+alwaysApply: true
+---
+
+# Project Guidelines
+
+This is a **mobile-first** Next.js application built with TypeScript, Tailwind CSS, and shadcn/ui components.
+
+## Core Principles
+
+### 1. Biome Compliance
+Always follow the [biome.json](mdc:biome.json) configuration rules:
+- **Indent width**: 4 spaces
+- **Line width**: 100 characters maximum
+- **Arrow functions**: Use arrow functions (required by biome `useArrowFunction: error`)
+- **Trailing commas**: Always use trailing commas
+- **Arrow parentheses**: Always use parentheses around arrow function parameters
+- **Class sorting**: CSS classes must be sorted (enforced by `useSortedClasses`)
+
+### 2. Mobile-First Approach
+This is a **mobile app-like experience** - treat it as a native mobile application:
+- Start with mobile layouts (default, no breakpoint prefix)
+- Add desktop enhancements using breakpoints (`md:`, `lg:`, etc.)
+- Think touch-first: adequate tap targets (minimum 44x44px)
+- Optimize for mobile performance and interactions
+- Use mobile-appropriate spacing and typography
+
+### 3. Custom Components
+**Always check [components/custom/](mdc:components/custom) directory first** before creating new common components.
+
+Available custom components (use via `@custom/` path):
+- **Form Elements**: CustomInput, CustomSelect, CustomTextArea, CustomCheckbox, CustomRadioGroup, CustomSwitch, CustomDatePicker, CustomFileInput, FormFieldWrapper, MultipleSelector, SubmitButton
+- **UI Components**: ConfirmationDialog, CopyButton, CustomBreadcrumb, CustomPagination, CustomSearchInput, CustomTable, LoadingOverlay, TooltipWrapper
+
+If a custom component exists for your use case, **use it instead of creating a new one**.
+
+### 4. Styling Rules
+**NEVER use static colors or hardcoded color values** (e.g., `#fff`, `rgb()`, `blue-500`).
+
+**ALWAYS use shadcn CSS variables** defined in [styles/globals.css](mdc:styles/globals.css):
+- Colors: `background`, `foreground`, `primary`, `secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`, `card`, `popover`
+- Use Tailwind utilities that reference these variables: `bg-background`, `text-foreground`, `border-border`, etc.
+- For custom colors, extend the theme using CSS variables
+
+Example of correct styling:
+```tsx
+// ✅ CORRECT
+<div className="bg-background text-foreground border-border">
+
+// ❌ WRONG
+<div className="bg-white text-black border-gray-200">
+<div style={{ backgroundColor: '#ffffff' }}>
+```
+
+## Import Organization
+Follow the biome import groups order:
+1. Package imports (`:PACKAGE:`)
+2. Blank line
+3. `@/**` imports
+4. `~/**` imports  
+5. Blank line
+6. Relative imports (`:RELATIVE:`)
+
+## File Structure
+- Use Next.js App Router conventions
+- Place reusable components in `components/`
+- Place utilities in `lib/utils/`
+- Place types in `types/`
+- Place hooks in `hooks/`

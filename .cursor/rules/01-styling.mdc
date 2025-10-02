@@ -1,0 +1,75 @@
+---
+globs: *.tsx,*.jsx,*.ts,*.js
+---
+
+# Styling Guidelines
+
+## Mobile-First Responsive Design
+
+Always write styles with mobile-first approach:
+
+```tsx
+// ✅ CORRECT - Mobile first, then enhance for larger screens
+<div className="flex flex-col gap-4 p-4 md:flex-row md:gap-6 md:p-6 lg:gap-8 lg:p-8">
+
+// ❌ WRONG - Desktop first
+<div className="flex flex-row gap-8 p-8 md:flex-col md:gap-4 md:p-4">
+```
+
+## Color System
+
+**NEVER use static colors.** Always use shadcn CSS variables from [styles/globals.css](mdc:styles/globals.css):
+
+### Available Color Variables
+- `background` / `foreground` - Base background and text colors
+- `primary` / `primary-foreground` - Primary brand colors
+- `secondary` / `secondary-foreground` - Secondary colors
+- `muted` / `muted-foreground` - Muted/subtle colors
+- `accent` / `accent-foreground` - Accent colors
+- `destructive` / `destructive-foreground` - Error/danger colors
+- `card` / `card-foreground` - Card backgrounds
+- `popover` / `popover-foreground` - Popover backgrounds
+- `border` - Border colors
+- `input` - Input borders
+- `ring` - Focus ring colors
+
+### Examples
+```tsx
+// ✅ CORRECT
+<button className="bg-primary text-primary-foreground hover:bg-primary/90">
+<div className="border-border bg-card text-card-foreground">
+<input className="border-input focus-visible:ring-ring">
+
+// ❌ WRONG - Never use these
+<button className="bg-blue-500 text-white hover:bg-blue-600">
+<div style={{ backgroundColor: '#ffffff' }}>
+<div className="border-gray-200">
+```
+
+## Spacing & Typography
+
+Use Tailwind's spacing scale consistently:
+- Touch targets: minimum `h-11` or `min-h-[44px]` for buttons/interactive elements
+- Padding: Use `p-4` (mobile) → `md:p-6` (tablet) → `lg:p-8` (desktop)
+- Gaps: Use `gap-2` → `md:gap-4` → `lg:gap-6`
+
+## Custom Component Usage
+
+Before creating UI elements, check if a custom component exists in [components/custom/](mdc:components/custom):
+
+```tsx
+// ✅ Use existing custom components
+import CustomInput from "@custom/form-elements/CustomInput";
+import { LoadingOverlay } from "@custom/LoadingOverlay";
+
+// ❌ Don't recreate existing functionality
+```
+
+## Class Sorting
+
+Classes are automatically sorted by biome. Write classes in any order, but ensure they're semantically grouped:
+
+```tsx
+// Classes will be auto-sorted by biome
+<div className="flex flex-col gap-4 rounded-lg border-border bg-card p-4 text-card-foreground shadow-sm">
+```
