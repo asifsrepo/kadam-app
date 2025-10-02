@@ -8,8 +8,12 @@ import { useAuth } from "@/hooks/store/useAuth";
 
 const Navbar = () => {
 	const { theme, setTheme } = useTheme();
-	const { user, signOut } = useAuth();
+	const { user, signOut, initialize } = useAuth();
 	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		initialize();
+	}, [initialize]);
 
 	useEffect(() => {
 		setMounted(true);
@@ -56,14 +60,14 @@ const Navbar = () => {
 							>
 								<Sun
 									className={`h-5 w-5 transition-all duration-500 ${theme === "dark"
-											? "rotate-90 scale-0 opacity-0"
-											: "rotate-0 scale-100 opacity-100"
+										? "rotate-90 scale-0 opacity-0"
+										: "rotate-0 scale-100 opacity-100"
 										}`}
 								/>
 								<Moon
 									className={`absolute h-5 w-5 transition-all duration-500 ${theme === "dark"
-											? "rotate-0 scale-100 opacity-100"
-											: "-rotate-90 scale-0 opacity-0"
+										? "rotate-0 scale-100 opacity-100"
+										: "-rotate-90 scale-0 opacity-0"
 										}`}
 								/>
 							</Button>

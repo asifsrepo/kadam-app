@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
 import SignInDialog from "@/components/auth/SignInDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/store/useAuth";
 
 const page = () => {
-	const { setSigninDialogOpen, initialize } = useAuth();
+	const { setSigninDialogOpen } = useAuth();
 	
-	useEffect(() => {
-		initialize();
-	}, [initialize]);
-
+	
 	return (
 		<div className="flex min-h-screen items-center justify-center">
 			<div className="space-y-4 text-center">
