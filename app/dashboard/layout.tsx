@@ -1,64 +1,83 @@
 "use client";
 
-import { LayoutDashboard, Settings } from "lucide-react";
+import { LayoutDashboard, Settings, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { WrapperProps } from "@/types";
 
-interface DashboardLayoutProps {
-    children: ReactNode;
-}
+const NAV_ITEMS = [
+	{
+		label: "Dashboard",
+		href: "/dashboard",
+		icon: LayoutDashboard,
+		key: "dashboard",
+	},
+	{
+		label: "Settings",
+		href: "/dashboard/settings",
+		icon: Settings,
+		key: "settings",
+	},
+];
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-    const pathname = usePathname();
-    const activeTab = pathname === "/dashboard" ? "dashboard" : "settings";
+const DashboardLayout = ({ children }: WrapperProps) => {
+	const pathname = usePathname();
+	const activeTab = pathname === "/dashboard" ? "dashboard" : "settings";
 
-    return (
-        <main className="flex h-screen flex-col">
-            <div className="flex-1 overflow-auto pb-16">
-                {children}
-            </div>
+	return (
+		<main className="flex h-screen flex-col">
+			<div className="flex-1 overflow-auto pb-16">{children}</div>
 
-            <nav className="fixed right-0 bottom-0 left-0 z-50 h-16 w-full border-t bg-background">
-                <div className="flex h-full items-center justify-around px-2">
-                    <Button
-                        variant="ghost"
-                        asChild
-                        className={`h-full flex-1 flex-col gap-0.5 rounded-lg ${activeTab === "dashboard"
-                            ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
-                            : "text-muted-foreground"
-                            }`}
-                    >
-                        <Link
-                         href="/dashboard"
-                         prefetch
-                         >
-                            <LayoutDashboard className="h-5 w-5" />
-                            <span className="font-medium text-[10px]">Dashboard</span>
-                        </Link>
-                    </Button>
+			<Button
+				size="lg"
+				className="fixed right-6 bottom-20 z-50 rounded-full shadow-lg"
+				onClick={() => {
+					console.log("Floating button clicked");
+				}}
+			>
+				<UserPlus className="h-8 w-8" />
+			</Button>
 
-                    <Button
-                        variant="ghost"
-                        asChild
-                        className={`h-full flex-1 flex-col gap-0.5 rounded-lg ${activeTab === "settings"
-                            ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
-                            : "text-muted-foreground"
-                            }`}
-                    >
-                        <Link
-                            href="/dashboard/settings"
-                            prefetch
-                        >
-                            <Settings className="h-5 w-5" />
-                            <span className="font-medium text-[10px]">Settings</span>
-                        </Link>
-                    </Button>
-                </div>
-            </nav>
-        </main>
-    );
+			<nav className="fixed inset-x-0 bottom-0 z-40 flex h-16 w-full border-border border-t bg-background">
+				{NAV_ITEMS.map(({ label, href, icon: Icon, key }) => {
+					const active = activeTab === key;
+					return (
+						<Link
+							key={key}
+							href={href}
+							prefetch
+							className="relative flex flex-1 flex-col items-center justify-center py-2"
+						>
+							{active && (
+								<div className="absolute top-0 right-0 left-0 h-[3px] rounded-t bg-primary" />
+							)}
+							<div
+								className={`mb-1 flex items-center justify-center`}
+								style={{
+									width: 40,
+									height: 40,
+								}}
+							>
+								<Icon className="h-6 w-6" />
+							</div>
+							<span
+								className={`font-medium text-xs ${
+									active ? "text-primary" : "text-muted-foreground"
+								}`}
+								style={{
+									letterSpacing: 0.1,
+									marginTop: 2,
+								}}
+							>
+								{label}
+							</span>
+						</Link>
+					);
+				})}
+			</nav>
+		</main>
+	);
 };
 
 export default DashboardLayout;

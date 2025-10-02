@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/store/useAuth";
 
 const page = () => {
 	const { setSigninDialogOpen } = useAuth();
-	
+
 	return (
 		<div className="flex min-h-screen items-center justify-center">
 			<div className="space-y-4 text-center">

@@ -1,12 +1,6 @@
 import type { NextRequest, NextResponse } from "next/server";
 import type { IUser } from "@/types";
-import {
-	isAuthRoute,
-	isPublicRoute,
-	redirectTo,
-	show404,
-} from "./utils";
-
+import { isAuthRoute, isPublicRoute, redirectTo, show404 } from "./utils";
 
 /**
  * Handles authenticated users trying to access authentication routes.

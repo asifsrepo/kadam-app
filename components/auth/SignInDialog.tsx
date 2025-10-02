@@ -26,7 +26,7 @@ const SignInDialog = () => {
 
 		try {
 			const { error } = await supabase.auth.signInWithOAuth({
-				provider
+				provider,
 			});
 
 			if (error) throw error;
