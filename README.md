@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Supabase Authentication Theme Kit
 
-## Getting Started
+Modern Next.js application with Supabase authentication, OAuth signin (GitHub & Google), theme switching, and user profile management.
 
-First, run the development server:
+## Features
 
+- 🔐 **OAuth Authentication** - GitHub and Google signin via Supabase
+- 🎨 **Theme Support** - Dark/Light mode with multiple color schemes
+- 👤 **User Profiles** - Automatic profile creation with RLS policies
+- 🗂️ **State Management** - Zustand store with persistence
+- 🎯 **TypeScript** - Full type safety
+- 🎨 **Modern UI** - Tailwind CSS and Radix UI components
+- 📱 **Responsive Design** - Mobile-first approach
+
+## Tech Stack
+
+- **Framework**: Next.js 15
+- **Authentication**: Supabase Auth
+- **Database**: Supabase PostgreSQL
+- **State Management**: Zustand
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI
+- **Icons**: Lucide React
+- **Package Manager**: pnpm
+
+## Quick Start
+
+**1. Clone and Install**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd theme-supa-auth
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Environment Variables**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env.local` in the root directory:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**3. Configure Supabase**
 
-## Learn More
+Follow the complete setup guide: [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
 
-To learn more about Next.js, take a look at the following resources:
+**4. Run Development Server**
+```bash
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Authentication Flow
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. User clicks "Sign In" → Opens dialog
+2. User selects OAuth provider (GitHub/Google)
+3. Provider authorization → Redirects back to app
+4. Supabase creates auth user → Trigger creates profile in database
+5. App loads user state → User logged in with persisted session
 
-## Deploy on Vercel
+## Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm dev          # Start development server
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Lint code
+pnpm lint:fix     # Fix linting issues
+pnpm format       # Format code with Biome
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Customization
+
+**Themes**
+- Multiple color schemes available in `lib/color-schemes.ts`
+- Add custom themes by extending the configuration
+- Theme settings persist across sessions
+
+**Styling**
+- Tailwind CSS with custom CSS variables
+- Theme-specific styles in `styles/` directory
+- Responsive breakpoints for mobile, tablet, desktop
+
+**Components**
+- All UI components in `components/ui/` use Radix UI
+- Custom components in `components/custom/` for reusability
+- Form components with validation support
+
+## Documentation
+
+- **Supabase Setup**: [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) - OAuth, database, and security configuration
+- **Supabase Docs**: [supabase.com/docs](https://supabase.com/docs)
+- **Next.js Docs**: [nextjs.org/docs](https://nextjs.org/docs)
+
+## License
+
+MIT License
