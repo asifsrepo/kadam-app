@@ -1,2 +1,10 @@
-export const AUTH_ROUTES = ["/signin", "/signup"];
-export const PUBLIC_ROUTES = ["/", "/about", "/pricing", "/seed", "/api/verify-email"];
+export const AUTH_ROUTES = [
+    "/signin",
+    "/signup"
+];
+
+export const PUBLIC_ROUTES = [
+    "/",
+    "/about",
+    "/pricing",
+];

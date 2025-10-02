@@ -26,10 +26,7 @@ const SignInDialog = () => {
 
 		try {
 			const { error } = await supabase.auth.signInWithOAuth({
-				provider,
-				options: {
-					redirectTo: `${window.location.origin}/dashboard`,
-				},
+				provider
 			});
 
 			if (error) throw error;
