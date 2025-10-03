@@ -1,8 +1,8 @@
 ---
-globs: *.tsx,*.jsx
 description: Component development guidelines and patterns
+globs: *.tsx
+alwaysApply: false
 ---
-
 # Component Development
 
 ## Component Structure

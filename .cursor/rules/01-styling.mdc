@@ -1,7 +1,7 @@
 ---
-globs: *.tsx,*.jsx,*.ts,*.js
+globs: *.tsx,*.ts
+alwaysApply: false
 ---
-
 # Styling Guidelines
 
 ## Mobile-First Responsive Design
