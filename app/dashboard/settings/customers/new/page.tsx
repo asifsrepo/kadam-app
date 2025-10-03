@@ -3,12 +3,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/store/useAuth";
 import type { CustomerFormData } from "@/lib/schema/customer";
 import { customerSchema } from "@/lib/schema/customer";
+import { createClient } from "@/lib/supabase/client";
+import { Tables } from "@/types";
+import { ICustomer } from "@/types/customers";
 import CustomInput from "~/form-elements/CustomInput";
 import CustomSelect from "~/form-elements/CustomSelect";
 import CustomTextArea from "~/form-elements/CustomTextArea";
@@ -31,6 +35,12 @@ const STATUS_OPTIONS = [
 const NewCustomerPage = () => {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const supabase = createClient();
+    const { user, initialize } = useAuth();
+
+    useEffect(()=>{
+        initialize()
+    },[initialize])
 
     const {
         register,
@@ -44,14 +54,28 @@ const NewCustomerPage = () => {
             status: "active",
         },
     });
-
+    
     const onSubmit = async (data: CustomerFormData) => {
         setIsSubmitting(true);
         try {
-            // TODO: Replace with actual API call when API is ready
-            console.log("Customer data:", data);
+            const { data: response, error } = await supabase
+                .from(Tables.Customers)
+                .insert({
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    address: data.address,
+                    country: data.country,
+                    idNumber: data.idNumber,
+                    status: data.status,
+                    createdAt: new Date().toISOString(),
+                    createdBy: user?.id
+                } as ICustomer);
 
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            if (error) throw error;
+            
+            console.log(response);
+
 
             toast.success("Customer created successfully!");
             router.back();
@@ -144,8 +168,6 @@ const NewCustomerPage = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h2 className="font-medium text-foreground text-sm">Status</h2>
-
                         <CustomSelect
                             label="Customer Status"
                             placeholder="Select status"
