@@ -1,14 +1,8 @@
-import { Building2, ChevronRight, CreditCard, Store, Users, Users2 } from "lucide-react";
+import { Building2, ChevronRight, CreditCard, Users, Users2 } from "lucide-react";
 import Link from "next/link";
 
 const Settings = () => {
 	const settingsItems = [
-		{
-			title: "Shop Details",
-			description: "Manage your shop information and branding",
-			href: "/dashboard/settings/shops",
-			icon: Store,
-		},
 		{
 			title: "Staff Management",
 			description: "Add and manage staff members and permissions",
