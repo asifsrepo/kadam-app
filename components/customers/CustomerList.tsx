@@ -80,9 +80,6 @@ const CustomerCard = ({ customer }: { customer: ICustomer }) => {
                         <h3 className="truncate font-semibold text-foreground text-sm">
                             {customer.name}
                         </h3>
-                        <p className="truncate text-muted-foreground text-xs">
-                            {customer.idNumber}
-                        </p>
                     </div>
                     <Badge
                         variant={customer.status === "active" ? "default" : "secondary"}
@@ -109,20 +106,14 @@ const CustomerListSkeleton = () => {
             {Array.from({ length: 8 }).map((_, index) => (
                 <Card key={index}>
                     <CardContent className="p-3">
-                        <div className="mb-2 flex items-start justify-between">
-                            <div className="flex-1 space-y-1.5">
+                        <div className="mb-2 flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1 space-y-1.5">
                                 <Skeleton className="h-4 w-3/4" />
-                                <Skeleton className="h-3 w-1/2" />
                             </div>
-                            <Skeleton className="h-5 w-14" />
+                            <Skeleton className="h-5 w-14 shrink-0" />
                         </div>
                         <div className="space-y-1.5">
-                            <Skeleton className="h-3 w-full" />
                             <Skeleton className="h-3 w-2/3" />
-                            <Skeleton className="h-3 w-1/2" />
-                        </div>
-                        <div className="mt-2 border-border border-t pt-2">
-                            <Skeleton className="h-2.5 w-1/3" />
                         </div>
                     </CardContent>
                 </Card>
