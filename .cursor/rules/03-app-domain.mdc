@@ -1,0 +1,60 @@
+---
+alwaysApply: true
+---
+
+# Application Domain & Purpose
+
+## Overview
+This is a **debt management application** designed for local retail stores to track and manage customer credit/debt transactions.
+
+## Primary Users
+- **Shop Owners**: Main users who track customer debts and transactions
+- **Store Managers**: Users who manage operations across multiple store locations
+
+## Core Features
+
+### Customer Management
+- Add and track customers with their contact information
+- Maintain customer profiles with identification details
+- Search and filter customers across the system
+- Track customer status (active/inactive)
+
+### Debt/Credit Tracking
+- Record customer debts and credit transactions
+- Track payment history and outstanding balances
+- Monitor debt status over time
+- Generate reports on customer debt patterns
+
+### Multi-Store Support
+- Shop owners can manage multiple store locations
+- Centralized customer database across stores
+- Store-specific transaction tracking
+- Cross-store reporting and analytics
+
+## Business Context
+- **Target Audience**: Small to medium local retail stores
+- **Use Case**: Traditional credit/debt tracking that stores do manually, digitized
+- **Mobile-First**: Designed for on-the-go access by store owners and managers
+- **Simplicity**: Easy to use for non-technical store owners
+
+## Development Considerations
+- All features should consider the store owner's workflow
+- Data should be organized by customer and store
+- Reports and views should be practical for daily store operations
+- UI/UX should be intuitive for users who may not be tech-savvy
+- Consider offline capabilities for stores with poor connectivity
+
+## Database Structure
+Key entities include:
+- **Customers**: Customer profiles and identification
+- **Stores**: Store locations and information
+- **Staffs**: Store managers and employees
+- **Transactions/Debts**: Debt records and payment tracking (to be implemented)
+- **Users**: Authentication and authorization
+
+## Future Features
+- Payment reminders and notifications
+- SMS/Email alerts to customers
+- Analytics and reporting dashboards
+- Receipt generation
+- Inventory tracking (potential expansion)
