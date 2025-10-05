@@ -11,4 +11,5 @@ export interface ICustomer {
     createdAt: string;
     idNumber: string;
     createdBy: IUser['id']
+    limit: number;
 }

@@ -52,6 +52,7 @@ const NewCustomerPage = () => {
         resolver: zodResolver(customerSchema),
         defaultValues: {
             status: "active",
+            limit: 0,
         },
     });
     
@@ -68,6 +69,7 @@ const NewCustomerPage = () => {
                     country: data.country,
                     idNumber: data.idNumber,
                     status: data.status,
+                    limit: data.limit,
                     createdAt: new Date().toISOString(),
                     createdBy: user?.id
                 } as ICustomer);
@@ -179,6 +181,17 @@ const NewCustomerPage = () => {
                                 setValue("status", value as "active" | "inactive")
                             }
                             error={errors.status?.message}
+                        />
+
+                        <CustomInput
+                            label="Credit Limit"
+                            type="number"
+                            placeholder="0.00"
+                            required
+                            step="0.01"
+                            min="0"
+                            error={errors.limit?.message}
+                            {...register("limit", { valueAsNumber: true })}
                         />
                     </div>
 

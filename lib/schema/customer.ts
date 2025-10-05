@@ -10,6 +10,10 @@ export const customerSchema = z.object({
     status: z.enum(["active", "inactive"], {
         message: "Status must be either active or inactive",
     }),
+    limit: z
+        .number("Credit limit must be a number")
+        .positive("Credit limit must be positive")
+        .min(0, "Credit limit must be at least 0"),
 });
 
 export type CustomerFormData = z.infer<typeof customerSchema>;
