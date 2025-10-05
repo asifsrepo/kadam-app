@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -28,12 +28,8 @@ const NewCustomerPage = () => {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const supabase = createClient();
-    const { user, initialize } = useAuth();
+    const { user } = useAuth();
     const queryClient = useQueryClient();
-
-    useEffect(() => {
-        initialize();
-    }, [initialize]);
 
     const {
         register,

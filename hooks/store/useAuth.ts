@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createClient } from "@/lib/supabase/client";
@@ -34,7 +35,7 @@ const mapSupabaseUserToIUser = (sbUser: any): IUser => ({
 	avatar: sbUser.user_metadata?.avatar_url || "",
 });
 
-export const useAuth = create<AuthState>()((set, get) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
 	...initialState,
 
 	setSigninDialogOpen: (open) => set({ isSigninDialogOpen: open }),
@@ -107,3 +108,17 @@ export const useAuth = create<AuthState>()((set, get) => ({
 		}
 	},
 }));
+
+/**
+ * Hook that automatically initializes auth on mount
+ * Use this in components that need auth
+ */
+export const useAuth = () => {
+	const authStore = useAuthStore();
+
+	useEffect(() => {
+		authStore.initialize();
+	}, [authStore.initialize]);
+
+	return authStore;
+};

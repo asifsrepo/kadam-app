@@ -8,12 +8,8 @@ import { useAuth } from "@/hooks/store/useAuth";
 
 const Navbar = () => {
 	const { theme, setTheme } = useTheme();
-	const { user, signOut, initialize } = useAuth();
+	const { user, signOut } = useAuth();
 	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		initialize();
-	}, [initialize]);
 
 	useEffect(() => {
 		setMounted(true);

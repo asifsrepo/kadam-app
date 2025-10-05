@@ -34,11 +34,7 @@ const NewTransactionPage = () => {
     const customerId = params.id as string;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const supabase = createClient();
-    const { user, initialize } = useAuth();
-
-    useEffect(() => {
-        initialize();
-    }, [initialize]);
+    const { user } = useAuth();
 
     const { data: customer, error: customerError } = useQuery({
         queryKey: [Tables.Customers, customerId],
@@ -93,7 +89,6 @@ const NewTransactionPage = () => {
                 notes: data.notes || "",
                 paybackDate: data.paybackDate,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
                 createdBy: user.id,
             } as ITransaction);
 
