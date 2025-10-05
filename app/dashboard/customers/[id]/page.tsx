@@ -5,6 +5,7 @@ import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import TransactionListing from "@/components/transactions/TransactionListing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
 import type { ICustomer } from "@/types/customers";
+import TransactionsSkeleton from "@/components/transactions/TransactionsSkeleton";
 
 const CustomerDetailsPage = () => {
     const router = useRouter();
@@ -133,16 +135,7 @@ const CustomerDetailsPage = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardContent className="p-3">
-                        <h3 className="mb-2 font-medium text-foreground text-sm">Transactions</h3>
-                        <div className="flex min-h-[120px] items-center justify-center">
-                            <p className="text-center text-muted-foreground text-xs">
-                                Transaction listing will be added here
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
+                <TransactionListing customerId={customer.id} />
             </div>
         </div>
     );
@@ -171,6 +164,9 @@ const CustomerDetailsSkeleton = () => {
                         ))}
                     </CardContent>
                 </Card>
+            </div>
+            <div className="space-y-3 p-3">
+                <TransactionsSkeleton />
             </div>
         </div>
     );

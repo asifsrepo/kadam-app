@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -35,6 +35,7 @@ const NewTransactionPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const supabase = createClient();
     const { user } = useAuth();
+    const queryClient = useQueryClient();
 
     const { data: customer, error: customerError } = useQuery({
         queryKey: [Tables.Customers, customerId],
@@ -95,7 +96,8 @@ const NewTransactionPage = () => {
             if (error) throw error;
 
             toast.success("Transaction created successfully!");
-            router.push(`/dashboard/customers/${customerId}`);
+            queryClient.invalidateQueries({ queryKey: [Tables.Transactions, customer?.id] });
+            router.back();
         } catch (error) {
             toast.error("Failed to create transaction. Please try again.");
             console.error("Error creating transaction:", error);
@@ -139,8 +141,9 @@ const NewTransactionPage = () => {
                 )}
                 <div className="space-y-3">
                     <CustomSelect
-                    className="w-full"
+                        className="w-full"
                         label="Type"
+                        defaultValue="credit"
                         placeholder="Select type"
                         required
                         options={TRANSACTION_TYPES}
@@ -162,10 +165,11 @@ const NewTransactionPage = () => {
                         />
 
                         <CustomSelect
-                        className="w-full"
+                            className="w-full"
                             label="Currency"
                             placeholder="Select"
                             required
+                            defaultValue="$"
                             options={CURRENCIES}
                             value={watch("currency")}
                             onValueChange={(value) => setValue("currency", value)}

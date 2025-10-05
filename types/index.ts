@@ -4,7 +4,7 @@ export * from "./transaction";
 export * from "./user";
 
 export const Tables = {
-	UserProfiles: "profile",
+	UserProfiles: "profiles",
 	Customers: "customers",
 	Transactions: "transactions",
 };

@@ -13,7 +13,6 @@ export interface ITransaction {
     customerId: ICustomer["id"];
     createdBy: IUser["id"];
     createdAt: string;
-    updatedAt: string;
     amount: number;
     currency: string;
     type: TransactionType;
