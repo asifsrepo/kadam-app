@@ -6,10 +6,9 @@ export interface ICustomer {
     address: string;
     email: string;
     phone: string;
-    country: string;
     status: string;
     createdAt: string;
     idNumber: string;
-    createdBy: IUser['id']
+    createdBy: IUser["id"];
     limit: number;
 }

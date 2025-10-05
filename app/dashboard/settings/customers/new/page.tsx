@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,15 +19,6 @@ import CustomSelect from "~/form-elements/CustomSelect";
 import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
 
-const COUNTRIES = [
-    "United States",
-    "United Kingdom",
-    "India",
-    "Pakistan",
-    "Saudi Arabia",
-    "United Arab Emirates",
-];
-
 const STATUS_OPTIONS = [
     { value: "active", label: "Active" },
     { value: "inactive", label: "Inactive" },
@@ -37,10 +29,11 @@ const NewCustomerPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const supabase = createClient();
     const { user, initialize } = useAuth();
+    const queryClient = useQueryClient();
 
-    useEffect(()=>{
-        initialize()
-    },[initialize])
+    useEffect(() => {
+        initialize();
+    }, [initialize]);
 
     const {
         register,
@@ -55,18 +48,17 @@ const NewCustomerPage = () => {
             limit: 0,
         },
     });
-    
+
     const onSubmit = async (data: CustomerFormData) => {
         setIsSubmitting(true);
         try {
-            const { data: response, error } = await supabase
+            const { error } = await supabase
                 .from(Tables.Customers)
                 .insert({
                     name: data.name,
                     email: data.email,
                     phone: data.phone,
                     address: data.address,
-                    country: data.country,
                     idNumber: data.idNumber,
                     status: data.status,
                     limit: data.limit,
@@ -75,8 +67,8 @@ const NewCustomerPage = () => {
                 } as ICustomer);
 
             if (error) throw error;
-            
-            console.log(response);
+
+            await queryClient.invalidateQueries({ queryKey: [Tables.Customers] });
 
 
             toast.success("Customer created successfully!");
@@ -146,26 +138,12 @@ const NewCustomerPage = () => {
 
                     <div className="space-y-4">
                         <CustomTextArea
-                            label="Street Address"
+                            label="Address"
                             placeholder="Enter full address"
                             required
                             rows={3}
                             error={errors.address?.message}
                             {...register("address")}
-                        />
-
-                        <CustomSelect
-                            label="Country"
-                            placeholder="Select country"
-                            required
-                            options={COUNTRIES}
-                            value={watch("country")}
-                            onValueChange={(value) => setValue("country", value)}
-                            error={errors.country?.message}
-                            creatable
-                            createButtonText="Add a new country"
-                            createInputPlaceholder="Enter country name"
-                            className="w-full"
                         />
                     </div>
 

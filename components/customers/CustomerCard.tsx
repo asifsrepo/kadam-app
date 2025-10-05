@@ -13,7 +13,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
     return (
         <Card className="transition-shadow hover:shadow-md">
             <CardContent className="p-3">
-                {/* Header with name, status, and action buttons */}
+
                 <div className="mb-2 flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">

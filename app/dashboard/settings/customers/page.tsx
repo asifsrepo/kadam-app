@@ -17,7 +17,7 @@ const CustomersPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
 
     const { data: customers, isLoading } = useQuery({
-        queryKey: ["customers"],
+        queryKey: [Tables.Customers],
         queryFn: async () => {
             const { data, error } = await supabase
                 .from(Tables.Customers)

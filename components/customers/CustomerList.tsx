@@ -29,7 +29,7 @@ const CustomerList = ({ customers, isLoading = false, searchQuery = "" }: Custom
                 customer.name.toLowerCase().includes(query) ||
                 customer.email.toLowerCase().includes(query) ||
                 customer.phone.toLowerCase().includes(query) ||
-                customer.country.toLowerCase().includes(query),
+                customer.address.toLowerCase().includes(query),
         );
     }, [customers, searchQuery]);
 
