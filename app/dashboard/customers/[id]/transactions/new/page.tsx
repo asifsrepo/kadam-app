@@ -68,8 +68,7 @@ const NewTransactionPage = () => {
 			type: "credit",
 		},
 	});
-	console.log(customerId);
-
+	
 	const onSubmit = async (data: TransactionFormData) => {
 		if (!user?.id) {
 			toast.error("You must be logged in to create a transaction");
