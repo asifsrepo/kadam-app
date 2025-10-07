@@ -6,7 +6,6 @@ import { fontMap, getAllFontVariables } from "@/lib/fonts";
 import { getSelectedColorScheme, getSelectedFont } from "@/lib/server/settings-helpers";
 import { WrapperProps } from "@/types";
 
-
 const RootLayout = async ({ children }: WrapperProps) => {
 	const selectedFont = await getSelectedFont();
 	const selectedColorScheme = await getSelectedColorScheme();
@@ -27,9 +26,7 @@ const RootLayout = async ({ children }: WrapperProps) => {
 					disableTransitionOnChange
 				>
 					<QueryProvider>
-						<NuqsAdapter>
-							{children}
-						</NuqsAdapter>
+						<NuqsAdapter>{children}</NuqsAdapter>
 					</QueryProvider>
 				</ThemeProvider>
 			</body>

@@ -9,11 +9,11 @@ import { IUser } from "./user";
 export type TransactionType = "credit" | "payment";
 
 export interface ITransaction {
-    id: string;
-    customerId: ICustomer["id"];
-    createdBy: IUser["id"];
-    createdAt: string;
-    amount: number;
-    type: TransactionType;
-    notes: string;
+	id: string;
+	customerId: ICustomer["id"];
+	createdBy: IUser["id"];
+	createdAt: string;
+	amount: number;
+	type: TransactionType;
+	notes: string;
 }

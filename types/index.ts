@@ -8,3 +8,10 @@ export const Tables = {
 	Customers: "customers",
 	Transactions: "transactions",
 };
+
+export const QueryKeys = {
+	CustomersList: "customersList",
+	CustomerDetails: "customerDetails",
+	TransactionsList: "transactionsList",
+	TransactionDetails: "transactionDetails",
+};
