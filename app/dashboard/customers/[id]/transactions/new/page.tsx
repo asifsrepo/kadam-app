@@ -15,13 +15,10 @@ import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
 import type { ICustomer } from "@/types/customers";
 import type { ITransaction } from "@/types/transaction";
-import CustomDatePicker from "~/form-elements/CustomDatePicker";
 import CustomInput from "~/form-elements/CustomInput";
 import CustomSelect from "~/form-elements/CustomSelect";
 import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
-
-const CURRENCIES = ["USD", "EUR", "GBP", "INR", "SAR", "AED"];
 
 const TRANSACTION_TYPES = [
     { value: "credit", label: "Credit (Customer takes goods)" },
@@ -68,9 +65,7 @@ const NewTransactionPage = () => {
     } = useForm<TransactionFormData>({
         resolver: zodResolver(transactionSchema),
         defaultValues: {
-            currency: "USD",
-            type: "credit",
-            paybackDate: new Date().toISOString()
+            type: "credit"
         },
     });
 
@@ -85,10 +80,8 @@ const NewTransactionPage = () => {
             const { error } = await supabase.from(Tables.Transactions).insert({
                 customerId: customerId,
                 amount: data.amount,
-                currency: data.currency,
                 type: data.type,
                 notes: data.notes || "",
-                paybackDate: data.paybackDate,
                 createdAt: new Date().toISOString(),
                 createdBy: user.id,
             } as ITransaction);
@@ -131,11 +124,17 @@ const NewTransactionPage = () => {
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 p-3">
                 {customer && (
-                    <div className="rounded-lg border border-border bg-muted/30 px-3 py-2">
-                        <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-muted-foreground">
-                                {customer.name} • Limit: {customer.limit?.toFixed(2) || "0.00"}
-                            </span>
+                    <div className="rounded-lg border border-border bg-muted/30 p-4">
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                                <h3 className="font-medium text-foreground text-sm">{customer.name}</h3>
+                            </div>
+                            <div className="flex items-center justify-between border-border border-t pt-2">
+                                <span className="text-muted-foreground text-xs">Credit Limit</span>
+                                <span className="font-medium text-foreground text-xs">
+                                    ${customer.limit?.toFixed(2) || "0.00"}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -163,33 +162,13 @@ const NewTransactionPage = () => {
                             error={errors.amount?.message}
                             {...register("amount", { valueAsNumber: true })}
                         />
-
-                        <CustomSelect
-                            className="w-full"
-                            label="Currency"
-                            placeholder="Select"
-                            required
-                            defaultValue="$"
-                            options={CURRENCIES}
-                            value={watch("currency")}
-                            onValueChange={(value) => setValue("currency", value)}
-                            error={errors.currency?.message}
-                        />
                     </div>
-
-                    <CustomDatePicker
-                        label="Payback Date (Optional)"
-                        value={
-                            watch("paybackDate") ? new Date(watch("paybackDate")!) : undefined
-                        }
-                        onSelect={(date) => setValue("paybackDate", date?.toISOString())}
-                        error={errors.paybackDate?.message}
-                    />
 
                     <CustomTextArea
                         label="Notes (Optional)"
+                        className="min-h-30"
                         placeholder="Add notes..."
-                        rows={3}
+                        rows={6}
                         error={errors.notes?.message}
                         {...register("notes")}
                     />

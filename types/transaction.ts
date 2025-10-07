@@ -14,8 +14,6 @@ export interface ITransaction {
     createdBy: IUser["id"];
     createdAt: string;
     amount: number;
-    currency: string;
     type: TransactionType;
     notes: string;
-    paybackDate?: string;
 }

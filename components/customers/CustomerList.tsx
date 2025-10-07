@@ -5,11 +5,11 @@ import CustomerCard from "@/components/customers/CustomerCard";
 import CustomerListSkeleton from "@/components/customers/CustomerListSkeleton";
 import EmptyState from "@/components/customers/EmptyState";
 import usePaginationState from "@/hooks/pagination/usePaginationState";
-import type { ICustomer } from "@/types/customers";
+import { CustomerWithBalance } from "@/types/customers";
 import CustomPagination from "~/CustomPagination";
 
 interface CustomerListProps {
-    customers: ICustomer[];
+    customers: CustomerWithBalance[];
     isLoading?: boolean;
     searchQuery?: string;
 }

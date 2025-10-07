@@ -64,8 +64,7 @@ const NewCustomerPage = () => {
 
             if (error) throw error;
 
-            await queryClient.invalidateQueries({ queryKey: [Tables.Customers] });
-
+            await queryClient.invalidateQueries({ queryKey: [Tables.Customers], exact: false });
 
             toast.success("Customer created successfully!");
             router.back();

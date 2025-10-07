@@ -12,7 +12,7 @@ const Settings = () => {
 		{
 			title: "Customers",
 			description: "View and manage your customer database",
-			href: "/dashboard/settings/customers",
+			href: "/dashboard/customers",
 			icon: Users2,
 		},
 		{

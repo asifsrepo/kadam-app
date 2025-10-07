@@ -3,17 +3,16 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { ICustomer } from "@/types/customers";
+import type { CustomerWithBalance } from "@/types/customers";
 
 interface CustomerCardProps {
-    customer: ICustomer;
+    customer: CustomerWithBalance;
 }
 
 const CustomerCard = ({ customer }: CustomerCardProps) => {
     return (
         <Card className="transition-shadow hover:shadow-md">
             <CardContent className="p-3">
-
                 <div className="mb-2 flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
@@ -37,7 +36,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
                             <div className="flex items-center gap-1.5 text-xs">
                                 <CreditCard className="h-3 w-3 shrink-0 text-muted-foreground" />
                                 <span className="truncate text-muted-foreground">
-                                    {customer?.limit?.toFixed(2)||0} limit
+                                    {customer?.limit?.toFixed(2) || 0} limit
                                 </span>
                             </div>
                         </div>
@@ -60,12 +59,33 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
                             className="h-7 w-7"
                             asChild
                             title="Add transaction"
-
                         >
                             <Link href={`/dashboard/customers/${customer.id}/transactions/new`}>
                                 <Plus className="h-3.5 w-3.5" />
                             </Link>
                         </Button>
+                    </div>
+                </div>
+
+                {/* Balance Section */}
+                <div className="mt-3 rounded-lg border p-2">
+                    <div className="text-center">
+                        <p className="text-[10px] text-muted-foreground">Balance</p>
+                        <p
+                            className={`font-bold text-lg ${
+                                customer.balance > 0
+                                    ? "text-destructive"
+                                    : customer.balance < 0
+                                      ? "text-primary"
+                                      : "text-muted-foreground"
+                            }`}
+                        >
+                            {customer.balance > 0
+                                ? `${customer.balance.toFixed(2)}`
+                                : customer.balance < 0
+                                  ? `${Math.abs(customer.balance).toFixed(2)}`
+                                  : "0.00"}
+                        </p>
                     </div>
                 </div>
             </CardContent>
@@ -74,4 +94,3 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 };
 
 export default CustomerCard;
-

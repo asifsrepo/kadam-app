@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import TransactionListing from "@/components/transactions/TransactionListing";
+import TransactionsSkeleton from "@/components/transactions/TransactionsSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
 import type { ICustomer } from "@/types/customers";
-import TransactionsSkeleton from "@/components/transactions/TransactionsSkeleton";
 
 const CustomerDetailsPage = () => {
     const router = useRouter();

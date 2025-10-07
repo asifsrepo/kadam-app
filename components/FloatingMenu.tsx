@@ -12,7 +12,7 @@ const FloatingMenu = () => {
             size="lg"
             className="fixed right-6 bottom-20 z-50 rounded-full shadow-lg"
             onClick={() => {
-                router.push("/dashboard/settings/customers/new");
+                router.push("/dashboard/customers/new");
             }}
         >
             <UserPlus className="h-8 w-8" />

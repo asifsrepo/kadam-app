@@ -12,3 +12,5 @@ export interface ICustomer {
     createdBy: IUser["id"];
     limit: number;
 }
+
+export type CustomerWithBalance = ICustomer & { balance: number };

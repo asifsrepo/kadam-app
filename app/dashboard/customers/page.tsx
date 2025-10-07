@@ -8,7 +8,7 @@ import CustomerList from "@/components/customers/CustomerList";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
-import type { ICustomer } from "@/types/customers";
+import type { CustomerWithBalance } from "@/types/customers";
 import CustomSearchInput from "~/CustomSearchInput";
 
 const CustomersPage = () => {
@@ -19,13 +19,43 @@ const CustomersPage = () => {
     const { data: customers, isLoading } = useQuery({
         queryKey: [Tables.Customers],
         queryFn: async () => {
-            const { data, error } = await supabase
+            const { data: customersData, error: customersError } = await supabase
                 .from(Tables.Customers)
                 .select("*")
                 .order("createdAt", { ascending: false });
 
-            if (error) throw error;
-            return data as ICustomer[];
+            if (customersError) throw customersError;
+
+            const { data: transactionsData, error: transactionsError } = await supabase
+                .from(Tables.Transactions)
+                .select("*");
+
+            if (transactionsError) throw transactionsError;
+
+            const customersWithBalance = customersData.map((customer) => {
+                const customerTransactions = transactionsData?.filter(
+                    (t) => t.customerId === customer.id,
+                ) || [];
+
+                const totalDebt =
+                    customerTransactions
+                        .filter((t) => t.type === "credit")
+                        .reduce((sum, t) => sum + t.amount, 0) || 0;
+
+                const totalPaid =
+                    customerTransactions
+                        .filter((t) => t.type === "payment")
+                        .reduce((sum, t) => sum + t.amount, 0) || 0;
+
+                const balance = totalDebt - totalPaid;
+
+                return {
+                    ...customer,
+                    balance,
+                };
+            });
+
+            return customersWithBalance as CustomerWithBalance[];
         },
     });
 
