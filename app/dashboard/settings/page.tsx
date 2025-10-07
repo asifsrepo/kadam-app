@@ -1,7 +1,16 @@
-import { Building2, ChevronRight, CreditCard, Users, Users2 } from "lucide-react";
+"use client";
+
+import { Building2, ChevronRight, CreditCard, LogOut, Users, Users2 } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/store/useAuth";
 
 const Settings = () => {
+	const { signOut } = useAuth();
+
+	const handleLogout = () => {
+		signOut();
+	};
+
 	const settingsItems = [
 		{
 			title: "Staff Management",
@@ -27,6 +36,13 @@ const Settings = () => {
 			href: "/dashboard/settings/plans",
 			icon: CreditCard,
 		},
+		{
+			title: "Sign Out",
+			description: "Log out of your account",
+			href: "#",
+			icon: LogOut,
+			onClick: handleLogout,
+		},
 	];
 
 	return (
@@ -41,6 +57,32 @@ const Settings = () => {
 			<div className="flex flex-col gap-3 md:gap-4">
 				{settingsItems.map((item) => {
 					const Icon = item.icon;
+					const isLogout = item.title === "Sign Out";
+
+					if (isLogout) {
+						return (
+							<button
+								key={item.title}
+								onClick={item.onClick}
+								className="group flex min-h-[108px] w-full items-center gap-4 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent md:p-5"
+							>
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary md:h-12 md:w-12">
+									<Icon className="h-5 w-5 md:h-6 md:w-6" />
+								</div>
+
+
+								<div className="flex min-w-0 flex-1 flex-col gap-1">
+									<h3 className="font-semibold text-card-foreground group-hover:text-accent-foreground">
+										{item.title}
+									</h3>
+									<p className="text-muted-foreground text-sm">{item.description}</p>
+								</div>
+
+								<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />
+							</button>
+						);
+					}
+
 					return (
 						<Link
 							key={item.href}
@@ -51,7 +93,6 @@ const Settings = () => {
 								<Icon className="h-5 w-5 md:h-6 md:w-6" />
 							</div>
 
-							{/* Content */}
 							<div className="flex min-w-0 flex-1 flex-col gap-1">
 								<h3 className="font-semibold text-card-foreground group-hover:text-accent-foreground">
 									{item.title}
@@ -59,7 +100,6 @@ const Settings = () => {
 								<p className="text-muted-foreground text-sm">{item.description}</p>
 							</div>
 
-							{/* Arrow Icon */}
 							<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />
 						</Link>
 					);
