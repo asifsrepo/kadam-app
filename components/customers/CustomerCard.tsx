@@ -1,6 +1,5 @@
 import { CreditCard, Eye, Phone, Plus } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { CustomerWithBalance } from "@/types/customers";
@@ -19,12 +18,6 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							<h3 className="truncate font-semibold text-foreground text-sm">
 								{customer.name}
 							</h3>
-							<Badge
-								variant={customer.status === "active" ? "default" : "secondary"}
-								className="h-4 shrink-0 text-[10px]"
-							>
-								{customer.status}
-							</Badge>
 						</div>
 						<div className="mt-1 space-y-0.5">
 							<div className="flex items-center gap-1.5 text-xs">
