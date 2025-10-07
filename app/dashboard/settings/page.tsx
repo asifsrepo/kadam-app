@@ -2,13 +2,25 @@
 
 import { Building2, ChevronRight, CreditCard, LogOut, Users, Users2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { useAuth } from "@/hooks/store/useAuth";
+import ConfirmationDialog from "~/ConfirmationDialog";
 
 const Settings = () => {
 	const { signOut } = useAuth();
+	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
 	const handleLogout = () => {
+		setIsLogoutDialogOpen(true);
+	};
+
+	const handleConfirmLogout = () => {
 		signOut();
+		setIsLogoutDialogOpen(false);
+	};
+
+	const handleCancelLogout = () => {
+		setIsLogoutDialogOpen(false);
 	};
 
 	const settingsItems = [
@@ -105,6 +117,18 @@ const Settings = () => {
 					);
 				})}
 			</div>
+
+			<ConfirmationDialog
+				isOpen={isLogoutDialogOpen}
+				onClose={handleCancelLogout}
+				onConfirm={handleConfirmLogout}
+				title="Sign Out"
+				description="Are you sure you want to sign out? You will need to sign in again to access your account."
+				confirmText="Sign Out"
+				cancelText="Cancel"
+				confirmVariant="destructive"
+				cancelVariant="outline"
+			/>
 		</div>
 	);
 };
