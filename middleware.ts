@@ -4,6 +4,7 @@ import {
 	handleUnauthenticatedOnProtectedRoutes,
 } from "./lib/middleware/auth";
 import createSupabaseClient from "./lib/middleware/createSupabaseClient";
+import handleOnboarding from "./lib/middleware/handleOnboarding";
 import { isPublicRoute } from "./lib/middleware/utils";
 import { IUser } from "./types";
 
@@ -19,12 +20,16 @@ export const middleware = async (request: NextRequest) => {
 	const { data } = await supabase.auth.getClaims();
 	const user = data?.claims;
 
+	
 	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
 	if (authRouteResponse) return authRouteResponse;
 
 	// Handle unauthenticated users on protected routes (show 404)
 	const protectedRouteResponse = handleUnauthenticatedOnProtectedRoutes(request, user as IUser);
 	if (protectedRouteResponse) return protectedRouteResponse;
+
+	const onboardingResponse = handleOnboarding(request, user as IUser);
+	if (onboardingResponse) return onboardingResponse;
 
 	return supabaseResponse;
 };
