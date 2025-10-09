@@ -1,15 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, User } from "lucide-react";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { submitPersonalInfo } from "@/app/onboarding/actions/submitPersonalInfo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { userInfoSchema } from "@/lib/schema/onboarding";
-import { UserInfoFormData } from "@/types";
+import { createClient } from "@/lib/supabase/client";
+import { Tables, UserInfoFormData } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
 import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
@@ -21,25 +22,45 @@ interface PersonalInfoStepProps {
 }
 
 const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInfoStepProps) => {
-    const { user } = useAuth();
-    const form = useForm<UserInfoFormData>({
+    const { user: authUser, loadUser } = useAuth();
+    const {
+        setValue,
+        handleSubmit,
+        formState: {
+            errors
+        },
+        register
+    } = useForm<UserInfoFormData>({
         resolver: zodResolver(userInfoSchema),
         defaultValues: {
-            name: user?.name || "",
+            name: "",
             phone: "",
             address: "",
         },
     });
-    console.log(user);
-    
 
-    useEffect(() => {
-        if (user) {
-            form.setValue("name", user.name || "");
-        }
-    }, [user, form]);
+    const { data: user } = useQuery({
+        queryKey: ['user-onboarding-profile'],
+        queryFn: async () => {
+            const supabase = createClient();
+            const { data, error } = await supabase
+                .from(Tables.UserProfiles)
+                .select("id,name,email,phone,address")
+                .eq("id", authUser?.id)
+                .single();
 
-    const handleSubmit = async (formData: UserInfoFormData) => {
+            if (error) throw error;
+
+            setValue("name", data.name || "");
+            setValue("phone", data.phone || "");
+            setValue("address", data.address || "");
+
+            return data;
+        },
+        enabled: !!authUser?.id
+    });
+
+    const onSubmit = async (formData: UserInfoFormData) => {
         if (!user?.id) {
             toast.error("You must be logged in to continue");
             return;
@@ -47,8 +68,13 @@ const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInf
 
         setIsSubmitting(true);
         try {
-            await submitPersonalInfo(formData);
+            const { success, error } = await submitPersonalInfo(formData);
 
+            if (!success) {
+                toast.error(error);
+                throw new Error(error);
+            }
+            await loadUser();
             toast.success("Profile updated successfully!");
             onNext();
         } catch (error) {
@@ -68,13 +94,13 @@ const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInf
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <CustomInput
                         label="Full Name"
                         placeholder="Enter your full name"
                         required
-                        error={form.formState.errors.name?.message}
-                        {...form.register("name")}
+                        error={errors.name?.message}
+                        {...register("name")}
                     />
 
                     <CustomInput
@@ -82,7 +108,7 @@ const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInf
                         type="email"
                         placeholder="Enter your email"
                         required
-                        value={user?.email ?? ""}
+                        value={authUser?.email ?? ""}
                         disabled
                     />
 
@@ -91,16 +117,16 @@ const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInf
                         type="tel"
                         placeholder="Enter your phone number"
                         required
-                        error={form.formState.errors.phone?.message}
-                        {...form.register("phone")}
+                        error={errors.phone?.message}
+                        {...register("phone")}
                     />
 
                     <CustomTextArea
                         label="Address"
                         placeholder="Enter your address"
                         required
-                        error={form.formState.errors.address?.message}
-                        {...form.register("address")}
+                        error={errors.address?.message}
+                        {...register("address")}
                     />
 
                     <div className="flex justify-end">

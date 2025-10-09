@@ -17,17 +17,17 @@ export const submitPersonalInfo = async (data: UserInfoFormData) => {
             id: user.id,
             name: data.name,
             phone: data.phone,
-            email: user.email,
             address: data.address,
         });
-
+        
 
         if (error) throw error;
 
-        await supabase.auth.updateUser({
-            data: {
-                is_onboarded: false,
-                onboarding_step: 2
+        await supabase.auth.admin.updateUserById(user.id, {
+            user_metadata: {
+                is_onboarded: true,
+                onboarding_step: 2,
+                name: data.name
             }
         });
 
