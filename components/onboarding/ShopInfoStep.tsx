@@ -5,28 +5,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Building2, Check, Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import submitShopInfo from "@/app/onboarding/actions/submitShopInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
-import { createClient } from "@/lib/supabase/client";
-import { Tables } from "@/types";
+import { shopInfoSchema } from "@/lib/schema/onboarding";
+import { ShopInfoFormData } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
-
-const branchSchema = z.object({
-    name: z.string().min(2, "Branch name must be at least 2 characters"),
-    location: z.string().min(5, "Please enter a valid location"),
-    isMain: z.boolean().optional(),
-});
-
-const shopInfoSchema = z.object({
-    shopName: z.string().min(2, "Shop name must be at least 2 characters"),
-    shopPhone: z.string().min(10, "Please enter a valid phone number").optional(),
-    branches: z.array(branchSchema).min(1, "At least one branch is required"),
-});
-
-type ShopInfoFormData = z.infer<typeof shopInfoSchema>;
 
 interface ShopInfoStepProps {
     onPrevious: () => void;
@@ -42,7 +28,6 @@ const ShopInfoStep = ({
     setIsSubmitting,
 }: ShopInfoStepProps) => {
     const { user } = useAuth();
-    const supabase = createClient();
     const queryClient = useQueryClient();
 
     const {
@@ -55,8 +40,8 @@ const ShopInfoStep = ({
     } = useForm<ShopInfoFormData>({
         resolver: zodResolver(shopInfoSchema),
         defaultValues: {
-            shopName: "",
-            shopPhone: "",
+            name: "",
+            phone: "",
             branches: [
                 {
                     name: "",
@@ -80,23 +65,9 @@ const ShopInfoStep = ({
 
         setIsSubmitting(true);
         try {
-            // Create stores for each branch
-            const storePromises = data.branches.map((branch) =>
-                supabase.from(Tables.Stores).insert({
-                    name: branch.name,
-                    location: branch.location,
-                    ownerId: user.id,
-                    isMain: branch.isMain || false,
-                }),
-            );
+            const { success, error } = await submitShopInfo(data);
 
-            const results = await Promise.all(storePromises);
-
-            // Check for any errors
-            const errors = results.filter((result: any) => result.error);
-            if (errors.length > 0) {
-                throw new Error("Failed to create some stores");
-            }
+            if (!success) throw new Error(error);
 
             toast.success("Welcome to Kadam! Your account is ready.");
 
@@ -124,16 +95,16 @@ const ShopInfoStep = ({
                         label="Business Name"
                         placeholder="Enter your business name"
                         required
-                        error={errors.shopName?.message}
-                        {...register("shopName")}
+                        error={errors.name?.message}
+                        {...register("name")}
                     />
 
                     <CustomInput
                         label="Business Phone"
                         placeholder="Enter your business phone number"
                         required
-                        error={errors.shopPhone?.message}
-                        {...register("shopPhone")}
+                        error={errors.phone?.message}
+                        {...register("phone")}
                     />
 
                     <div className="space-y-3">

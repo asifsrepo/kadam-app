@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
 import { continueNext, redirectTo } from "./utils";
 
-const handleOnboarding = (request: NextRequest, user: any) => {
+const handleOnboarding = (request: NextRequest, user: any) => {	
+	console.log(user);
+	
 	if (!user?.user_metadata?.is_onboarded) {
 		if (request.nextUrl.pathname === "/onboarding") {
 			return continueNext();

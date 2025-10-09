@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { submitPersonalInfo } from "@/app/onboarding/actions/submitPersonalInfo";
+import submitPersonalInfo from "@/app/onboarding/actions/submitPersonalInfo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { userInfoSchema } from "@/lib/schema/onboarding";
