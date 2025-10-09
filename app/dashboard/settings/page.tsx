@@ -82,12 +82,13 @@ const Settings = () => {
 									<Icon className="h-5 w-5 md:h-6 md:w-6" />
 								</div>
 
-
 								<div className="flex min-w-0 flex-1 flex-col gap-1">
 									<h3 className="font-semibold text-card-foreground group-hover:text-accent-foreground">
 										{item.title}
 									</h3>
-									<p className="text-muted-foreground text-sm">{item.description}</p>
+									<p className="text-muted-foreground text-sm">
+										{item.description}
+									</p>
 								</div>
 
 								<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />

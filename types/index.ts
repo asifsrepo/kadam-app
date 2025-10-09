@@ -1,6 +1,6 @@
 export * from "./custom";
 export * from "./props";
-export * from "./schema"
+export * from "./schema";
 export * from "./transaction";
 export * from "./user";
 

@@ -16,132 +16,127 @@ import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
 
 interface PersonalInfoStepProps {
-    onNext: () => void;
-    isSubmitting: boolean;
-    setIsSubmitting: (loading: boolean) => void;
+	onNext: () => void;
+	isSubmitting: boolean;
+	setIsSubmitting: (loading: boolean) => void;
 }
 
 const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInfoStepProps) => {
-    const { user: authUser, loadUser } = useAuth();
-    const {
-        setValue,
-        handleSubmit,
-        formState: {
-            errors
-        },
-        register
-    } = useForm<UserInfoFormData>({
-        resolver: zodResolver(userInfoSchema),
-        defaultValues: {
-            name: "",
-            phone: "",
-            address: "",
-        },
-    });
+	const { user: authUser, loadUser } = useAuth();
+	const {
+		setValue,
+		handleSubmit,
+		formState: { errors },
+		register,
+	} = useForm<UserInfoFormData>({
+		resolver: zodResolver(userInfoSchema),
+		defaultValues: {
+			name: "",
+			phone: "",
+			address: "",
+		},
+	});
 
-    const { data: user } = useQuery({
-        queryKey: ['user-onboarding-profile'],
-        queryFn: async () => {
-            const supabase = createClient();
-            const { data, error } = await supabase
-                .from(Tables.UserProfiles)
-                .select("id,name,email,phone,address")
-                .eq("id", authUser?.id)
-                .single();
+	const { data: user } = useQuery({
+		queryKey: ["user-onboarding-profile"],
+		queryFn: async () => {
+			const supabase = createClient();
+			const { data, error } = await supabase
+				.from(Tables.UserProfiles)
+				.select("id,name,email,phone,address")
+				.eq("id", authUser?.id)
+				.single();
 
-            if (error) throw error;
+			if (error) throw error;
 
-            setValue("name", data.name || "");
-            setValue("phone", data.phone || "");
-            setValue("address", data.address || "");
+			setValue("name", data.name || "");
+			setValue("phone", data.phone || "");
+			setValue("address", data.address || "");
 
-            return data;
-        },
-        enabled: !!authUser?.id
-    });
+			return data;
+		},
+		enabled: !!authUser?.id,
+	});
 
-    const onSubmit = async (formData: UserInfoFormData) => {
-        if (!user?.id) {
-            toast.error("You must be logged in to continue");
-            return;
-        }
+	const onSubmit = async (formData: UserInfoFormData) => {
+		if (!user?.id) {
+			toast.error("You must be logged in to continue");
+			return;
+		}
 
-        setIsSubmitting(true);
-        try {
-            const { success, error } = await submitPersonalInfo(formData);
+		setIsSubmitting(true);
+		try {
+			const { success, error } = await submitPersonalInfo(formData);
 
-            if (!success) {
-                toast.error(error);
-                throw new Error(error);
-            }
-            await loadUser();
-            toast.success("Profile updated successfully!");
-            onNext();
-        } catch (error) {
-            toast.error("Failed to update profile. Please try again.");
-            console.error("Error updating profile:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+			if (!success) {
+				toast.error(error);
+				throw new Error(error);
+			}
+			await loadUser();
+			toast.success("Profile updated successfully!");
+			onNext();
+		} catch (error) {
+			toast.error("Failed to update profile. Please try again.");
+			console.error("Error updating profile:", error);
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5" />
-                    Personal Information
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <CustomInput
-                        label="Full Name"
-                        placeholder="Enter your full name"
-                        required
-                        error={errors.name?.message}
-                        {...register("name")}
-                    />
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle className="flex items-center gap-2">
+					<User className="h-5 w-5" />
+					Personal Information
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+					<CustomInput
+						label="Full Name"
+						placeholder="Enter your full name"
+						required
+						error={errors.name?.message}
+						{...register("name")}
+					/>
 
-                    <CustomInput
-                        label="Email"
-                        type="email"
-                        placeholder="Enter your email"
-                        required
-                        value={authUser?.email ?? ""}
-                        disabled
-                    />
+					<CustomInput
+						label="Email"
+						type="email"
+						placeholder="Enter your email"
+						required
+						value={authUser?.email ?? ""}
+						disabled
+					/>
 
-                    <CustomInput
-                        label="Phone Number"
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        required
-                        error={errors.phone?.message}
-                        {...register("phone")}
-                    />
+					<CustomInput
+						label="Phone Number"
+						type="tel"
+						placeholder="Enter your phone number"
+						required
+						error={errors.phone?.message}
+						{...register("phone")}
+					/>
 
-                    <CustomTextArea
-                        label="Address"
-                        placeholder="Enter your address"
-                        required
-                        error={errors.address?.message}
-                        {...register("address")}
-                    />
+					<CustomTextArea
+						label="Address"
+						placeholder="Enter your address"
+						required
+						error={errors.address?.message}
+						{...register("address")}
+					/>
 
-                    <div className="flex justify-end">
-                        <SubmitButton
-                            isLoading={isSubmitting}
-                            disabled={isSubmitting}
-                        >
-                            Continue
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </SubmitButton>
-                    </div>
-                </form>
-            </CardContent>
-        </Card>
-    );
+					<div className="flex justify-end">
+						<SubmitButton isLoading={isSubmitting} disabled={isSubmitting}>
+							Continue
+							<ArrowRight className="ml-2 h-4 w-4" />
+						</SubmitButton>
+					</div>
+				</form>
+			</CardContent>
+		</Card>
+	);
 };
 
 export default PersonalInfoStep;

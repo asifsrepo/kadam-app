@@ -20,7 +20,6 @@ export const middleware = async (request: NextRequest) => {
 	const { data } = await supabase.auth.getClaims();
 	const user = data?.claims;
 
-	
 	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
 	if (authRouteResponse) return authRouteResponse;
 
