@@ -14,10 +14,8 @@ interface AuthState {
 	user: IUser | null;
 	isLoading: boolean;
 	isInitialized: boolean;
-	isSigninDialogOpen: boolean;
 	initialize: () => Promise<void>;
 	loadUser: () => Promise<void>;
-	setSigninDialogOpen: (open: boolean) => void;
 	signOut: (redirect?: boolean) => Promise<void>;
 }
 
@@ -25,7 +23,6 @@ const initialState = {
 	user: null,
 	isLoading: false,
 	isInitialized: false,
-	isSigninDialogOpen: false,
 };
 
 const mapSupabaseUserToIUser = (sbUser: any): IUser => ({
@@ -37,8 +34,6 @@ const mapSupabaseUserToIUser = (sbUser: any): IUser => ({
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
 	...initialState,
-
-	setSigninDialogOpen: (open) => set({ isSigninDialogOpen: open }),
 
 	initialize: async () => {
 		const { isInitialized } = get();

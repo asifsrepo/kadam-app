@@ -15,7 +15,6 @@ const submitPersonalInfo = async (data: UserInfoFormData) => {
 		} = await supabase.auth.getUser();
 		if (!user) throw new Error("User not found");
 
-
 		const { error } = await supabase.from(Tables.UserProfiles).upsert({
 			id: user.id,
 			name: data.name,
@@ -31,7 +30,7 @@ const submitPersonalInfo = async (data: UserInfoFormData) => {
 				onboarding_step: 2,
 				name: data.name,
 			},
-			email: user.email
+			email: user.email,
 		});
 	});
 };

@@ -9,7 +9,7 @@ export const Tables = {
 	Customers: "customers",
 	Transactions: "transactions",
 	Stores: "stores",
-	Branches: "branches"
+	Branches: "branches",
 };
 
 export const QueryKeys = {
