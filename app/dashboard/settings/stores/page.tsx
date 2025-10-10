@@ -1,269 +1,198 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, Plus, Trash2 } from "lucide-react";
-import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, Building2, MapPin, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
-import CustomInput from "~/form-elements/CustomInput";
-import SubmitButton from "~/form-elements/SubmitButton";
-
-// Branch Schema
-const branchSchema = z.object({
-	id: z.string().optional(),
-	name: z.string().min(2, "Branch name must be at least 2 characters"),
-	location: z.string().min(5, "Please enter a valid location"),
-	isMain: z.boolean().optional(),
-});
-
-// Store Management Schema
-const storeManagementSchema = z.object({
-	branches: z.array(branchSchema).min(1, "At least one branch is required"),
-});
-
-type StoreManagementFormData = z.infer<typeof storeManagementSchema>;
+import type { IBranch } from "@/types/IStore";
+import CustomSearchInput from "~/CustomSearchInput";
 
 const StoreManagementPage = () => {
+	const router = useRouter();
 	const { user } = useAuth();
 	const supabase = createClient();
-	const queryClient = useQueryClient();
+	const [searchQuery, setSearchQuery] = useState("");
 
-	// Fetch existing stores
-	const { data: stores, isLoading } = useQuery({
-		queryKey: ["stores", user?.id],
+	const { data: storeData, isLoading } = useQuery({
+		queryKey: ["stores-with-branches", user?.id],
 		queryFn: async () => {
-			if (!user?.id) return [];
-			const { data, error } = await supabase
+			// Fetch stores
+			const { data: stores, error: storesError } = await supabase
 				.from(Tables.Stores)
 				.select("*")
-				.eq("ownerId", user.id)
+				.eq("ownerId", user?.id);
+
+			if (storesError) throw storesError;
+
+			// Fetch branches for each store
+			const { data: branches, error: branchesError } = await supabase
+				.from(Tables.Branches)
+				.select("*")
+				.eq("ownerId", user?.id)
 				.order("isMain", { ascending: false });
 
-			if (error) throw error;
-			return data || [];
+			if (branchesError) throw branchesError;
+
+			// Combine stores with their branches
+			const storesWithBranches = stores?.map((store) => ({
+				...store,
+				branches: branches?.filter((branch) => branch.storeId === store.id) || [],
+			})) || [];
+
+			return storesWithBranches;
 		},
 		enabled: !!user?.id,
 	});
-
-	const form = useForm<StoreManagementFormData>({
-		resolver: zodResolver(storeManagementSchema),
-		defaultValues: {
-			branches: [],
-		},
+	const filteredStores = storeData?.filter((store) => {
+		if (!searchQuery.trim()) return true;
+		const query = searchQuery.toLowerCase();
+		return (
+			store.name.toLowerCase().includes(query) ||
+			store.branches.some((branch: IBranch) =>
+				branch.name.toLowerCase().includes(query) ||
+				branch.location.toLowerCase().includes(query)
+			)
+		);
 	});
-
-	const { fields, append, remove } = useFieldArray({
-		control: form.control,
-		name: "branches",
-	});
-
-	// Update form when stores data is loaded
-	React.useEffect(() => {
-		if (stores && stores.length > 0) {
-			form.reset({
-				branches: stores.map((store) => ({
-					id: store.id,
-					name: store.name,
-					location: store.location,
-					isMain: store.isMain || false,
-				})),
-			});
-		}
-	}, [stores, form]);
-
-	const handleSubmit = async (data: StoreManagementFormData) => {
-		if (!user?.id) {
-			toast.error("You must be logged in to continue");
-			return;
-		}
-
-		try {
-			// Get existing store IDs
-			const existingStoreIds = stores?.map((store) => store.id) || [];
-			const formStoreIds = data.branches
-				.map((branch) => branch.id)
-				.filter(Boolean) as string[];
-
-			// Find stores to delete
-			const storesToDelete = existingStoreIds.filter((id) => !formStoreIds.includes(id));
-
-			// Delete removed stores
-			if (storesToDelete.length > 0) {
-				const { error: deleteError } = await supabase
-					.from(Tables.Stores)
-					.delete()
-					.in("id", storesToDelete);
-
-				if (deleteError) throw deleteError;
-			}
-
-			// Update or create stores
-			for (const branch of data.branches) {
-				if (branch.id) {
-					// Update existing store
-					const { error } = await supabase
-						.from(Tables.Stores)
-						.update({
-							name: branch.name,
-							location: branch.location,
-							isMain: branch.isMain || false,
-						})
-						.eq("id", branch.id);
-
-					if (error) throw error;
-				} else {
-					// Create new store
-					const { error } = await supabase.from(Tables.Stores).insert({
-						name: branch.name,
-						location: branch.location,
-						ownerId: user.id,
-						isMain: branch.isMain || false,
-					});
-
-					if (error) throw error;
-				}
-			}
-
-			toast.success("Store branches updated successfully!");
-			await queryClient.invalidateQueries({ queryKey: ["stores"] });
-		} catch (error) {
-			toast.error("Failed to update stores. Please try again.");
-			console.error("Error updating stores:", error);
-		}
-	};
-
-	const addNewBranch = () => {
-		append({
-			name: "",
-			location: "",
-			isMain: false,
-		});
-	};
 
 	if (isLoading) {
 		return (
-			<div className="space-y-4">
-				<div className="h-6 w-40 animate-pulse rounded bg-muted" />
-				<div className="h-48 animate-pulse rounded bg-muted" />
+			<div className="min-h-screen bg-background pb-24">
+				<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+					<div className="px-3 py-3 md:px-6 md:py-4">
+						<div className="mb-2 flex items-center gap-3 md:mb-3">
+							<div className="h-8 w-8 animate-pulse rounded bg-muted md:h-9 md:w-9" />
+							<div className="h-6 w-32 animate-pulse rounded bg-muted md:h-8" />
+						</div>
+						<div className="h-10 w-full animate-pulse rounded bg-muted" />
+					</div>
+				</div>
+				<div className="p-3 md:p-6">
+					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+						{Array.from({ length: 4 }).map((_, i) => (
+							<div key={i} className="h-32 animate-pulse rounded bg-muted" />
+						))}
+					</div>
+				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="space-y-4">
-			<div>
-				<h1 className="font-bold text-xl">Store Management</h1>
-				<p className="text-muted-foreground text-sm">
-					Manage your store branches and locations
-				</p>
+		<div className="min-h-screen bg-background pb-24">
+			{/* Header */}
+			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+				<div className="px-3 py-3 md:px-6 md:py-4">
+					<div className="mb-2 flex items-center gap-3 md:mb-3">
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() => router.back()}
+							className="h-8 w-8 md:h-9 md:w-9"
+						>
+							<ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
+							<span className="sr-only">Go back</span>
+						</Button>
+						<h1 className="font-semibold text-lg md:text-2xl">Store Branches</h1>
+					</div>
+					<CustomSearchInput
+						placeholder="Search branches..."
+						value={searchQuery}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+							setSearchQuery(e.target.value)
+						}
+						className="w-full"
+					/>
+				</div>
 			</div>
 
-			<Card>
-				<CardHeader className="pb-3">
-					<CardTitle className="flex items-center gap-2 text-base">
-						<Building2 className="h-4 w-4" />
-						Store Branches
-					</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-3">
-					<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
-						<div className="space-y-3">
-							<div className="flex items-center justify-between">
-								<h3 className="font-medium text-sm">Your Branches</h3>
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									onClick={addNewBranch}
-									className="h-8 px-3 text-xs"
-								>
-									<Plus className="mr-1 h-3 w-3" />
-									Add Branch
-								</Button>
-							</div>
+			<div className="p-3 md:p-6">
+				{filteredStores && filteredStores.length > 0 ? (
+					<div className="space-y-6">
+						{filteredStores.map((store) => (
+							<div key={store.id} className="space-y-3">
+								{/* Store Header */}
+								<div className="flex items-center gap-2">
+									<Building2 className="h-4 w-4 text-muted-foreground" />
+									<h2 className="font-semibold text-lg">{store.name}</h2>
+									<Badge variant="outline" className="text-xs">
+										{store.branches.length} branch{store.branches.length !== 1 ? 'es' : ''}
+									</Badge>
+								</div>
 
-							<div className="space-y-2">
-								{fields.map((field, index) => (
-									<Card key={field.id} className="p-3">
-										<div className="space-y-3">
-											<div className="flex items-center justify-between">
-												<div className="flex items-center gap-2">
-													<h4 className="font-medium text-sm">
-														Branch {index + 1}
-													</h4>
-													{field.isMain && (
-														<span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
-															Main
-														</span>
-													)}
-												</div>
-												{fields.length > 1 && (
-													<Button
-														type="button"
-														variant="ghost"
-														size="sm"
-														onClick={() => remove(index)}
-														className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
-													>
-														<Trash2 className="h-3 w-3" />
-													</Button>
-												)}
-											</div>
-
-											<div className="space-y-2">
-												<CustomInput
-													label="Branch Name"
-													placeholder="Enter branch name"
-													required
-													error={
-														form.formState.errors.branches?.[index]
-															?.name?.message
-													}
-													{...form.register(`branches.${index}.name`)}
-												/>
-
-												<CustomInput
-													label="Branch Location"
-													placeholder="Enter branch address"
-													required
-													error={
-														form.formState.errors.branches?.[index]
-															?.location?.message
-													}
-													{...form.register(`branches.${index}.location`)}
-												/>
-											</div>
+								{/* Branches Grid */}
+								{store.branches.length > 0 ? (
+									<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+										{store.branches.map((branch: IBranch) => (
+											<Card key={branch.id} className="transition-shadow hover:shadow-md">
+												<CardContent className="p-3">
+													<div className="mb-2 flex items-start justify-between gap-2">
+														<div className="min-w-0 flex-1">
+															<div className="flex items-center gap-1.5">
+																<h3 className="truncate font-semibold text-foreground text-sm">
+																	{branch.name}
+																</h3>
+															</div>
+															<div className="mt-1 flex items-center gap-1.5 text-xs">
+																<MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
+																<span className="truncate text-muted-foreground">
+																	{branch.location}
+																</span>
+															</div>
+														</div>
+														{branch.isMain && (
+															<Badge variant="secondary" className="text-xs">
+																Main
+															</Badge>
+														)}
+													</div>
+												</CardContent>
+											</Card>
+										))}
+									</div>
+								) : (
+									<Card className="p-4 text-center">
+										<div className="space-y-2">
+											<Building2 className="mx-auto h-8 w-8 text-muted-foreground" />
+											<p className="text-muted-foreground text-sm">
+												No branches for this store yet
+											</p>
 										</div>
 									</Card>
-								))}
+								)}
 							</div>
-
-							{form.formState.errors.branches && (
-								<p className="text-destructive text-xs">
-									{form.formState.errors.branches.message}
+						))}
+					</div>
+				) : (
+					<Card className="p-8 text-center">
+						<div className="space-y-3">
+							<Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
+							<div>
+								<h3 className="font-medium text-lg">
+									{searchQuery.trim() ? "No stores found" : "No stores yet"}
+								</h3>
+								<p className="text-muted-foreground text-sm">
+									{searchQuery.trim()
+										? "Try adjusting your search terms"
+										: "Add your first store to get started"}
 								</p>
+							</div>
+							{!searchQuery.trim() && (
+								<Button className="mt-4">
+									<Plus className="mr-2 h-4 w-4" />
+									Add Your First Store
+								</Button>
 							)}
 						</div>
-						<div className="flex justify-end pt-2">
-							<SubmitButton
-								isLoading={form.formState.isSubmitting}
-								disabled={form.formState.isSubmitting}
-								className="h-9 text-sm"
-							>
-								Save Changes
-							</SubmitButton>
-						</div>
-						zz
-					</form>
-				</CardContent>
-			</Card>
+					</Card>
+				)}
+			</div>
 		</div>
 	);
 };

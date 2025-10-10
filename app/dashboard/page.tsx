@@ -87,12 +87,6 @@ const Dashboard = () => {
 								Overview of your business
 							</p>
 						</div>
-						<Button asChild>
-							<Link href="/dashboard/customers/new">
-								<Plus className="mr-2 h-4 w-4" />
-								Add Customer
-							</Link>
-						</Button>
 					</div>
 				</div>
 			</div>
@@ -125,11 +119,10 @@ const Dashboard = () => {
 										Net Balance
 									</p>
 									<p
-										className={`font-bold text-lg ${
-											totalDebt - totalCredit > 0
+										className={`font-bold text-lg ${totalDebt - totalCredit > 0
 												? "text-destructive"
 												: "text-primary"
-										}`}
+											}`}
 									>
 										${(totalDebt - totalCredit).toFixed(2)}
 									</p>

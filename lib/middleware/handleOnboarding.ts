@@ -2,9 +2,6 @@ import { NextRequest } from "next/server";
 import { continueNext, redirectTo } from "./utils";
 
 const handleOnboarding = (request: NextRequest, user: any) => {
-	console.log("user", user);
-
-	console.log("typeof user", typeof user);
 	if(!user||!user.user_metadata){
 		return redirectTo(request, "/signin");
 	}
