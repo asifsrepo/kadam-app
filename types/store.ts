@@ -1,5 +1,6 @@
 import { IUser } from "./user";
 
+// one store for a customer
 export interface IStore {
 	id: string;
 	name: string;
