@@ -1,15 +1,16 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Edit, MapPin, Phone, Plus } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import EditStoreDialog from "@/components/stores/EditStoreDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
-import { Tables } from "@/types";
+import { QueryKeys, Tables } from "@/types";
 import type { IBranch } from "@/types/store";
 import CustomSearchInput from "~/CustomSearchInput";
 
@@ -20,7 +21,7 @@ const StoreManagementPage = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const { data: storeData, isLoading } = useQuery({
-		queryKey: ["store-with-branches", user?.id],
+		queryKey: [QueryKeys.StoreWithBranches, user?.id],
 		queryFn: async () => {
 			const { data: store, error: storeError } = await supabase
 				.from(Tables.Stores)
@@ -126,15 +127,18 @@ const StoreManagementPage = () => {
 											{storeData.store.phone}
 										</span>
 									</div>
+									<div className="flex items-center gap-2 text-sm">
+										<span className="text-muted-foreground">
+											ID: {storeData.store.uniqueId}
+										</span>
+									</div>
 								</div>
 							</div>
-							<Button
-								variant="outline"
-								size="icon"
-								className="h-8 w-8 shrink-0 border-primary/20 hover:bg-primary/10"
-							>
-								<Edit className="h-4 w-4" />
-							</Button>
+							<EditStoreDialog
+								storeName={storeData.store.name}
+								storePhone={storeData.store.phone}
+								storeId={storeData.store.id}
+							/>
 						</div>
 					</div>
 				)}

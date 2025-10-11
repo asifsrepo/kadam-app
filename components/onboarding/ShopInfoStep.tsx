@@ -1,16 +1,17 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Building2, Check, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
 import submitShopInfo from "@/app/onboarding/actions/submitShopInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { shopInfoSchema } from "@/lib/schema/onboarding";
-import { ShopInfoFormData } from "@/types";
+import { createClient } from "@/lib/supabase/client";
+import { ShopInfoFormData, Tables } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 
@@ -29,17 +30,24 @@ const ShopInfoStep = ({
 }: ShopInfoStepProps) => {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
+	const supabase = createClient();
+
+	// State for checking uniqueId
+	const [isCheckingUniqueId, setIsCheckingUniqueId] = useState(false);
 
 	const {
 		handleSubmit,
 		formState: { errors },
 		register,
 		control,
+		watch,
+		setError
 	} = useForm<ShopInfoFormData>({
 		resolver: zodResolver(shopInfoSchema),
 		defaultValues: {
 			name: "",
 			phone: "",
+			uniqueId: "",
 			branches: [
 				{
 					name: "",
@@ -49,6 +57,42 @@ const ShopInfoStep = ({
 			],
 		},
 	});
+
+	const uniqueId = watch("uniqueId");
+	const [debouncedUniqueId] = useDebounce(uniqueId, 500);
+
+	useEffect(() => {
+		if (!debouncedUniqueId || debouncedUniqueId.length < 4) return;
+		let isMounted = true;
+		setIsCheckingUniqueId(true);
+
+		(async () => {
+			const { data, error } = await supabase
+				.from(Tables.Stores)
+				.select("id")
+				.eq("uniqueId", debouncedUniqueId)
+				.single();
+
+			if (!isMounted) return;
+
+			if (error && error.code !== "PGRST116" && error.message) {
+				toast.error("Failed to fetch unique ID. Please try again.");
+				setIsCheckingUniqueId(false);
+				return;
+			}
+
+			if (data) {
+				setError("uniqueId", { message: "This unique ID is already taken. Please choose another one." });
+			} else {
+				setError("uniqueId", { message: undefined });
+			}
+
+			setIsCheckingUniqueId(false);
+		})();
+
+		return () => { isMounted = false; };
+	}, [debouncedUniqueId, supabase, setError]);
+
 
 	const { fields, append, remove } = useFieldArray({
 		control: control,
@@ -66,7 +110,6 @@ const ShopInfoStep = ({
 			const { success, error } = await submitShopInfo(data);
 
 			if (!success) throw new Error(error);
-
 			toast.success("Welcome to Kadam! Your account is ready.");
 
 			await queryClient.invalidateQueries();
@@ -96,7 +139,6 @@ const ShopInfoStep = ({
 						error={errors.name?.message}
 						{...register("name")}
 					/>
-
 					<CustomInput
 						label="Business Phone"
 						placeholder="Enter your business phone number"
@@ -104,7 +146,14 @@ const ShopInfoStep = ({
 						error={errors.phone?.message}
 						{...register("phone")}
 					/>
-
+					<CustomInput
+						label="Unique ID"
+						placeholder="Enter your unique ID"
+						required
+						error={errors.uniqueId?.message}
+						disabled={isCheckingUniqueId || isSubmitting}
+						{...register("uniqueId")}
+					/>
 					<div className="space-y-3">
 						<div className="flex items-center justify-between">
 							<h3 className="font-medium text-sm">Store Branches</h3>
@@ -120,7 +169,6 @@ const ShopInfoStep = ({
 								Add Branch
 							</Button>
 						</div>
-
 						<div className="space-y-2">
 							{fields.map((field, index) => (
 								<Card key={field.id} className="p-3">
@@ -149,7 +197,6 @@ const ShopInfoStep = ({
 												</Button>
 											)}
 										</div>
-
 										<div className="space-y-2">
 											<CustomInput
 												label="Branch Name"
@@ -158,7 +205,6 @@ const ShopInfoStep = ({
 												error={errors.branches?.[index]?.name?.message}
 												{...register(`branches.${index}.name`)}
 											/>
-
 											<CustomInput
 												label="Branch Location"
 												placeholder="Enter branch address"
@@ -171,12 +217,10 @@ const ShopInfoStep = ({
 								</Card>
 							))}
 						</div>
-
 						{errors.branches && (
 							<p className="text-destructive text-xs">{errors.branches.message}</p>
 						)}
 					</div>
-
 					<div className="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-between">
 						<Button
 							type="button"

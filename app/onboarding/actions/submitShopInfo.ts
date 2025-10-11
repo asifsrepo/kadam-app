@@ -20,6 +20,7 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 			.insert({
 				name: shopData.name,
 				phone: shopData.phone,
+				uniqueId: shopData.uniqueId,
 				ownerId: user.id,
 			})
 			.select("id");

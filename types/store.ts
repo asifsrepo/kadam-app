@@ -6,6 +6,11 @@ export interface IStore {
 	name: string;
 	phone: string;
 	ownerId: IUser["id"];
+	uniqueId: string;
+}
+
+export interface IStoreWithBranches extends IStore {
+	branches: IBranch[];
 }
 
 export interface IBranch {
