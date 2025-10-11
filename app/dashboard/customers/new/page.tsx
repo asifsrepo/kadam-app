@@ -1,10 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -26,10 +25,39 @@ const STATUS_OPTIONS = [
 
 const NewCustomerPage = () => {
 	const router = useRouter();
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const supabase = createClient();
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
+	const { mutate, isPending } = useMutation({
+		mutationFn: async (data: CustomerFormData) => {
+			const { error } = await supabase.from(Tables.Customers).insert({
+				name: data.name,
+				email: data.email,
+				phone: data.phone,
+				address: data.address,
+				idNumber: data.idNumber,
+				status: data.status,
+				limit: data.limit,
+				createdAt: new Date().toISOString(),
+				createdBy: user?.id,
+			} as ICustomer);
+			if (error) throw error;
+
+			return data;
+		},
+		onSuccess: async () => {
+			toast.success("Customer created successfully!");
+			router.back();
+			setTimeout(async () => {
+				await queryClient.invalidateQueries({
+					queryKey: [QueryKeys.CustomersList],
+				});
+			}, 100);
+		},
+		onError: () => {
+			toast.error("Failed to create customer. Please try again.");
+		},
+	});
 
 	const {
 		register,
@@ -42,39 +70,12 @@ const NewCustomerPage = () => {
 		defaultValues: {
 			status: "active",
 			limit: 0,
+			email: ""
 		},
 	});
 
 	const onSubmit = async (data: CustomerFormData) => {
-		setIsSubmitting(true);
-		try {
-			const { error } = await supabase.from(Tables.Customers).insert({
-				name: data.name,
-				email: data.email,
-				phone: data.phone,
-				address: data.address,
-				idNumber: data.idNumber,
-				status: data.status,
-				limit: data.limit,
-				createdAt: new Date().toISOString(),
-				createdBy: user?.id,
-			} as ICustomer);
-
-			if (error) throw error;
-
-			await queryClient.invalidateQueries({
-				queryKey: [QueryKeys.CustomersList],
-				exact: false,
-			});
-
-			toast.success("Customer created successfully!");
-			router.back();
-		} catch (error) {
-			toast.error("Failed to create customer. Please try again.");
-			console.error("Error creating customer:", error);
-		} finally {
-			setIsSubmitting(false);
-		}
+		mutate(data);
 	};
 
 	return (
@@ -109,7 +110,6 @@ const NewCustomerPage = () => {
 							label="Email"
 							type="email"
 							placeholder="customer@example.com"
-							required
 							error={errors.email?.message}
 							{...register("email")}
 						/>
@@ -126,7 +126,6 @@ const NewCustomerPage = () => {
 						<CustomInput
 							label="ID Number"
 							placeholder="Enter ID/Passport number"
-							required
 							error={errors.idNumber?.message}
 							{...register("idNumber")}
 						/>
@@ -136,7 +135,6 @@ const NewCustomerPage = () => {
 						<CustomTextArea
 							label="Address"
 							placeholder="Enter full address"
-							required
 							rows={3}
 							error={errors.address?.message}
 							{...register("address")}
@@ -174,14 +172,14 @@ const NewCustomerPage = () => {
 							type="button"
 							variant="outline"
 							onClick={() => router.back()}
-							disabled={isSubmitting}
+							disabled={isPending}
 							className="w-full md:w-auto"
 						>
 							Cancel
 						</Button>
 						<SubmitButton
-							isLoading={isSubmitting}
-							disabled={isSubmitting}
+							isLoading={isPending}
+							disabled={isPending}
 							className="w-full md:w-auto"
 						>
 							Create Customer

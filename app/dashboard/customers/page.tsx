@@ -16,51 +16,57 @@ const CustomersPage = () => {
 	const supabase = createClient();
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const { data: customers, isLoading } = useQuery({
+	const { data: customersData, isLoading: customersLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersList],
 		queryFn: async () => {
-			const { data: customersData, error: customersError } = await supabase
+			const { data, error } = await supabase
 				.from(Tables.Customers)
 				.select("*")
 				.order("createdAt", { ascending: false });
 
-			if (customersError) throw customersError;
-
-			const { data: transactionsData, error: transactionsError } = await supabase
-				.from(Tables.Transactions)
-				.select("*");
-
-			if (transactionsError) throw transactionsError;
-
-			const customersWithBalance = customersData.map((customer) => {
-				const customerTransactions =
-					transactionsData?.filter((t) => t.customerId === customer.id) || [];
-
-				const totalDebt =
-					customerTransactions
-						.filter((t) => t.type === "credit")
-						.reduce((sum, t) => sum + t.amount, 0) || 0;
-
-				const totalPaid =
-					customerTransactions
-						.filter((t) => t.type === "payment")
-						.reduce((sum, t) => sum + t.amount, 0) || 0;
-
-				const balance = totalDebt - totalPaid;
-
-				return {
-					...customer,
-					balance,
-				};
-			});
-
-			return customersWithBalance as CustomerWithBalance[];
+			if (error) throw error;
+			return data || [];
 		},
 	});
 
+	const { data: transactionsData, isLoading: transactionsLoading } = useQuery({
+		queryKey: [QueryKeys.CustomersTransactions],
+		queryFn: async () => {
+			const { data, error } = await supabase
+				.from(Tables.Transactions)
+				.select("*");
+
+			if (error) throw error;
+			return data || [];
+		},
+	});
+
+	const customers = customersData?.map((customer) => {
+		const customerTransactions =
+			transactionsData?.filter((t) => t.customerId === customer.id) || [];
+
+		const totalDebt =
+			customerTransactions
+				.filter((t) => t.type === "credit")
+				.reduce((sum, t) => sum + t.amount, 0) || 0;
+
+		const totalPaid =
+			customerTransactions
+				.filter((t) => t.type === "payment")
+				.reduce((sum, t) => sum + t.amount, 0) || 0;
+
+		const balance = totalDebt - totalPaid;
+
+		return {
+			...customer,
+			balance,
+		};
+	}) as CustomerWithBalance[] || [];
+
+	const isLoading = customersLoading || transactionsLoading;
+
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			{/* Header */}
 			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 				<div className="px-3 py-3 md:px-6 md:py-4">
 					<div className="mb-2 flex items-center gap-3 md:mb-3">
@@ -88,7 +94,7 @@ const CustomersPage = () => {
 
 			<div className="p-3 md:p-6">
 				<CustomerList
-					customers={customers || []}
+					customers={customers}
 					isLoading={isLoading}
 					searchQuery={searchQuery}
 				/>
