@@ -35,7 +35,7 @@ export const handleUnauthenticatedOnProtectedRoutes = (
 	user: IUser,
 ): NextResponse | null => {
 	const { pathname } = request.nextUrl;
-	
+
 	// If user is fully authenticated, allow access
 	if (user) return null;
 

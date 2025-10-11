@@ -1,12 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Building2, Edit, MapPin, Phone, Plus } from "lucide-react";
+import { ArrowLeft, Edit, MapPin, Phone, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
@@ -46,14 +46,15 @@ const StoreManagementPage = () => {
 		},
 		enabled: !!user?.id,
 	});
-	const filteredBranches = storeData?.branches?.filter((branch: IBranch) => {
-		if (!searchQuery.trim()) return true;
-		const query = searchQuery.toLowerCase();
-		return (
-			branch.name.toLowerCase().includes(query) ||
-			branch.location.toLowerCase().includes(query)
-		);
-	}) || [];
+	const filteredBranches =
+		storeData?.branches?.filter((branch: IBranch) => {
+			if (!searchQuery.trim()) return true;
+			const query = searchQuery.toLowerCase();
+			return (
+				branch.name.toLowerCase().includes(query) ||
+				branch.location.toLowerCase().includes(query)
+			);
+		}) || [];
 
 	if (isLoading) {
 		return (
@@ -67,11 +68,11 @@ const StoreManagementPage = () => {
 						<div className="h-10 w-full animate-pulse rounded bg-muted" />
 					</div>
 				</div>
-				<div className="p-3 md:p-6 space-y-4">
-					<div className="h-32 animate-pulse rounded bg-muted" />
-					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				<div className="space-y-3 p-3 md:p-6">
+					<div className="h-20 animate-pulse rounded bg-muted" />
+					<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{Array.from({ length: 4 }).map((_, i) => (
-							<div key={i} className="h-24 animate-pulse rounded bg-muted" />
+							<div key={i} className="h-16 animate-pulse rounded bg-muted" />
 						))}
 					</div>
 				</div>
@@ -107,115 +108,87 @@ const StoreManagementPage = () => {
 				</div>
 			</div>
 
-			<div className="p-3 md:p-6 space-y-4">
-				{/* Store Details Card */}
-				{storeData?.store ? (
-					<Card className="transition-shadow hover:shadow-md">
-						<CardHeader className="pb-3">
-							<div className="flex items-start justify-between gap-2">
-								<div className="flex items-center gap-2">
-									<Building2 className="h-5 w-5 text-muted-foreground" />
-									<CardTitle className="text-lg">{storeData.store.name}</CardTitle>
+			<div className="space-y-3 p-3 md:p-6">
+				{storeData?.store && (
+					<div className="rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10 p-4">
+						<div className="flex items-start justify-between gap-3">
+							<div className="min-w-0 flex-1">
+								<div className="mb-2 flex items-center gap-2">
+									<div className="h-2 w-2 rounded-full bg-primary" />
+									<CardTitle className="truncate font-semibold text-lg">
+										{storeData.store.name}
+									</CardTitle>
 								</div>
-								<Button variant="outline" size="sm" className="h-8 px-3 text-xs">
-									<Edit className="mr-1 h-3 w-3" />
-									Edit Store
-								</Button>
+								<div className="space-y-1.5">
+									<div className="flex items-center gap-2 text-sm">
+										<Phone className="h-3.5 w-3.5 text-primary/70" />
+										<span className="text-muted-foreground">
+											{storeData.store.phone}
+										</span>
+									</div>
+								</div>
 							</div>
-						</CardHeader>
-						<CardContent className="space-y-3">
-							<div className="flex items-center gap-2 text-sm">
-								<Phone className="h-4 w-4 text-muted-foreground" />
-								<span className="text-muted-foreground">{storeData.store.phone}</span>
-							</div>
-							<div className="flex items-center gap-2 text-sm">
-								<Badge variant="outline" className="text-xs">
-									{storeData.branches.length} branch{storeData.branches.length !== 1 ? 'es' : ''}
-								</Badge>
-							</div>
-						</CardContent>
-					</Card>
-				) : (
-					<Card className="p-6 text-center">
-						<div className="space-y-3">
-							<Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
-							<div>
-								<h3 className="font-medium text-lg">No store setup yet</h3>
-								<p className="text-muted-foreground text-sm">
-									Set up your store to start managing branches
-								</p>
-							</div>
-							<Button className="mt-4">
-								<Plus className="mr-2 h-4 w-4" />
-								Setup Your Store
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-8 w-8 shrink-0 border-primary/20 hover:bg-primary/10"
+							>
+								<Edit className="h-4 w-4" />
 							</Button>
 						</div>
-					</Card>
+					</div>
 				)}
 
-				{/* Branches Section */}
 				{storeData?.store && (
 					<div className="space-y-3">
 						<div className="flex items-center justify-between">
-							<h2 className="font-semibold text-lg">Branches</h2>
-							<Button size="sm" className="h-8 px-3 text-xs">
-								<Plus className="mr-1 h-3 w-3" />
-								Add Branch
+							<div className="flex items-center gap-2">
+								<div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60" />
+								<h2 className="font-semibold text-base">Branches</h2>
+							</div>
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-8 w-8 border-primary/20 hover:bg-primary/10"
+							>
+								<Plus className="h-4 w-4" />
 							</Button>
 						</div>
 
-						{filteredBranches.length > 0 ? (
-							<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-								{filteredBranches.map((branch: IBranch) => (
-									<Card key={branch.id} className="transition-shadow hover:shadow-md">
-										<CardContent className="p-3">
-											<div className="mb-2 flex items-start justify-between gap-2">
+						<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+							{filteredBranches.map((branch: IBranch) => (
+								<Card
+									key={branch.id}
+									className="border-border/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
+								>
+									<CardContent className="p-3">
+										<div className="space-y-2">
+											<div className="flex items-start justify-between gap-2">
 												<div className="min-w-0 flex-1">
-													<div className="flex items-center gap-1.5">
-														<h3 className="truncate font-semibold text-foreground text-sm">
-															{branch.name}
-														</h3>
-													</div>
-													<div className="mt-1 flex items-center gap-1.5 text-xs">
-														<MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
-														<span className="truncate text-muted-foreground">
-															{branch.location}
-														</span>
-													</div>
+													<h3 className="truncate font-semibold text-foreground text-sm">
+														{branch.name}
+													</h3>
 												</div>
 												{branch.isMain && (
-													<Badge variant="secondary" className="text-xs">
+													<Badge
+														variant="secondary"
+														className="border-primary/20 bg-primary/10 text-primary text-xs"
+													>
 														Main
 													</Badge>
 												)}
 											</div>
-										</CardContent>
-									</Card>
-								))}
-							</div>
-						) : (
-							<Card className="p-6 text-center">
-								<div className="space-y-3">
-									<Building2 className="mx-auto h-10 w-10 text-muted-foreground" />
-									<div>
-										<h3 className="font-medium text-base">
-											{searchQuery.trim() ? "No branches found" : "No branches yet"}
-										</h3>
-										<p className="text-muted-foreground text-sm">
-											{searchQuery.trim()
-												? "Try adjusting your search terms"
-												: "Add your first branch to get started"}
-										</p>
-									</div>
-									{!searchQuery.trim() && (
-										<Button size="sm" className="mt-2">
-											<Plus className="mr-2 h-4 w-4" />
-											Add Your First Branch
-										</Button>
-									)}
-								</div>
-							</Card>
-						)}
+											<div className="flex items-center gap-2 text-xs">
+												<MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
+												<span className="truncate text-muted-foreground">
+													{branch.location}
+												</span>
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+							))}
+						</div>
 					</div>
 				)}
 			</div>

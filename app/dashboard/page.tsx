@@ -119,10 +119,11 @@ const Dashboard = () => {
 										Net Balance
 									</p>
 									<p
-										className={`font-bold text-lg ${totalDebt - totalCredit > 0
+										className={`font-bold text-lg ${
+											totalDebt - totalCredit > 0
 												? "text-destructive"
 												: "text-primary"
-											}`}
+										}`}
 									>
 										${(totalDebt - totalCredit).toFixed(2)}
 									</p>
