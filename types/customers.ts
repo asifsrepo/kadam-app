@@ -1,3 +1,4 @@
+import { IBranch } from "./store";
 import { IUser } from "./user";
 
 export interface ICustomer {
@@ -11,6 +12,7 @@ export interface ICustomer {
 	idNumber: string;
 	createdBy: IUser["id"];
 	limit: number;
+	branchId: IBranch["id"];
 }
 
-export type CustomerWithBalance = ICustomer & { balance: number };
+export type CustomerWithBalance = ICustomer & { balance: number; };

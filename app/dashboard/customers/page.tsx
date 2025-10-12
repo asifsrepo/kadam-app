@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import CustomerList from "@/components/customers/CustomerList";
 import { Button } from "@/components/ui/button";
+import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
 import type { CustomerWithBalance } from "@/types/customers";
@@ -15,6 +16,7 @@ const CustomersPage = () => {
 	const router = useRouter();
 	const supabase = createClient();
 	const [searchQuery, setSearchQuery] = useState("");
+	const { activeBranch } = useStores();
 
 	const { data: customersData, isLoading: customersLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersList],
@@ -22,6 +24,7 @@ const CustomersPage = () => {
 			const { data, error } = await supabase
 				.from(Tables.Customers)
 				.select("*")
+				.eq("branchId", activeBranch?.id)
 				.order("createdAt", { ascending: false });
 
 			if (error) throw error;
@@ -32,7 +35,10 @@ const CustomersPage = () => {
 	const { data: transactionsData, isLoading: transactionsLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersTransactions],
 		queryFn: async () => {
-			const { data, error } = await supabase.from(Tables.Transactions).select("*");
+			const { data, error } = await supabase
+				.from(Tables.Transactions)
+				.select("*")
+				.eq("branchId", activeBranch?.id);
 
 			if (error) throw error;
 			return data || [];

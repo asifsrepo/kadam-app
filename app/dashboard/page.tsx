@@ -16,12 +16,14 @@ import CustomerCard from "@/components/customers/CustomerCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
 import type { CustomerWithBalance } from "@/types/customers";
 
 const Dashboard = () => {
 	const supabase = createClient();
+	const { activeBranch } = useStores();
 
 	const { data: customers, isLoading: customersLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersList],
@@ -29,13 +31,15 @@ const Dashboard = () => {
 			const { data: customersData, error: customersError } = await supabase
 				.from(Tables.Customers)
 				.select("*")
+				.eq("branchId", activeBranch?.id)
 				.order("createdAt", { ascending: false });
 
 			if (customersError) throw customersError;
 
 			const { data: transactionsData, error: transactionsError } = await supabase
 				.from(Tables.Transactions)
-				.select("*");
+				.select("*")
+				.eq("branchId", activeBranch?.id);
 
 			if (transactionsError) throw transactionsError;
 
@@ -119,11 +123,10 @@ const Dashboard = () => {
 										Net Balance
 									</p>
 									<p
-										className={`font-bold text-lg ${
-											totalDebt - totalCredit > 0
-												? "text-destructive"
-												: "text-primary"
-										}`}
+										className={`font-bold text-lg ${totalDebt - totalCredit > 0
+											? "text-destructive"
+											: "text-primary"
+											}`}
 									>
 										${(totalDebt - totalCredit).toFixed(2)}
 									</p>

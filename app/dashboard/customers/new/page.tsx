@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/store/useAuth";
+import useStores from "@/hooks/store/useStores";
 import type { CustomerFormData } from "@/lib/schema/customer";
 import { customerSchema } from "@/lib/schema/customer";
 import { createClient } from "@/lib/supabase/client";
@@ -28,6 +29,8 @@ const NewCustomerPage = () => {
 	const supabase = createClient();
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
+	const { activeBranch } = useStores();
+	
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (data: CustomerFormData) => {
 			const { error } = await supabase.from(Tables.Customers).insert({
@@ -40,6 +43,7 @@ const NewCustomerPage = () => {
 				limit: data.limit,
 				createdAt: new Date().toISOString(),
 				createdBy: user?.id,
+				branchId: activeBranch?.id,
 			} as ICustomer);
 			if (error) throw error;
 
