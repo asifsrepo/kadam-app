@@ -9,6 +9,7 @@ import submitShopInfo from "@/app/onboarding/actions/submitShopInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
+import useStores from "@/hooks/store/useStores";
 import { shopInfoSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/client";
 import { ShopInfoFormData, Tables } from "@/types";
@@ -31,9 +32,10 @@ const ShopInfoStep = ({
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const supabase = createClient();
+	const { setActiveBranch } = useStores();
 
 	// State for checking storeId
-	const [isCheckingstoreId, setIsCheckingstoreId] = useState(false);
+	const [isCheckingStoreId, setIsCheckingStoreId] = useState(false);
 
 	const {
 		handleSubmit,
@@ -64,7 +66,7 @@ const ShopInfoStep = ({
 	useEffect(() => {
 		if (!debouncedstoreId || debouncedstoreId.length < 4) return;
 		let isMounted = true;
-		setIsCheckingstoreId(true);
+		setIsCheckingStoreId(true);
 
 		(async () => {
 			const { data, error } = await supabase
@@ -77,7 +79,7 @@ const ShopInfoStep = ({
 
 			if (error && error.code !== "PGRST116" && error.message) {
 				toast.error("Failed to fetch Store Id. Please try again.");
-				setIsCheckingstoreId(false);
+				setIsCheckingStoreId(false);
 				return;
 			}
 
@@ -89,7 +91,7 @@ const ShopInfoStep = ({
 				setError("storeId", { message: undefined });
 			}
 
-			setIsCheckingstoreId(false);
+			setIsCheckingStoreId(false);
 		})();
 
 		return () => {
@@ -110,13 +112,14 @@ const ShopInfoStep = ({
 
 		setIsSubmitting(true);
 		try {
-			const { success, error } = await submitShopInfo(data);
+			const { success, error, data: branchData } = await submitShopInfo(data);
 
 			if (!success) throw new Error(error);
 			toast.success("Welcome to Kadam! Your account is ready.");
 
 			await queryClient.invalidateQueries();
 			onComplete();
+			setActiveBranch(branchData ?? null);
 		} catch (error) {
 			toast.error("Failed to create stores. Please try again.");
 			console.error("Error creating stores:", error);
@@ -154,7 +157,7 @@ const ShopInfoStep = ({
 						placeholder="Enter your Store Id"
 						required
 						error={errors.storeId?.message}
-						disabled={isCheckingstoreId || isSubmitting}
+						disabled={isCheckingStoreId || isSubmitting}
 						{...register("storeId")}
 					/>
 					<div className="space-y-3">

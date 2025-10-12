@@ -4,9 +4,10 @@ import { shopInfoSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
 import { ShopInfoFormData, Tables } from "@/types";
+import { IBranch } from "@/types/store";
 
 const submitShopInfo = async (shopData: ShopInfoFormData) => {
-	return await tryCatch(async () => {
+	return await tryCatch<IBranch>(async () => {
 		shopInfoSchema.parse(shopData);
 
 		const supabase = await createClient();
@@ -35,7 +36,10 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 			ownerId: user.id,
 		}));
 
-		const { error: branchError } = await supabase.from(Tables.Branches).insert(branchInserts);
+		const { error: branchError, data: branchData } = await supabase
+			.from(Tables.Branches)
+			.insert(branchInserts)
+			.select("*");
 
 		if (branchError) throw branchError;
 
@@ -46,6 +50,8 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 			},
 			email: user.email,
 		});
+
+		return branchData?.filter(el => el.isMain)[0];
 	});
 };
 

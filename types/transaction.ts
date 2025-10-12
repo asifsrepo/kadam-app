@@ -1,4 +1,5 @@
 import { ICustomer } from "./customers";
+import { IBranch } from "./store";
 import { IUser } from "./user";
 
 /**
@@ -16,4 +17,5 @@ export interface ITransaction {
 	amount: number;
 	type: TransactionType;
 	notes: string;
+	branchId: IBranch["id"];
 }
