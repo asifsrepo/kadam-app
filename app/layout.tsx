@@ -1,8 +1,5 @@
 import "@/styles/globals.css";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import QueryProvider from "@/components/providers/QueryProvider";
-import ThemeProvider from "@/components/providers/ThemeProvider";
-import { Toaster } from "@/components/ui/sonner";
+import Providers from "@/components/layout/Providers";
 import { fontMap, getAllFontVariables } from "@/lib/fonts";
 import { getSelectedColorScheme, getSelectedFont } from "@/lib/server/settings-helpers";
 import { WrapperProps } from "@/types";
@@ -20,17 +17,9 @@ const RootLayout = async ({ children }: WrapperProps) => {
 			className={`${allFontVariables} ${selectedColorScheme}`}
 		>
 			<body className={`antialiased ${selectedFontConfig.className}`}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="dark"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<QueryProvider>
-						<Toaster richColors position="top-right" closeButton />
-						<NuqsAdapter>{children}</NuqsAdapter>
-					</QueryProvider>
-				</ThemeProvider>
+				<Providers>
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);
