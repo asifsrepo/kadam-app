@@ -1,9 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import CustomerList from "@/components/customers/CustomerList";
 import { Button } from "@/components/ui/button";
 import useStores from "@/hooks/store/useStores";
@@ -12,63 +12,52 @@ import { QueryKeys, Tables } from "@/types";
 import type { CustomerWithBalance } from "@/types/customers";
 import CustomSearchInput from "~/CustomSearchInput";
 
+const PAGE_SIZE = 10;
+
 const CustomersPage = () => {
 	const router = useRouter();
 	const supabase = createClient();
 	const [searchQuery, setSearchQuery] = useState("");
 	const { activeBranch } = useStores();
 
-	const { data: customersData, isLoading: customersLoading } = useQuery({
-		queryKey: [QueryKeys.CustomersList],
-		queryFn: async () => {
-			const { data, error } = await supabase
+	const {
+		data,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading,
+	} = useInfiniteQuery({
+		queryKey: [QueryKeys.CustomersList, activeBranch?.id, searchQuery],
+		queryFn: async ({ pageParam = 0 }) => {
+			let query = supabase
 				.from(Tables.Customers)
 				.select("*")
 				.eq("branchId", activeBranch?.id)
-				.order("createdAt", { ascending: false });
+				.order("createdAt", { ascending: false })
+				.range(pageParam, pageParam + PAGE_SIZE - 1);
 
+			if (searchQuery.trim()) {
+				const lowerQuery = searchQuery.toLowerCase();
+				query = query.or(
+					`name.ilike.%${lowerQuery}%,email.ilike.%${lowerQuery}%,phone.ilike.%${lowerQuery}%,address.ilike.%${lowerQuery}%`
+				);
+			}
+
+			const { data, error } = await query;
 			if (error) throw error;
-			return data || [];
+			return data as CustomerWithBalance[];
 		},
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage?.length === PAGE_SIZE ? allPages.length * PAGE_SIZE : undefined,
+		enabled: !!activeBranch?.id,
 	});
 
-	const { data: transactionsData, isLoading: transactionsLoading } = useQuery({
-		queryKey: [QueryKeys.CustomersTransactions],
-		queryFn: async () => {
-			const { data, error } = await supabase
-				.from(Tables.Transactions)
-				.select("*")
-				.eq("branchId", activeBranch?.id);
+	const customers = data?.pages.flat() ?? [];
 
-			if (error) throw error;
-			return data || [];
-		},
-	});
-
-	const customers =
-		(customersData?.map((customer) => {
-			const customerTransactions =
-				transactionsData?.filter((t) => t.customerId === customer.id) || [];
-
-			const totalDebt =
-				customerTransactions
-					.filter((t) => t.type === "credit")
-					.reduce((sum, t) => sum + t.amount, 0) || 0;
-
-			const totalPaid =
-				customerTransactions
-					.filter((t) => t.type === "payment")
-					.reduce((sum, t) => sum + t.amount, 0) || 0;
-
-			const balance = totalDebt - totalPaid;
-
-			return {
-				...customer,
-				balance,
-			};
-		}) as CustomerWithBalance[]) || [];
-
-	const isLoading = customersLoading || transactionsLoading;
+	const handleSearchChange = useCallback((val: string) => {
+		setSearchQuery(val);
+	}, []);
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
@@ -89,9 +78,7 @@ const CustomersPage = () => {
 					<CustomSearchInput
 						placeholder="Search customers..."
 						value={searchQuery}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-							setSearchQuery(e.target.value)
-						}
+						onSearch={handleSearchChange}
 						className="w-full"
 					/>
 				</div>
@@ -101,7 +88,9 @@ const CustomersPage = () => {
 				<CustomerList
 					customers={customers}
 					isLoading={isLoading}
-					searchQuery={searchQuery}
+					fetchNextPage={fetchNextPage}
+					hasNextPage={!!hasNextPage}
+					isFetchingNextPage={isFetchingNextPage}
 				/>
 			</div>
 		</div>

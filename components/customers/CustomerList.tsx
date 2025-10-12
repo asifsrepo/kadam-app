@@ -1,69 +1,65 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useRef } from "react";
 import CustomerCard from "@/components/customers/CustomerCard";
 import CustomerListSkeleton from "@/components/customers/CustomerListSkeleton";
 import EmptyState from "@/components/customers/EmptyState";
-import usePaginationState from "@/hooks/pagination/usePaginationState";
-import { CustomerWithBalance } from "@/types/customers";
-import CustomPagination from "~/CustomPagination";
+import type { CustomerWithBalance } from "@/types/customers";
 
 interface CustomerListProps {
 	customers: CustomerWithBalance[];
 	isLoading?: boolean;
-	searchQuery?: string;
+	fetchNextPage: () => void;
+	hasNextPage: boolean;
+	isFetchingNextPage: boolean;
 }
 
-const CustomerList = ({ customers, isLoading = false, searchQuery = "" }: CustomerListProps) => {
-	const { currentPage, pageSize } = usePaginationState({
-		defaultPageSize: 16,
-	});
+const CustomerList = ({
+	customers,
+	isLoading = false,
+	fetchNextPage,
+	hasNextPage,
+	isFetchingNextPage,
+}: CustomerListProps) => {
+	const observerRef = useRef<HTMLDivElement>(null);
 
-	const filteredCustomers = useMemo(() => {
-		if (!customers) return [];
-		if (!searchQuery.trim()) return customers;
+	useEffect(() => {
+		if (!hasNextPage || isLoading) return;
 
-		const query = searchQuery.toLowerCase();
-		return customers.filter(
-			(customer) =>
-				customer.name.toLowerCase().includes(query) ||
-				customer.email.toLowerCase().includes(query) ||
-				customer.phone.toLowerCase().includes(query) ||
-				customer.address.toLowerCase().includes(query),
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && hasNextPage) {
+					fetchNextPage();
+				}
+			},
+			{ threshold: 1 }
 		);
-	}, [customers, searchQuery]);
-
-	const paginatedCustomers = useMemo(() => {
-		const startIndex = (currentPage - 1) * pageSize;
-		const endIndex = startIndex + pageSize;
-		return filteredCustomers.slice(startIndex, endIndex);
-	}, [filteredCustomers, currentPage, pageSize]);
-
-	const totalPages = Math.ceil((filteredCustomers?.length || 0) / pageSize);
+		if (observerRef.current) {
+			observer.observe(observerRef.current);
+		}
+		return () => {
+			if (observerRef.current) observer.unobserve(observerRef.current);
+		};
+	}, [hasNextPage, fetchNextPage, isLoading]);
 
 	if (isLoading) {
 		return <CustomerListSkeleton />;
 	}
 
-	if (paginatedCustomers.length === 0) {
-		return <EmptyState hasSearch={!!searchQuery.trim()} />;
+	if (customers.length === 0) {
+		return <EmptyState hasSearch={false} />;
 	}
 
 	return (
 		<>
 			<div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{paginatedCustomers.map((customer) => (
+				{customers.map((customer) => (
 					<CustomerCard key={customer.id} customer={customer} />
 				))}
 			</div>
-
-			{totalPages > 1 && (
-				<div className="mt-6">
-					<CustomPagination
-						totalPages={totalPages}
-						showPageInfo={true}
-						showPageSizeSelector={true}
-					/>
+			{hasNextPage && (
+				<div ref={observerRef} className="flex min-h-[80px] w-full items-center justify-center">
+					{isFetchingNextPage && <CustomerListSkeleton />}
 				</div>
 			)}
 		</>

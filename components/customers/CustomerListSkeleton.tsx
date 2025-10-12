@@ -8,24 +8,33 @@ const CustomerListSkeleton = () => {
 				<Card key={index}>
 					<CardContent className="p-3">
 						<div className="mb-2 flex items-start justify-between gap-2">
-							<div className="min-w-0 flex-1 space-y-2">
+							<div className="min-w-0 flex-1">
 								<div className="flex items-center gap-1.5">
 									<Skeleton className="h-4 w-20" />
-									<Skeleton className="h-4 w-12" />
 								</div>
-								<Skeleton className="h-3 w-2/3" />
-								<Skeleton className="h-3 w-1/2" />
+								<div className="mt-1 space-y-0.5">
+									<div className="flex items-center gap-1.5">
+										<Skeleton className="h-3 w-3 shrink-0" />
+										<Skeleton className="h-3 w-16" />
+									</div>
+									<div className="flex items-center gap-1.5">
+										<Skeleton className="h-3 w-3 shrink-0" />
+										<Skeleton className="h-3 w-20" />
+									</div>
+								</div>
 							</div>
-							<div className="flex shrink-0 gap-1">
-								<Skeleton className="h-7 w-7" />
-								<Skeleton className="h-7 w-7" />
+							<div className="flex shrink-0 items-start gap-1">
+								<Skeleton className="h-8 w-8" />
+								<Skeleton className="h-8 w-8" />
 							</div>
 						</div>
-						<Skeleton className="my-2 h-px w-full" />
-						<div className="space-y-1.5">
-							<Skeleton className="h-3 w-20" />
-							<Skeleton className="h-3 w-full" />
-							<Skeleton className="h-3 w-full" />
+
+						{/* Balance Section */}
+						<div className="mt-3 rounded-lg border p-2">
+							<div className="text-center">
+								<Skeleton className="mx-auto h-2.5 w-12" />
+								<Skeleton className="mx-auto mt-1 h-6 w-16" />
+							</div>
 						</div>
 					</CardContent>
 				</Card>
