@@ -101,11 +101,16 @@ const NewTransactionPage = () => {
 
 			if (error) throw error;
 
-			toast.success("Transaction created successfully!");
-			await queryClient.invalidateQueries({
-				queryKey: [QueryKeys.TransactionsList, customerId],
-			});
 			router.back();
+
+			setTimeout(async () => {
+				await Promise.all(
+					[
+						queryClient.invalidateQueries({ queryKey: [QueryKeys.CustomerDetails, customerId] }),
+						queryClient.invalidateQueries({ queryKey: [QueryKeys.TransactionsList, customerId] }),
+					]
+				);
+			}, 200);
 		} catch (error) {
 			toast.error("Failed to create transaction. Please try again.");
 			console.error("Error creating transaction:", error);
