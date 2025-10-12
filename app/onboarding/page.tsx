@@ -2,6 +2,7 @@
 
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useState } from "react";
+import PasswordStep from "@/components/onboarding/PasswordStep";
 import PersonalInfoStep from "@/components/onboarding/PersonalInfoStep";
 import ShopInfoStep from "@/components/onboarding/ShopInfoStep";
 import { Progress } from "@/components/ui/progress";
@@ -10,7 +11,7 @@ const OnboardingPage = () => {
 	const [step, setStep] = useQueryState("step", parseAsInteger.withDefault(1));
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const totalSteps = 2;
+	const totalSteps = 3;
 	const progress = (step / totalSteps) * 100;
 
 	const handleNext = () => {
@@ -23,8 +24,12 @@ const OnboardingPage = () => {
 		}
 	};
 
-	const handleComplete = () => {
-		window.location.href = "/dashboard";
+	const handleComplete = (step: number) => {
+		if (step === 3) {
+			window.location.href = "/dashboard";
+			return;
+		}
+		setStep(step + 1);
 	};
 
 	const renderStep = () => {
@@ -32,13 +37,25 @@ const OnboardingPage = () => {
 			case 1:
 				return (
 					<PersonalInfoStep
-						onNext={handleNext}
+						onComplete={handleNext}
 						isSubmitting={isSubmitting}
 						setIsSubmitting={setIsSubmitting}
 					/>
 				);
 
 			case 2:
+				return (
+					<div>
+						<PasswordStep
+							onComplete={handleNext}
+							onPrevious={handlePrevious}
+							isSubmitting={isSubmitting}
+							setIsSubmitting={setIsSubmitting}
+						/>
+					</div>
+				);
+
+			case 3:
 				return (
 					<ShopInfoStep
 						onPrevious={handlePrevious}
@@ -82,9 +99,8 @@ const OnboardingPage = () => {
 						{Array.from({ length: totalSteps }).map((_, index) => (
 							<div
 								key={index}
-								className={`h-2 w-2 rounded-full ${
-									index + 1 <= step ? "bg-primary" : "bg-muted"
-								}`}
+								className={`h-2 w-2 rounded-full ${index + 1 <= step ? "bg-primary" : "bg-muted"
+									}`}
 							/>
 						))}
 					</div>

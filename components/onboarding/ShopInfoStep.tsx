@@ -18,7 +18,7 @@ import SubmitButton from "~/form-elements/SubmitButton";
 
 interface ShopInfoStepProps {
 	onPrevious: () => void;
-	onComplete: () => void;
+	onComplete: (step: number) => void;
 	isSubmitting: boolean;
 	setIsSubmitting: (loading: boolean) => void;
 }
@@ -119,7 +119,7 @@ const ShopInfoStep = ({
 			toast.success("Welcome to Kadam! Your account is ready.");
 
 			await queryClient.invalidateQueries();
-			onComplete();
+			onComplete(3);
 			setActiveBranch(branchData ?? null);
 		} catch (error) {
 			toast.error("Failed to create stores. Please try again.");

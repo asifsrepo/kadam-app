@@ -16,12 +16,12 @@ import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
 
 interface PersonalInfoStepProps {
-	onNext: () => void;
+	onComplete: () => void;
 	isSubmitting: boolean;
 	setIsSubmitting: (loading: boolean) => void;
 }
 
-const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInfoStepProps) => {
+const PersonalInfoStep = ({ onComplete, isSubmitting, setIsSubmitting }: PersonalInfoStepProps) => {
 	const { user: authUser, loadUser } = useAuth();
 	const {
 		setValue,
@@ -74,7 +74,7 @@ const PersonalInfoStep = ({ onNext, isSubmitting, setIsSubmitting }: PersonalInf
 			}
 			await loadUser();
 			toast.success("Profile updated successfully!");
-			onNext();
+			onComplete();
 		} catch (error) {
 			toast.error("Failed to update profile. Please try again.");
 			console.error("Error updating profile:", error);

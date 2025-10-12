@@ -47,7 +47,7 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 		await supabase.auth.updateUser({
 			data: {
 				is_onboarded: true,
-				onboarding_step: 3,
+				onboarding_step: 4,
 			},
 			email: user.email,
 		});
