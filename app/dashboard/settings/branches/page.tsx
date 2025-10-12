@@ -17,7 +17,7 @@ const BranchManagement = () => {
 	const { user } = useAuth();
 	const supabase = createClient();
 	const [searchQuery, setSearchQuery] = useState("");
-
+	
 	const { data: branchesData, isLoading } = useQuery({
 		queryKey: [QueryKeys.Branches, user?.id],
 		queryFn: async () => {

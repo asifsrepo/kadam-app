@@ -1,11 +1,11 @@
 import { MapPin } from "lucide-react";
-import useStore from "@/hooks/store/useStores";
+import useStores from "@/hooks/store/useStores";
 import { IBranch } from "@/types/store";
 import { Badge } from "../ui/badge";
 import { Card, CardContent } from "../ui/card";
 
 const BranchCard = ({ branch }: { branch: IBranch; }) => {
-    const { activeBranch, setActiveBranch } = useStore();
+    const { activeBranch, setActiveBranch } = useStores();
     const isActive = activeBranch?.id === branch.id;
 
     const handleCardClick = () => {

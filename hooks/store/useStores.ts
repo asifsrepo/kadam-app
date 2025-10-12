@@ -19,7 +19,7 @@ const initialState = {
     activeBranch: null,
 };
 
-const useStore = create<StoresState>()(
+const useStores = create<StoresState>()(
     persist(
         (set, get) => ({
             ...initialState,
@@ -80,4 +80,4 @@ const useStore = create<StoresState>()(
     )
 );
 
-export default useStore;
+export default useStores;
