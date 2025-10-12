@@ -98,7 +98,7 @@ const CustomSearchInput = ({
 	const showRightButton = (isDebounced && internalValue) || isSubmit;
 
 	return (
-		<div className="relative [--ring:var(--color-indigo-300)] in-[.dark]:[--ring:var(--color-indigo-900)]">
+		<div className={cn("relative [--ring:var(--color-indigo-300)] in-[.dark]:[--ring:var(--color-indigo-900)]", className)}>
 			<Input
 				ref={inputRef}
 				type="search"
@@ -109,7 +109,6 @@ const CustomSearchInput = ({
 					showRightButton && "pr-10", // Space for right button when needed
 					// Hide browser's default search styling
 					"[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden",
-					className,
 				)}
 				placeholder={props.placeholder || "Search..."}
 				{...props}

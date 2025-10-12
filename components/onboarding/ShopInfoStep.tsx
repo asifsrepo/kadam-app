@@ -32,8 +32,8 @@ const ShopInfoStep = ({
 	const queryClient = useQueryClient();
 	const supabase = createClient();
 
-	// State for checking uniqueId
-	const [isCheckingUniqueId, setIsCheckingUniqueId] = useState(false);
+	// State for checking storeId
+	const [isCheckingstoreId, setIsCheckingstoreId] = useState(false);
 
 	const {
 		handleSubmit,
@@ -47,7 +47,7 @@ const ShopInfoStep = ({
 		defaultValues: {
 			name: "",
 			phone: "",
-			uniqueId: "",
+			storeId: "",
 			branches: [
 				{
 					name: "",
@@ -58,40 +58,40 @@ const ShopInfoStep = ({
 		},
 	});
 
-	const uniqueId = watch("uniqueId");
-	const [debouncedUniqueId] = useDebounce(uniqueId, 500);
+	const storeId = watch("storeId");
+	const [debouncedstoreId] = useDebounce(storeId, 500);
 
 	useEffect(() => {
-		if (!debouncedUniqueId || debouncedUniqueId.length < 4) return;
+		if (!debouncedstoreId || debouncedstoreId.length < 4) return;
 		let isMounted = true;
-		setIsCheckingUniqueId(true);
+		setIsCheckingstoreId(true);
 
 		(async () => {
 			const { data, error } = await supabase
 				.from(Tables.Stores)
 				.select("id")
-				.eq("uniqueId", debouncedUniqueId)
+				.eq("storeId", debouncedstoreId)
 				.single();
 
 			if (!isMounted) return;
 
 			if (error && error.code !== "PGRST116" && error.message) {
-				toast.error("Failed to fetch unique ID. Please try again.");
-				setIsCheckingUniqueId(false);
+				toast.error("Failed to fetch Store Id. Please try again.");
+				setIsCheckingstoreId(false);
 				return;
 			}
 
 			if (data) {
-				setError("uniqueId", { message: "This unique ID is already taken. Please choose another one." });
+				setError("storeId", { message: "This Store Id is already taken. Please choose another one." });
 			} else {
-				setError("uniqueId", { message: undefined });
+				setError("storeId", { message: undefined });
 			}
 
-			setIsCheckingUniqueId(false);
+			setIsCheckingstoreId(false);
 		})();
 
 		return () => { isMounted = false; };
-	}, [debouncedUniqueId, supabase, setError]);
+	}, [debouncedstoreId, supabase, setError]);
 
 
 	const { fields, append, remove } = useFieldArray({
@@ -147,12 +147,12 @@ const ShopInfoStep = ({
 						{...register("phone")}
 					/>
 					<CustomInput
-						label="Unique ID"
-						placeholder="Enter your unique ID"
+						label="Store Id"
+						placeholder="Enter your Store Id"
 						required
-						error={errors.uniqueId?.message}
-						disabled={isCheckingUniqueId || isSubmitting}
-						{...register("uniqueId")}
+						error={errors.storeId?.message}
+						disabled={isCheckingstoreId || isSubmitting}
+						{...register("storeId")}
 					/>
 					<div className="space-y-3">
 						<div className="flex items-center justify-between">

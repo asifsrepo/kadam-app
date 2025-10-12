@@ -19,4 +19,5 @@ export const QueryKeys = {
 	TransactionDetails: "transactionDetails",
 	CustomersTransactions: "customersTransactions",
 	StoreWithBranches: "storeWithBranches",
+	Branches: "branches"
 };

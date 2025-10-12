@@ -15,12 +15,12 @@ export const branchSchema = z.object({
 export const shopInfoSchema = z.object({
 	name: z.string().min(2, "Shop name must be at least 2 characters"),
 	phone: z.string().min(10, "Please enter a valid phone number").optional(),
-	uniqueId: z
+	storeId: z
 		.string()
-		.min(4, "Unique ID must be at least 4 characters")
+		.min(4, "Store Id must be at least 4 characters")
 		.regex(
 			/^[a-zA-Z0-9_]+$/,
-			"Unique ID can only contain letters, numbers, and underscores",
+			"Store Id can only contain letters, numbers, and underscores",
 		),
 	branches: z.array(branchSchema).min(1, "At least one branch is required"),
 });

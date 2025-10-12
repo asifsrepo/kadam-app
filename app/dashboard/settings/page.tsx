@@ -3,6 +3,7 @@
 import { Building2, ChevronRight, CreditCard, LogOut, Users, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import ShopInfo from "@/components/stores/ShopInfo";
 import { useAuth } from "@/hooks/store/useAuth";
 import ConfirmationDialog from "~/ConfirmationDialog";
 
@@ -61,9 +62,7 @@ const Settings = () => {
 		<div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
 			<div className="flex flex-col gap-2">
 				<h1 className="font-bold text-2xl text-foreground md:text-3xl">Settings</h1>
-				<p className="text-muted-foreground text-sm md:text-base">
-					Manage your account and store preferences
-				</p>
+				<ShopInfo variant="settings" />
 			</div>
 
 			<div className="flex flex-col gap-3 md:gap-4">
