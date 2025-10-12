@@ -1,12 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Phone } from "lucide-react";
+import { CreditCard, Phone } from "lucide-react";
 import EditStoreDialog from "@/components/stores/EditStoreDialog";
 import { CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
 
 interface ShopInfoProps {
@@ -54,6 +54,7 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 						<div className="space-y-1.5">
 							<div className="h-4 w-24 animate-pulse rounded bg-muted" />
 							<div className="h-4 w-20 animate-pulse rounded bg-muted" />
+							<div className="h-4 w-16 animate-pulse rounded bg-muted" />
 						</div>
 					</div>
 					<div className="h-8 w-8 animate-pulse rounded bg-muted" />
@@ -108,6 +109,19 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 							<span className="text-muted-foreground">{storeData.store.phone}</span>
 						</div>
 						<div className="flex items-center gap-2 text-sm">
+							<CreditCard
+								className={cn(
+									"h-3.5 w-3.5",
+									variant === "settings"
+										? "text-muted-foreground"
+										: "text-primary/70",
+								)}
+							/>
+							<span className="text-muted-foreground">
+								Debt Limit: {formatCurrency(storeData.store.debtLimit || 0)}
+							</span>
+						</div>
+						<div className="flex items-center gap-2 text-sm">
 							<span className="text-muted-foreground">
 								ID: {storeData.store.storeId}
 							</span>
@@ -118,6 +132,7 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 					storeName={storeData.store.name}
 					storePhone={storeData.store.phone}
 					storeId={storeData.store.id}
+					storeDebtLimit={storeData.store.debtLimit}
 				/>
 			</div>
 		</div>

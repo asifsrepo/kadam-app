@@ -8,15 +8,18 @@ interface StoresState {
     stores: IStoreWithBranches | null;
     isLoading: boolean;
     activeBranch: IBranch | null;
+    debtLimit: number;
 
     loadStores: (userId: string, force?: boolean) => Promise<IStoreWithBranches | null>;
     setActiveBranch: (branch: IBranch | null) => void;
+    setDebtLimit: (debtLimit: number) => void;
 }
 
 const initialState = {
     stores: null,
     isLoading: false,
     activeBranch: null,
+    debtLimit: 0,
 };
 
 const useStores = create<StoresState>()(
@@ -72,10 +75,14 @@ const useStores = create<StoresState>()(
             setActiveBranch: (branch) => {
                 set({ activeBranch: branch });
             },
+
+            setDebtLimit: (debtLimit) => {
+                set({ debtLimit });
+            },
         }),
         {
             name: "stores-storage",
-            partialize: (state) => ({ activeBranch: state.activeBranch }),
+            partialize: (state) => ({ activeBranch: state.activeBranch, debtLimit: state.debtLimit }),
         }
     )
 );

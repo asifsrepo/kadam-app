@@ -61,10 +61,10 @@ const ShopInfoStep = ({
 	});
 
 	const storeId = watch("storeId");
-	const [debouncedstoreId] = useDebounce(storeId, 500);
+	const [debouncedStoreId] = useDebounce(storeId, 500);
 
 	useEffect(() => {
-		if (!debouncedstoreId || debouncedstoreId.length < 4) return;
+		if (!debouncedStoreId || debouncedStoreId.length < 4) return;
 		let isMounted = true;
 		setIsCheckingStoreId(true);
 
@@ -72,7 +72,7 @@ const ShopInfoStep = ({
 			const { data, error } = await supabase
 				.from(Tables.Stores)
 				.select("id")
-				.eq("storeId", debouncedstoreId)
+				.eq("storeId", debouncedStoreId)
 				.single();
 
 			if (!isMounted) return;
@@ -97,7 +97,7 @@ const ShopInfoStep = ({
 		return () => {
 			isMounted = false;
 		};
-	}, [debouncedstoreId, supabase, setError]);
+	}, [debouncedStoreId, supabase, setError]);
 
 	const { fields, append, remove } = useFieldArray({
 		control: control,

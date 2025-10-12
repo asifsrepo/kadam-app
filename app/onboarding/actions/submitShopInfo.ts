@@ -23,6 +23,7 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 				phone: shopData.phone,
 				storeId: shopData.storeId,
 				ownerId: user.id,
+				debtLimit: shopData.debtLimit,
 			})
 			.select("id");
 
@@ -51,7 +52,7 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 			email: user.email,
 		});
 
-		return branchData?.filter(el => el.isMain)[0];
+		return branchData?.filter((el) => el.isMain)[0];
 	});
 };
 

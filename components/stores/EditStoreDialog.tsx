@@ -1,70 +1,103 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/store/useAuth";
+import { editStoreSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/client";
-import { QueryKeys, Tables } from "@/types";
+import { EditStoreFormData, QueryKeys, Tables } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import useStores from "@/hooks/store/useStores";
 
 interface EditStoreDialogProps {
 	storeName?: string;
 	storePhone?: string;
+	storeDebtLimit?: number;
 	storeId?: string;
 }
 
-const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStoreDialogProps) => {
+const EditStoreDialog = ({
+	storeName = "",
+	storePhone = "",
+	storeDebtLimit = 0,
+	storeId
+}: EditStoreDialogProps) => {
 	const [open, setOpen] = useState(false);
-	const [name, setName] = useState(storeName);
-	const [phone, setPhone] = useState(storePhone);
-	const [isLoading, setIsLoading] = useState(false);
+	const { setDebtLimit } = useStores();
 
 	const { user } = useAuth();
 	const supabase = createClient();
 	const queryClient = useQueryClient();
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!storeId || !user?.id) return;
+	const {
+		handleSubmit,
+		register,
+		formState: { errors },
+		reset,
+	} = useForm<EditStoreFormData>({
+		resolver: zodResolver(editStoreSchema),
+		defaultValues: {
+			name: storeName,
+			phone: storePhone,
+			debtLimit: storeDebtLimit,
+		},
+	});
 
-		setIsLoading(true);
+	const { mutate, isPending } = useMutation({
+		mutationFn: async (data: EditStoreFormData) => {
+			if (!storeId || !user?.id) {
+				throw new Error("Missing store ID or user ID");
+			}
 
-		try {
-			const { error } = await supabase
+			const { data: storeData, error } = await supabase
 				.from(Tables.Stores)
 				.update({
-					name: name.trim(),
-					phone: phone.trim(),
+					name: data.name.trim(),
+					phone: data.phone.trim(),
+					debtLimit: data.debtLimit,
 				})
 				.eq("id", storeId)
-				.eq("ownerId", user.id);
+				.eq("ownerId", user.id)
+				.select("debtLimit");
 
 			if (error) throw error;
 
+			return storeData?.[0];
+		},
+		onSuccess: async (data) => {
 			await queryClient.invalidateQueries({
-				queryKey: [QueryKeys.StoreWithBranches, user.id],
+				queryKey: [QueryKeys.StoreWithBranches, user?.id],
 			});
-
 			toast.success("Store updated successfully");
 			setOpen(false);
-		} catch (error) {
+			setDebtLimit(data?.debtLimit || 0);
+		},
+		onError: (error) => {
 			console.error("Error updating store:", error);
 			toast.error("Failed to update store. Please try again.");
-		} finally {
-			setIsLoading(false);
-		}
+		},
+	});
+
+
+	const onSubmit = (data: EditStoreFormData) => {
+		mutate(data);
 	};
 
 	const handleOpenChange = (newOpen: boolean) => {
 		setOpen(newOpen);
 		if (!newOpen) {
-			setName(storeName);
-			setPhone(storePhone);
+			reset({
+				name: storeName,
+				phone: storePhone,
+				debtLimit: storeDebtLimit,
+			});
 		}
 	};
 
@@ -84,23 +117,29 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 				<DialogHeader className="pb-3">
 					<DialogTitle className="text-lg">Edit Store</DialogTitle>
 				</DialogHeader>
-				<form onSubmit={handleSubmit} className="space-y-3">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 					<CustomInput
 						label="Store Name"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
 						placeholder="Enter store name"
-						required
 						className="text-sm"
+						{...register("name")}
+						error={errors.name?.message}
 					/>
 					<CustomInput
 						label="Phone Number"
 						type="tel"
-						value={phone}
-						onChange={(e) => setPhone(e.target.value)}
 						placeholder="Enter phone number"
-						required
 						className="text-sm"
+						{...register("phone")}
+						error={errors.phone?.message}
+					/>
+					<CustomInput
+						label="Debt Limit"
+						type="number"
+						placeholder="Enter debt limit"
+						className="text-sm"
+						{...register("debtLimit", { valueAsNumber: true })}
+						error={errors.debtLimit?.message}
 					/>
 					<div className="flex gap-2 pt-2">
 						<Button
@@ -111,7 +150,10 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 						>
 							Cancel
 						</Button>
-						<SubmitButton isLoading={isLoading} className="h-9 flex-1 text-sm">
+						<SubmitButton
+							isLoading={isPending}
+							className="h-9 flex-1 text-sm"
+						>
 							Save
 						</SubmitButton>
 					</div>

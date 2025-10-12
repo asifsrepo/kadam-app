@@ -20,4 +20,11 @@ export const shopInfoSchema = z.object({
 		.min(4, "Store Id must be at least 4 characters")
 		.regex(/^[a-zA-Z0-9_]+$/, "Store Id can only contain letters, numbers, and underscores"),
 	branches: z.array(branchSchema).min(1, "At least one branch is required"),
+	debtLimit: z.number().min(0, "Debt limit must be at least 0"),
+});
+
+export const editStoreSchema = z.object({
+	name: z.string().min(2, "Store name must be at least 2 characters"),
+	phone: z.string().min(10, "Please enter a valid phone number"),
+	debtLimit: z.number().min(0, "Debt limit must be at least 0"),
 });
