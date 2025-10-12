@@ -74,18 +74,16 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 					</div>
 				</div>
 
-				{/* Balance Section */}
 				<div className="mt-3 rounded-lg border p-2">
 					<div className="text-center">
 						<p className="text-[10px] text-muted-foreground">Balance</p>
 						<p
-							className={`font-bold text-lg ${
-								customer.balance > 0
-									? "text-destructive"
-									: customer.balance < 0
-										? "text-primary"
-										: "text-muted-foreground"
-							}`}
+							className={`font-bold text-lg ${customer.balance > 0
+								? "text-destructive"
+								: customer.balance < 0
+									? "text-primary"
+									: "text-muted-foreground"
+								}`}
 						>
 							{customer.balance > 0
 								? `${customer.balance.toFixed(2)}`

@@ -29,25 +29,33 @@ const CustomersPage = () => {
 	} = useInfiniteQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id, searchQuery],
 		queryFn: async ({ pageParam = 0 }) => {
-			let query = supabase
+			const { data: customers, error } = await supabase
 				.from(Tables.Customers)
-				.select("*")
+				.select("*, transactions:transactions(*)")
 				.eq("branchId", activeBranch?.id)
 				.order("createdAt", { ascending: false })
 				.range(pageParam, pageParam + PAGE_SIZE - 1);
 
-			if (searchQuery.trim()) {
-				const lowerQuery = searchQuery.toLowerCase();
-				query = query.or(
-					`name.ilike.%${lowerQuery}%,email.ilike.%${lowerQuery}%,phone.ilike.%${lowerQuery}%,address.ilike.%${lowerQuery}%`
-				);
-			}
-
-			const { data, error } = await query;
-
 			if (error) throw error;
-			return data as CustomerWithBalance[];
+
+			return (customers ?? []).map((customer) => {
+				const transactions = customer.transactions ?? [];
+
+				const totalCredit = transactions
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+
+				const totalPaid = transactions
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+
+				return {
+					...customer,
+					balance: totalCredit - totalPaid,
+				};
+			}) as CustomerWithBalance[];
 		},
+
 		initialPageParam: 0,
 		getNextPageParam: (lastPage, allPages) =>
 			lastPage?.length === PAGE_SIZE ? allPages.length * PAGE_SIZE : undefined,
