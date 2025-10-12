@@ -1,12 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, MapPin, Plus } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import BranchCard from "@/components/branches/BranchCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
@@ -106,36 +105,10 @@ const BranchManagement = () => {
 				<div className="space-y-3">
 					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{filteredBranches.map((branch: IBranch) => (
-							<Card
+							<BranchCard
 								key={branch.id}
-								className="border-border/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
-							>
-								<CardContent className="p-3">
-									<div className="space-y-2">
-										<div className="flex items-start justify-between gap-2">
-											<div className="min-w-0 flex-1">
-												<h3 className="truncate font-semibold text-foreground text-sm">
-													{branch.name}
-												</h3>
-											</div>
-											{branch.isMain && (
-												<Badge
-													variant="secondary"
-													className="border-primary/20 bg-primary/10 text-primary text-xs"
-												>
-													Main
-												</Badge>
-											)}
-										</div>
-										<div className="flex items-center gap-2 text-xs">
-											<MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
-											<span className="truncate text-muted-foreground">
-												{branch.location}
-											</span>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
+								branch={branch}
+							/>
 						))}
 					</div>
 				</div>
