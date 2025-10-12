@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { parseAsString, useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -33,6 +34,7 @@ const NewTransactionPage = () => {
 	const supabase = createClient();
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
+	const [type] = useQueryState("type", parseAsString.withDefault("credit"));
 
 	const { data: customer, error: customerError } = useQuery({
 		queryKey: [QueryKeys.CustomerDetails, customerId],
@@ -65,7 +67,7 @@ const NewTransactionPage = () => {
 	} = useForm<TransactionFormData>({
 		resolver: zodResolver(transactionSchema),
 		defaultValues: {
-			type: "credit",
+			type: type as "credit" | "payment",
 		},
 	});
 
@@ -146,7 +148,7 @@ const NewTransactionPage = () => {
 					<CustomSelect
 						className="w-full"
 						label="Type"
-						defaultValue="credit"
+						defaultValue={type}
 						placeholder="Select type"
 						required
 						options={TRANSACTION_TYPES}
