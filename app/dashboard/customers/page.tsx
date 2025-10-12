@@ -4,6 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import CustomerFilters, { type CustomerFilters as CustomerFiltersType } from "@/components/customers/CustomerFilters";
 import CustomerList from "@/components/customers/CustomerList";
 import { Button } from "@/components/ui/button";
 import useStores from "@/hooks/store/useStores";
@@ -18,6 +19,12 @@ const CustomersPage = () => {
 	const router = useRouter();
 	const supabase = createClient();
 	const [searchQuery, setSearchQuery] = useState("");
+	const [filters, setFilters] = useState<CustomerFiltersType>({
+		status: "all",
+		balance: "all",
+		sortBy: "createdAt",
+		sortOrder: "desc",
+	});
 	const { activeBranch } = useStores();
 
 	const {
@@ -27,18 +34,31 @@ const CustomersPage = () => {
 		isFetchingNextPage,
 		isLoading,
 	} = useInfiniteQuery({
-		queryKey: [QueryKeys.CustomersList, activeBranch?.id, searchQuery],
+		queryKey: [QueryKeys.CustomersList, activeBranch?.id, searchQuery, filters],
 		queryFn: async ({ pageParam = 0 }) => {
-			const { data: customers, error } = await supabase
+			let query = supabase
 				.from(Tables.Customers)
 				.select("*, transactions:transactions(*)")
-				.eq("branchId", activeBranch?.id)
-				.order("createdAt", { ascending: false })
-				.range(pageParam, pageParam + PAGE_SIZE - 1);
+				.eq("branchId", activeBranch?.id);
+
+			if (filters.status !== "all") {
+				query = query.eq("status", filters.status);
+			}
+
+			if (searchQuery.trim()) {
+				query = query.or(`name.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
+			}
+
+			const ascending = filters.sortOrder === "asc";
+			query = query.order(filters.sortBy, { ascending });
+
+			query = query.range(pageParam, pageParam + PAGE_SIZE - 1);
+
+			const { data: customers, error } = await query;
 
 			if (error) throw error;
 
-			return (customers ?? []).map((customer) => {
+			let processedCustomers = (customers ?? []).map((customer) => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
@@ -54,6 +74,31 @@ const CustomersPage = () => {
 					balance: totalCredit - totalPaid,
 				};
 			}) as CustomerWithBalance[];
+
+			if (filters.balance !== "all") {
+				processedCustomers = processedCustomers.filter((customer) => {
+					switch (filters.balance) {
+						case "positive":
+							return customer.balance > 0;
+						case "negative":
+							return customer.balance < 0;
+						case "zero":
+							return customer.balance === 0;
+						default:
+							return true;
+					}
+				});
+			}
+
+			// Apply client-side sorting for balance (since it's calculated)
+			if (filters.sortBy === "balance") {
+				processedCustomers.sort((a, b) => {
+					const result = a.balance - b.balance;
+					return filters.sortOrder === "asc" ? result : -result;
+				});
+			}
+
+			return processedCustomers;
 		},
 
 		initialPageParam: 0,
@@ -67,6 +112,22 @@ const CustomersPage = () => {
 	const handleSearchChange = useCallback((val: string) => {
 		setSearchQuery(val);
 	}, []);
+
+	const handleFiltersChange = useCallback((newFilters: CustomerFiltersType) => {
+		setFilters(newFilters);
+	}, []);
+
+	const handleClearFilters = useCallback(() => {
+		setFilters({
+			status: "all",
+			balance: "all",
+			sortBy: "createdAt",
+			sortOrder: "desc",
+		});
+	}, []);
+
+	const hasActiveFilters = filters.status !== "all" || filters.balance !== "all" ||
+		filters.sortBy !== "createdAt" || filters.sortOrder !== "desc";
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
@@ -84,12 +145,22 @@ const CustomersPage = () => {
 						</Button>
 						<h1 className="font-semibold text-lg md:text-2xl">Customers</h1>
 					</div>
-					<CustomSearchInput
-						placeholder="Search customers..."
-						value={searchQuery}
-						onSearch={handleSearchChange}
-						className="w-full"
-					/>
+					<div className="flex gap-3">
+						<CustomSearchInput
+							placeholder="Search customers..."
+							value={searchQuery}
+							onSearch={handleSearchChange}
+							className="relative flex-1"
+						/>
+						<div className="flex-shrink-0">
+							<CustomerFilters
+								filters={filters}
+								onFiltersChange={handleFiltersChange}
+								onClearFilters={handleClearFilters}
+								hasActiveFilters={hasActiveFilters}
+							/>
+						</div>
+					</div>
 				</div>
 			</div>
 
