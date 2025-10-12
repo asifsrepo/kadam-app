@@ -38,9 +38,9 @@ const Settings = () => {
 			icon: Users2,
 		},
 		{
-			title: "Store Management",
-			description: "Configure your store settings and preferences",
-			href: "/dashboard/settings/stores",
+			title: "Branch Management",
+			description: "View and manage your branches",
+			href: "/dashboard/settings/branches",
 			icon: Building2,
 		},
 		{

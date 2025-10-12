@@ -13,7 +13,7 @@ import { QueryKeys, Tables } from "@/types";
 import type { IBranch } from "@/types/store";
 import CustomSearchInput from "~/CustomSearchInput";
 
-const StoreManagementPage = () => {
+const BranchManagement = () => {
 	const router = useRouter();
 	const { user } = useAuth();
 	const supabase = createClient();
@@ -144,4 +144,4 @@ const StoreManagementPage = () => {
 	);
 };
 
-export default StoreManagementPage;
+export default BranchManagement;
