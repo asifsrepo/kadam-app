@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/store/useAuth";
 import type { TransactionFormData } from "@/lib/schema/transaction";
 import { transactionSchema } from "@/lib/schema/transaction";
 import { createClient } from "@/lib/supabase/client";
+import { formatCurrency } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
 import type { ICustomer } from "@/types/customers";
 import type { ITransaction } from "@/types/transaction";
@@ -36,7 +37,7 @@ const NewTransactionPage = () => {
 	const queryClient = useQueryClient();
 	const [type] = useQueryState("type", parseAsString.withDefault("credit"));
 
-	const { data: customer, error: customerError } = useQuery({
+	const { data: customer } = useQuery({
 		queryKey: [QueryKeys.CustomerDetails, customerId],
 		queryFn: async () => {
 			const { data, error } = await supabase
@@ -51,12 +52,6 @@ const NewTransactionPage = () => {
 		enabled: !!customerId,
 	});
 
-	useEffect(() => {
-		if (customerError) {
-			toast.error("Failed to load customer details");
-			router.back();
-		}
-	}, [customerError, router]);
 
 	const {
 		register,
@@ -64,12 +59,28 @@ const NewTransactionPage = () => {
 		formState: { errors },
 		setValue,
 		watch,
+		setError
 	} = useForm<TransactionFormData>({
 		resolver: zodResolver(transactionSchema),
 		defaultValues: {
 			type: type as "credit" | "payment",
 		},
 	});
+	const watchedLimit = watch("amount");
+
+	useEffect(() => {
+		if (!customer?.limit) return;
+		if (watchedLimit > customer?.limit) {
+			setError("amount", {
+				message: "Amount cannot be greater than credit limit",
+			});
+		} else {
+			setError("amount", {
+				message: undefined,
+			});
+		}
+	}, [watchedLimit, customer, setError]);
+
 
 	const onSubmit = async (data: TransactionFormData) => {
 		if (!user?.id) {
@@ -138,7 +149,7 @@ const NewTransactionPage = () => {
 							<div className="flex items-center justify-between border-border border-t pt-2">
 								<span className="text-muted-foreground text-xs">Credit Limit</span>
 								<span className="font-medium text-foreground text-xs">
-									${customer.limit?.toFixed(2) || "0.00"}
+									{formatCurrency(customer.limit)}
 								</span>
 							</div>
 						</div>

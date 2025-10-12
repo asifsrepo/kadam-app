@@ -55,7 +55,7 @@ const ShopInfoStep = ({
 					name: "",
 					location: "",
 					isMain: true,
-					debtLimit: "10"
+					debtLimit: 10
 				},
 			],
 		},
@@ -130,7 +130,7 @@ const ShopInfoStep = ({
 	};
 
 	const createBranch = () => {
-		append({ name: "", location: "", isMain: false, debtLimit: "0" });
+		append({ name: "", location: "", isMain: false, debtLimit: 0 });
 	};
 
 	return (
@@ -222,7 +222,7 @@ const ShopInfoStep = ({
 												required
 												type="number"
 												error={errors.branches?.[index]?.debtLimit?.message}
-												{...register(`branches.${index}.debtLimit`)}
+												{...register(`branches.${index}.debtLimit`, { valueAsNumber: true })}
 											/>
 											<CustomInput
 												label="Branch Location"

@@ -44,7 +44,7 @@ const NewCustomerPage = () => {
 				limit: data.limit,
 				createdAt: new Date().toISOString(),
 				createdBy: user?.id,
-				branchId: activeBranch?.id,
+				branchId: activeBranch?.id
 			} as ICustomer);
 			if (error) throw error;
 
@@ -78,6 +78,7 @@ const NewCustomerPage = () => {
 			email: ""
 		},
 	});
+	const watchedLimit = watch("limit");
 
 	useEffect(() => {
 		setValue("limit", debtLimit);
@@ -145,6 +146,7 @@ const NewCustomerPage = () => {
 							label="Address"
 							placeholder="Enter full address"
 							rows={3}
+							required
 							error={errors.address?.message}
 							{...register("address")}
 						/>
@@ -171,6 +173,12 @@ const NewCustomerPage = () => {
 							required
 							step="0.01"
 							min="0"
+							description={
+								watchedLimit > debtLimit
+									? `Exceeds branch debt limit of ${debtLimit}`
+									: ""
+							}
+							showHint
 							error={errors.limit?.message}
 							{...register("limit", { valueAsNumber: true })}
 						/>

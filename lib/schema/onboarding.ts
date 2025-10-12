@@ -10,7 +10,10 @@ export const branchSchema = z.object({
 	name: z.string().min(2, "Branch name must be at least 2 characters"),
 	location: z.string().min(5, "Please enter a valid location"),
 	isMain: z.boolean().optional(),
-	debtLimit: z.string()
+	debtLimit: z
+		.number("Debt limit must be a number")
+		.positive("Debt limit must be positive")
+		.min(0, "Debt limit must be at least 0"),
 });
 
 export const shopInfoSchema = z.object({

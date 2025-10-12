@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
 import type { IBranch, IStore } from "@/types/store";
+import { useAuth } from "./useAuth";
 
 interface StoresState {
     store: IStore | null;
@@ -10,28 +12,33 @@ interface StoresState {
     activeBranch: IBranch | null;
     debtLimit: number;
     branches: IBranch[];
+    isInitialized: boolean;
 
     loadStores: (userId: string, force?: boolean) => Promise<IBranch | null>;
     setActiveBranch: (branch: IBranch | null) => void;
     setBranches: (branches: IBranch[]) => void;
 }
 
-const initialState = {
+const initialState: Omit<StoresState, "loadStores" | "setActiveBranch" | "setBranches"> = {
     store: null,
     branches: [],
     isLoading: false,
     activeBranch: null,
     debtLimit: 0,
+    isInitialized: false,
 };
 
-const useStores = create<StoresState>()(
+const useStoresStore = create<StoresState>()(
     persist(
         (set, get) => ({
             ...initialState,
 
             loadStores: async (userId, force = false) => {
                 set({ isLoading: true });
-                if (!force && get().store) return get().store;
+                if (get().isInitialized && !force) {
+                    set({ isLoading: false });
+                    return null;
+                }
 
                 try {
                     if (!userId) return null;
@@ -44,32 +51,39 @@ const useStores = create<StoresState>()(
                         .limit(1);
 
                     if (storeError) throw storeError;
+                    const storeData: IStore | null = store?.[0] ?? null;
 
                     const { data: branches, error: branchesError } = await supabase
                         .from(Tables.Branches)
                         .select("*")
                         .eq("ownerId", userId)
-                        .eq("storeId", store?.[0]?.id)
+                        .eq("storeId", storeData?.id ?? "")
                         .order("isMain", { ascending: false });
 
                     if (branchesError) throw branchesError;
 
-                    set({ store: store?.[0], branches: branches || [], debtLimit: branches?.[0]?.debtLimit || 0 });
+                    set({
+                        store: storeData,
+                        isInitialized: true,
+                        branches: branches ?? [],
+                    });
 
-                    // Auto-set main branch as active ONLY if no active branch exists
-                    const currentActiveBranch = get().activeBranch;
-                    if (!currentActiveBranch && branches && branches.length > 0) {
-                        const mainBranch = branches.find(branch => branch.isMain) || branches[0];
-                        set({ activeBranch: mainBranch, debtLimit: mainBranch?.debtLimit || 0 });
+                    let newActiveBranch: IBranch | null = null;
+                    if (!get().activeBranch) {
+                        newActiveBranch = branches?.find(branch => branch.isMain) || branches?.[0] || null;
+                    } else {
+                        const currentId = get().activeBranch?.id;
+                        newActiveBranch = branches?.find(el => el.id === currentId) || branches?.find(el => el.isMain) || branches?.[0] || null;
                     }
 
-                    console.log(branches);
-                    
-                    return branches?.[0];
+                    set({
+                        activeBranch: newActiveBranch,
+                        debtLimit: newActiveBranch?.debtLimit ?? 0,
+                    });
 
-                } catch (error) {
-                    console.error("Error loading stores:", error);
-                    set({ store: null });
+                    return newActiveBranch;
+                } catch (_) {
+                    set({ store: null, isInitialized: false });
                     return null;
                 } finally {
                     set({ isLoading: false });
@@ -77,7 +91,10 @@ const useStores = create<StoresState>()(
             },
 
             setActiveBranch: (branch) => {
-                set({ activeBranch: branch, debtLimit: branch?.debtLimit || 0 });
+                set({
+                    activeBranch: branch,
+                    debtLimit: branch?.debtLimit ?? 0,
+                });
             },
 
             setBranches: (branches) => {
@@ -86,9 +103,24 @@ const useStores = create<StoresState>()(
         }),
         {
             name: "stores-storage",
-            partialize: (state) => ({ activeBranch: state.activeBranch }),
+            partialize: (state) => ({
+                activeBranch: state.activeBranch,
+            }),
         }
     )
 );
+
+// Only expose what you need...
+const useStores = () => {
+    const store = useStoresStore();
+    const { user } = useAuth();
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: to avoid maximum call stack exceeding
+    useEffect(() => {
+        if (user?.id) store.loadStores(user.id);
+    }, [user?.id]);
+
+    return store;
+};
 
 export default useStores;

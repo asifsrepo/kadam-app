@@ -48,7 +48,7 @@ export const tryCatch = async <T>(
  * formatCurrency(1000) // "1,000.00"
  * formatCurrency(1234.56, 0) // "1,235"
  */
-export const formatCurrency = (amount: number, decimals: number = 2): string => {
+export const formatCurrency = (amount: number = 0, decimals: number = 2): string => {
 	return new Intl.NumberFormat("en-US", {
 		minimumFractionDigits: decimals,
 		maximumFractionDigits: decimals,

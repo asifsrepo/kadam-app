@@ -4,7 +4,7 @@ export const customerSchema = z.object({
 	name: z.string().trim().min(2, "Name is required (minimum 2 characters)"),
 	email: z.email("Please enter a valid email address").optional(),
 	phone: z.string().trim().min(10, "Phone number is required (minimum 10 digits)"),
-	address: z.string().trim().optional(),
+	address: z.string().trim().min(6, "Address is required (minimum 6 characters)"),
 	idNumber: z.string().trim().optional(),
 	status: z.enum(["active", "inactive"], {
 		message: "Status must be either active or inactive",
