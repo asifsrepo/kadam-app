@@ -41,7 +41,7 @@ const ShopInfoStep = ({
 		register,
 		control,
 		watch,
-		setError
+		setError,
 	} = useForm<ShopInfoFormData>({
 		resolver: zodResolver(shopInfoSchema),
 		defaultValues: {
@@ -82,7 +82,9 @@ const ShopInfoStep = ({
 			}
 
 			if (data) {
-				setError("storeId", { message: "This Store Id is already taken. Please choose another one." });
+				setError("storeId", {
+					message: "This Store Id is already taken. Please choose another one.",
+				});
 			} else {
 				setError("storeId", { message: undefined });
 			}
@@ -90,9 +92,10 @@ const ShopInfoStep = ({
 			setIsCheckingstoreId(false);
 		})();
 
-		return () => { isMounted = false; };
+		return () => {
+			isMounted = false;
+		};
 	}, [debouncedstoreId, supabase, setError]);
-
 
 	const { fields, append, remove } = useFieldArray({
 		control: control,

@@ -75,7 +75,12 @@ const StoreManagementPage = () => {
 			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 				<div className="px-3 py-3 md:px-6 md:py-4">
 					<div className="mb-2 flex items-center gap-3 md:mb-3">
-						<Button variant="ghost" size="icon" onClick={() => router.back()} className="h-8 w-8 md:h-9 md:w-9">
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() => router.back()}
+							className="h-8 w-8 md:h-9 md:w-9"
+						>
 							<ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
 							<span className="sr-only">Go back</span>
 						</Button>
@@ -85,14 +90,12 @@ const StoreManagementPage = () => {
 						<CustomSearchInput
 							placeholder="Search branches..."
 							value={searchQuery}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								setSearchQuery(e.target.value)
+							}
 							className="flex-1"
 						/>
-						<Button
-							variant="outline"
-							size="icon"
-							className="shrink-0 bg-transparent"
-						>
+						<Button variant="outline" size="icon" className="shrink-0 bg-transparent">
 							<Plus className="h-4 w-4" />
 						</Button>
 					</div>
@@ -101,7 +104,6 @@ const StoreManagementPage = () => {
 
 			<div className="space-y-3 p-3 md:p-6">
 				<div className="space-y-3">
-
 					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{filteredBranches.map((branch: IBranch) => (
 							<Card

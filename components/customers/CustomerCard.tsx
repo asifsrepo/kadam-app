@@ -13,7 +13,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 	const router = useRouter();
 	const onCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		const target = e.target as HTMLElement;
-		const isButtonClick = target.closest('button') || target.closest('a');
+		const isButtonClick = target.closest("button") || target.closest("a");
 
 		if (!isButtonClick) {
 			router.push(`/dashboard/customers/${customer.id}`);
@@ -52,7 +52,9 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							aria-label={`Add credit transaction for ${customer.name}`}
 							asChild
 						>
-							<Link href={`/dashboard/customers/${customer.id}/transactions/new?type=credit`}>
+							<Link
+								href={`/dashboard/customers/${customer.id}/transactions/new?type=credit`}
+							>
 								<ShoppingCart className="h-4 w-4" />
 							</Link>
 						</Button>
@@ -63,7 +65,9 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							aria-label={`Add payment transaction for ${customer.name}`}
 							asChild
 						>
-							<Link href={`/dashboard/customers/${customer.id}/transactions/new?type=payment`}>
+							<Link
+								href={`/dashboard/customers/${customer.id}/transactions/new?type=payment`}
+							>
 								<TrendingDown className="h-4 w-4" />
 							</Link>
 						</Button>
@@ -75,12 +79,13 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 					<div className="text-center">
 						<p className="text-[10px] text-muted-foreground">Balance</p>
 						<p
-							className={`font-bold text-lg ${customer.balance > 0
-								? "text-destructive"
-								: customer.balance < 0
-									? "text-primary"
-									: "text-muted-foreground"
-								}`}
+							className={`font-bold text-lg ${
+								customer.balance > 0
+									? "text-destructive"
+									: customer.balance < 0
+										? "text-primary"
+										: "text-muted-foreground"
+							}`}
 						>
 							{customer.balance > 0
 								? `${customer.balance.toFixed(2)}`

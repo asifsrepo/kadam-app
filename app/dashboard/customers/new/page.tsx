@@ -70,7 +70,7 @@ const NewCustomerPage = () => {
 		defaultValues: {
 			status: "active",
 			limit: 0,
-			email: ""
+			email: "",
 		},
 	});
 

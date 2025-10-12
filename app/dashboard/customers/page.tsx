@@ -32,36 +32,35 @@ const CustomersPage = () => {
 	const { data: transactionsData, isLoading: transactionsLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersTransactions],
 		queryFn: async () => {
-			const { data, error } = await supabase
-				.from(Tables.Transactions)
-				.select("*");
+			const { data, error } = await supabase.from(Tables.Transactions).select("*");
 
 			if (error) throw error;
 			return data || [];
 		},
 	});
 
-	const customers = customersData?.map((customer) => {
-		const customerTransactions =
-			transactionsData?.filter((t) => t.customerId === customer.id) || [];
+	const customers =
+		(customersData?.map((customer) => {
+			const customerTransactions =
+				transactionsData?.filter((t) => t.customerId === customer.id) || [];
 
-		const totalDebt =
-			customerTransactions
-				.filter((t) => t.type === "credit")
-				.reduce((sum, t) => sum + t.amount, 0) || 0;
+			const totalDebt =
+				customerTransactions
+					.filter((t) => t.type === "credit")
+					.reduce((sum, t) => sum + t.amount, 0) || 0;
 
-		const totalPaid =
-			customerTransactions
-				.filter((t) => t.type === "payment")
-				.reduce((sum, t) => sum + t.amount, 0) || 0;
+			const totalPaid =
+				customerTransactions
+					.filter((t) => t.type === "payment")
+					.reduce((sum, t) => sum + t.amount, 0) || 0;
 
-		const balance = totalDebt - totalPaid;
+			const balance = totalDebt - totalPaid;
 
-		return {
-			...customer,
-			balance,
-		};
-	}) as CustomerWithBalance[] || [];
+			return {
+				...customer,
+				balance,
+			};
+		}) as CustomerWithBalance[]) || [];
 
 	const isLoading = customersLoading || transactionsLoading;
 

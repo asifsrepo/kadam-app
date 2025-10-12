@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, ChevronRight, CreditCard, LogOut, Users, Users2 } from "lucide-react";
+import { Building2, ChevronRight, CreditCard, LogOut, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import ShopInfo from "@/components/stores/ShopInfo";
@@ -25,12 +25,12 @@ const Settings = () => {
 	};
 
 	const settingsItems = [
-		{
-			title: "Staff Management",
-			description: "Add and manage staff members and permissions",
-			href: "/dashboard/settings/staffs",
-			icon: Users,
-		},
+		// {
+		// 	title: "Staff Management",
+		// 	description: "Add and manage staff members and permissions",
+		// 	href: "/dashboard/settings/staffs",
+		// 	icon: Users,
+		// },
 		{
 			title: "Customers",
 			description: "View and manage your customer database",

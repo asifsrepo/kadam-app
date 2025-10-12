@@ -98,7 +98,12 @@ const CustomSearchInput = ({
 	const showRightButton = (isDebounced && internalValue) || isSubmit;
 
 	return (
-		<div className={cn("relative [--ring:var(--color-indigo-300)] in-[.dark]:[--ring:var(--color-indigo-900)]", className)}>
+		<div
+			className={cn(
+				"relative [--ring:var(--color-indigo-300)] in-[.dark]:[--ring:var(--color-indigo-900)]",
+				className,
+			)}
+		>
 			<Input
 				ref={inputRef}
 				type="search"

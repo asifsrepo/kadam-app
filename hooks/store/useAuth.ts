@@ -71,7 +71,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 	loadStores: async (force = false) => {
 		set({ isLoading: true });
 		if (!force && get().stores) return get().stores;
-		
+
 		const userId = get().user?.id;
 		try {
 			if (!userId) return null;
@@ -94,7 +94,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
 			if (branchesError) throw branchesError;
 
-			const storeWithBranches = { ...store?.[0] || {}, branches: branches || [] };
+			const storeWithBranches = { ...(store?.[0] || {}), branches: branches || [] };
 			set({ stores: storeWithBranches });
 
 			return storeWithBranches;
