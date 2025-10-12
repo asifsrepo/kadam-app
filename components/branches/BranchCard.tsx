@@ -1,5 +1,6 @@
-import { MapPin } from "lucide-react";
+import { CreditCard, MapPin } from "lucide-react";
 import useStores from "@/hooks/store/useStores";
+import { formatCurrency } from "@/lib/utils";
 import { IBranch } from "@/types/store";
 import { Badge } from "../ui/badge";
 import { Card, CardContent } from "../ui/card";
@@ -49,11 +50,19 @@ const BranchCard = ({ branch }: { branch: IBranch; }) => {
                             )}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs">
-                        <MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
-                        <span className="truncate text-muted-foreground">
-                            {branch.location}
-                        </span>
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-xs">
+                            <MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
+                            <span className="truncate text-muted-foreground">
+                                {branch.location}
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                            <CreditCard className="h-3 w-3 shrink-0 text-muted-foreground" />
+                            <span className="text-muted-foreground">
+                                Limit: {formatCurrency(branch.debtLimit || 0)}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </CardContent>

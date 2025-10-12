@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/store/useAuth";
+import useStores from "@/hooks/store/useStores";
 import { editStoreSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/client";
 import { EditStoreFormData, QueryKeys, Tables } from "@/types";
@@ -14,19 +15,16 @@ import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import useStores from "@/hooks/store/useStores";
 
 interface EditStoreDialogProps {
 	storeName?: string;
 	storePhone?: string;
-	storeDebtLimit?: number;
 	storeId?: string;
 }
 
 const EditStoreDialog = ({
 	storeName = "",
 	storePhone = "",
-	storeDebtLimit = 0,
 	storeId
 }: EditStoreDialogProps) => {
 	const [open, setOpen] = useState(false);
@@ -45,8 +43,7 @@ const EditStoreDialog = ({
 		resolver: zodResolver(editStoreSchema),
 		defaultValues: {
 			name: storeName,
-			phone: storePhone,
-			debtLimit: storeDebtLimit,
+			phone: storePhone
 		},
 	});
 
@@ -61,7 +58,6 @@ const EditStoreDialog = ({
 				.update({
 					name: data.name.trim(),
 					phone: data.phone.trim(),
-					debtLimit: data.debtLimit,
 				})
 				.eq("id", storeId)
 				.eq("ownerId", user.id)
@@ -95,8 +91,7 @@ const EditStoreDialog = ({
 		if (!newOpen) {
 			reset({
 				name: storeName,
-				phone: storePhone,
-				debtLimit: storeDebtLimit,
+				phone: storePhone
 			});
 		}
 	};
@@ -132,14 +127,6 @@ const EditStoreDialog = ({
 						className="text-sm"
 						{...register("phone")}
 						error={errors.phone?.message}
-					/>
-					<CustomInput
-						label="Debt Limit"
-						type="number"
-						placeholder="Enter debt limit"
-						className="text-sm"
-						{...register("debtLimit", { valueAsNumber: true })}
-						error={errors.debtLimit?.message}
 					/>
 					<div className="flex gap-2 pt-2">
 						<Button

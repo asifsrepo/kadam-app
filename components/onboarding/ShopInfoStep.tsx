@@ -55,6 +55,7 @@ const ShopInfoStep = ({
 					name: "",
 					location: "",
 					isMain: true,
+					debtLimit: "10"
 				},
 			],
 		},
@@ -128,6 +129,10 @@ const ShopInfoStep = ({
 		}
 	};
 
+	const createBranch = () => {
+		append({ name: "", location: "", isMain: false, debtLimit: "0" });
+	};
+
 	return (
 		<Card>
 			<CardHeader className="pb-3">
@@ -167,7 +172,7 @@ const ShopInfoStep = ({
 								type="button"
 								variant="outline"
 								size="sm"
-								onClick={() => append({ name: "", location: "", isMain: false })}
+								onClick={createBranch}
 								disabled={isSubmitting}
 								className="h-8 px-3 text-xs"
 							>
@@ -210,6 +215,14 @@ const ShopInfoStep = ({
 												required
 												error={errors.branches?.[index]?.name?.message}
 												{...register(`branches.${index}.name`)}
+											/>
+											<CustomInput
+												label="Branch Debt Limit"
+												placeholder="Enter branch debt limit"
+												required
+												type="number"
+												error={errors.branches?.[index]?.debtLimit?.message}
+												{...register(`branches.${index}.debtLimit`)}
 											/>
 											<CustomInput
 												label="Branch Location"

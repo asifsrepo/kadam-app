@@ -7,11 +7,6 @@ export interface IStore {
 	phone: string;
 	ownerId: IUser["id"];
 	storeId: string;
-	debtLimit: number;
-}
-
-export interface IStoreWithBranches extends IStore {
-	branches: IBranch[];
 }
 
 export interface IBranch {
@@ -21,4 +16,5 @@ export interface IBranch {
 	isMain: boolean;
 	storeId: IStore["id"];
 	ownerId: IUser["id"];
+	debtLimit: number;
 }

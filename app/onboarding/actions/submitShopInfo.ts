@@ -23,7 +23,6 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 				phone: shopData.phone,
 				storeId: shopData.storeId,
 				ownerId: user.id,
-				debtLimit: shopData.debtLimit,
 			})
 			.select("id");
 
@@ -35,6 +34,7 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 			isMain: branch.isMain,
 			storeId: data[0].id,
 			ownerId: user.id,
+			debtLimit: branch.debtLimit
 		}));
 
 		const { error: branchError, data: branchData } = await supabase

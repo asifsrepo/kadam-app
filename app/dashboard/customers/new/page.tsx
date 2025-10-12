@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,8 +30,8 @@ const NewCustomerPage = () => {
 	const supabase = createClient();
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
-	const { activeBranch } = useStores();
-	
+	const { activeBranch, debtLimit } = useStores();
+
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (data: CustomerFormData) => {
 			const { error } = await supabase.from(Tables.Customers).insert({
@@ -73,10 +74,14 @@ const NewCustomerPage = () => {
 		resolver: zodResolver(customerSchema),
 		defaultValues: {
 			status: "active",
-			limit: 0,
-			email: "",
+			limit: debtLimit,
+			email: ""
 		},
 	});
+
+	useEffect(() => {
+		setValue("limit", debtLimit);
+	}, [debtLimit, setValue]);
 
 	const onSubmit = async (data: CustomerFormData) => {
 		mutate(data);

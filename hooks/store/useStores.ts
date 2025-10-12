@@ -2,21 +2,23 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
-import type { IBranch, IStoreWithBranches } from "@/types/store";
+import type { IBranch, IStore } from "@/types/store";
 
 interface StoresState {
-    stores: IStoreWithBranches | null;
+    store: IStore | null;
     isLoading: boolean;
     activeBranch: IBranch | null;
     debtLimit: number;
+    branches: IBranch[];
 
-    loadStores: (userId: string, force?: boolean) => Promise<IStoreWithBranches | null>;
+    loadStores: (userId: string, force?: boolean) => Promise<IBranch | null>;
     setActiveBranch: (branch: IBranch | null) => void;
-    setDebtLimit: (debtLimit: number) => void;
+    setBranches: (branches: IBranch[]) => void;
 }
 
 const initialState = {
-    stores: null,
+    store: null,
+    branches: [],
     isLoading: false,
     activeBranch: null,
     debtLimit: 0,
@@ -29,7 +31,7 @@ const useStores = create<StoresState>()(
 
             loadStores: async (userId, force = false) => {
                 set({ isLoading: true });
-                if (!force && get().stores) return get().stores;
+                if (!force && get().store) return get().store;
 
                 try {
                     if (!userId) return null;
@@ -52,20 +54,22 @@ const useStores = create<StoresState>()(
 
                     if (branchesError) throw branchesError;
 
-                    const storeWithBranches = { ...(store?.[0] || {}), branches: branches || [] };
-                    set({ stores: storeWithBranches });
+                    set({ store: store?.[0], branches: branches || [], debtLimit: branches?.[0]?.debtLimit || 0 });
 
                     // Auto-set main branch as active ONLY if no active branch exists
                     const currentActiveBranch = get().activeBranch;
                     if (!currentActiveBranch && branches && branches.length > 0) {
                         const mainBranch = branches.find(branch => branch.isMain) || branches[0];
-                        set({ activeBranch: mainBranch });
+                        set({ activeBranch: mainBranch, debtLimit: mainBranch?.debtLimit || 0 });
                     }
 
-                    return storeWithBranches;
+                    console.log(branches);
+                    
+                    return branches?.[0];
+
                 } catch (error) {
                     console.error("Error loading stores:", error);
-                    set({ stores: null });
+                    set({ store: null });
                     return null;
                 } finally {
                     set({ isLoading: false });
@@ -73,16 +77,16 @@ const useStores = create<StoresState>()(
             },
 
             setActiveBranch: (branch) => {
-                set({ activeBranch: branch });
+                set({ activeBranch: branch, debtLimit: branch?.debtLimit || 0 });
             },
 
-            setDebtLimit: (debtLimit) => {
-                set({ debtLimit });
+            setBranches: (branches) => {
+                set({ branches });
             },
         }),
         {
             name: "stores-storage",
-            partialize: (state) => ({ activeBranch: state.activeBranch, debtLimit: state.debtLimit }),
+            partialize: (state) => ({ activeBranch: state.activeBranch }),
         }
     )
 );
