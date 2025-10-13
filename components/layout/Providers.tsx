@@ -5,25 +5,14 @@ import QueryProvider from "../providers/QueryProvider";
 import { Toaster } from "../ui/sonner";
 
 const Providers = ({ children }: WrapperProps) => {
-    return (
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-        >
-            <QueryProvider>
-                <Toaster
-                    richColors
-                    position="top-right"
-                    closeButton
-                />
-                <NuqsAdapter>
-                    {children}
-                </NuqsAdapter>
-            </QueryProvider>
-        </ThemeProvider>
-    );
+	return (
+		<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+			<QueryProvider>
+				<Toaster richColors position="top-right" closeButton />
+				<NuqsAdapter>{children}</NuqsAdapter>
+			</QueryProvider>
+		</ThemeProvider>
+	);
 };
 
 export default Providers;

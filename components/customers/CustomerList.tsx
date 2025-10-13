@@ -32,7 +32,7 @@ const CustomerList = ({
 					fetchNextPage();
 				}
 			},
-			{ threshold: 1 }
+			{ threshold: 1 },
 		);
 		if (observerRef.current) {
 			observer.observe(observerRef.current);
@@ -58,7 +58,10 @@ const CustomerList = ({
 				))}
 			</div>
 			{hasNextPage && (
-				<div ref={observerRef} className="flex min-h-[80px] w-full items-center justify-center">
+				<div
+					ref={observerRef}
+					className="flex min-h-[80px] w-full items-center justify-center"
+				>
 					{isFetchingNextPage && <CustomerListSkeleton />}
 				</div>
 			)}

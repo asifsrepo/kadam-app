@@ -44,7 +44,7 @@ const NewCustomerPage = () => {
 				limit: data.limit,
 				createdAt: new Date().toISOString(),
 				createdBy: user?.id,
-				branchId: activeBranch?.id
+				branchId: activeBranch?.id,
 			} as ICustomer);
 			if (error) throw error;
 
@@ -75,7 +75,7 @@ const NewCustomerPage = () => {
 		defaultValues: {
 			status: "active",
 			limit: debtLimit,
-			email: ""
+			email: "",
 		},
 	});
 	const watchedLimit = watch("limit");

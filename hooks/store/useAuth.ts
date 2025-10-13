@@ -63,7 +63,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 		}
 	},
 
-
 	loadUser: async () => {
 		set({ isLoading: true });
 		try {

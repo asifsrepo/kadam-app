@@ -52,14 +52,13 @@ const NewTransactionPage = () => {
 		enabled: !!customerId,
 	});
 
-
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		setValue,
 		watch,
-		setError
+		setError,
 	} = useForm<TransactionFormData>({
 		resolver: zodResolver(transactionSchema),
 		defaultValues: {
@@ -80,7 +79,6 @@ const NewTransactionPage = () => {
 			});
 		}
 	}, [watchedLimit, customer, setError]);
-
 
 	const onSubmit = async (data: TransactionFormData) => {
 		if (!user?.id) {
@@ -104,12 +102,14 @@ const NewTransactionPage = () => {
 			router.back();
 
 			setTimeout(async () => {
-				await Promise.all(
-					[
-						queryClient.invalidateQueries({ queryKey: [QueryKeys.CustomerDetails, customerId] }),
-						queryClient.invalidateQueries({ queryKey: [QueryKeys.TransactionsList, customerId] }),
-					]
-				);
+				await Promise.all([
+					queryClient.invalidateQueries({
+						queryKey: [QueryKeys.CustomerDetails, customerId],
+					}),
+					queryClient.invalidateQueries({
+						queryKey: [QueryKeys.TransactionsList, customerId],
+					}),
+				]);
 			}, 200);
 		} catch (error) {
 			toast.error("Failed to create transaction. Please try again.");

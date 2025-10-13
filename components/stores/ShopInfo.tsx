@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {  Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import EditStoreDialog from "@/components/stores/EditStoreDialog";
 import { CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";

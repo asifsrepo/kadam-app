@@ -4,7 +4,9 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import CustomerFilters, { type CustomerFilters as CustomerFiltersType } from "@/components/customers/CustomerFilters";
+import CustomerFilters, {
+	type CustomerFilters as CustomerFiltersType,
+} from "@/components/customers/CustomerFilters";
 import CustomerList from "@/components/customers/CustomerList";
 import { Button } from "@/components/ui/button";
 import useStores from "@/hooks/store/useStores";
@@ -27,13 +29,7 @@ const CustomersPage = () => {
 	});
 	const { activeBranch } = useStores();
 
-	const {
-		data,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-		isLoading,
-	} = useInfiniteQuery({
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id, searchQuery, filters],
 		queryFn: async ({ pageParam = 0 }) => {
 			let query = supabase
@@ -46,7 +42,9 @@ const CustomersPage = () => {
 			}
 
 			if (searchQuery.trim()) {
-				query = query.or(`name.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
+				query = query.or(
+					`name.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`,
+				);
 			}
 
 			const ascending = filters.sortOrder === "asc";
@@ -62,12 +60,12 @@ const CustomersPage = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -126,8 +124,11 @@ const CustomersPage = () => {
 		});
 	}, []);
 
-	const hasActiveFilters = filters.status !== "all" || filters.balance !== "all" ||
-		filters.sortBy !== "createdAt" || filters.sortOrder !== "desc";
+	const hasActiveFilters =
+		filters.status !== "all" ||
+		filters.balance !== "all" ||
+		filters.sortBy !== "createdAt" ||
+		filters.sortOrder !== "desc";
 
 	return (
 		<div className="min-h-screen bg-background pb-24">

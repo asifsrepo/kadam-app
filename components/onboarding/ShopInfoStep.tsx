@@ -55,7 +55,7 @@ const ShopInfoStep = ({
 					name: "",
 					location: "",
 					isMain: true,
-					debtLimit: 10
+					debtLimit: 10,
 				},
 			],
 		},
@@ -222,7 +222,9 @@ const ShopInfoStep = ({
 												required
 												type="number"
 												error={errors.branches?.[index]?.debtLimit?.message}
-												{...register(`branches.${index}.debtLimit`, { valueAsNumber: true })}
+												{...register(`branches.${index}.debtLimit`, {
+													valueAsNumber: true,
+												})}
 											/>
 											<CustomInput
 												label="Branch Location"

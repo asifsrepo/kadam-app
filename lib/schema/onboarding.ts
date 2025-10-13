@@ -28,16 +28,18 @@ export const shopInfoSchema = z.object({
 
 export const editStoreSchema = z.object({
 	name: z.string().min(2, "Store name must be at least 2 characters"),
-	phone: z.string().min(10, "Please enter a valid phone number")
+	phone: z.string().min(10, "Please enter a valid phone number"),
 });
 
-export const passwordSchema = z.object({
-	password: z.string().min(6, "Password must be at least 6 characters"),
-	confirmPassword: z.string().min(6, "Please confirm your password"),
-}).refine((data) => data.password === data.confirmPassword, {
-	message: "Passwords don't match",
-	path: ["confirmPassword"],
-});
+export const passwordSchema = z
+	.object({
+		password: z.string().min(6, "Password must be at least 6 characters"),
+		confirmPassword: z.string().min(6, "Please confirm your password"),
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Passwords don't match",
+		path: ["confirmPassword"],
+	});
 
 export const signInSchema = z.object({
 	email: z.email("Please enter a valid email address"),

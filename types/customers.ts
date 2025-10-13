@@ -15,4 +15,4 @@ export interface ICustomer {
 	branchId: IBranch["id"];
 }
 
-export type CustomerWithBalance = ICustomer & { balance: number; };
+export type CustomerWithBalance = ICustomer & { balance: number };

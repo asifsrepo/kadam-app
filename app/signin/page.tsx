@@ -72,7 +72,8 @@ const SignInPage = () => {
 			router.push("/dashboard");
 		} catch (error) {
 			toast.error("Sign in failed", {
-				description: error instanceof Error ? error.message : "Please check your credentials.",
+				description:
+					error instanceof Error ? error.message : "Please check your credentials.",
 			});
 		} finally {
 			setIsLoading(null);
@@ -110,7 +111,12 @@ const SignInPage = () => {
 									className="flex h-10 w-full items-center gap-2 text-sm"
 									disabled={isLoading !== null}
 								>
-									<Image alt="Google" src="/assets/google.svg" width={16} height={16} />
+									<Image
+										alt="Google"
+										src="/assets/google.svg"
+										width={16}
+										height={16}
+									/>
 									Continue with Google
 								</Button>
 							</div>

@@ -22,11 +22,7 @@ interface EditStoreDialogProps {
 	storeId?: string;
 }
 
-const EditStoreDialog = ({
-	storeName = "",
-	storePhone = "",
-	storeId
-}: EditStoreDialogProps) => {
+const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStoreDialogProps) => {
 	const [open, setOpen] = useState(false);
 	const { setDebtLimit } = useStores();
 
@@ -43,7 +39,7 @@ const EditStoreDialog = ({
 		resolver: zodResolver(editStoreSchema),
 		defaultValues: {
 			name: storeName,
-			phone: storePhone
+			phone: storePhone,
 		},
 	});
 
@@ -81,7 +77,6 @@ const EditStoreDialog = ({
 		},
 	});
 
-
 	const onSubmit = (data: EditStoreFormData) => {
 		mutate(data);
 	};
@@ -91,7 +86,7 @@ const EditStoreDialog = ({
 		if (!newOpen) {
 			reset({
 				name: storeName,
-				phone: storePhone
+				phone: storePhone,
 			});
 		}
 	};
@@ -137,10 +132,7 @@ const EditStoreDialog = ({
 						>
 							Cancel
 						</Button>
-						<SubmitButton
-							isLoading={isPending}
-							className="h-9 flex-1 text-sm"
-						>
+						<SubmitButton isLoading={isPending} className="h-9 flex-1 text-sm">
 							Save
 						</SubmitButton>
 					</div>

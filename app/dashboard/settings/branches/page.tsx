@@ -1,10 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import BranchCard from "@/components/branches/BranchCard";
+import BranchDialog from "@/components/branches/BranchDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
@@ -94,9 +95,7 @@ const BranchManagement = () => {
 							}
 							className="flex-1"
 						/>
-						<Button variant="outline" size="icon" className="shrink-0 bg-transparent">
-							<Plus className="h-4 w-4" />
-						</Button>
+						<BranchDialog mode="create" />
 					</div>
 				</div>
 			</div>
@@ -105,10 +104,7 @@ const BranchManagement = () => {
 				<div className="space-y-3">
 					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{filteredBranches.map((branch: IBranch) => (
-							<BranchCard
-								key={branch.id}
-								branch={branch}
-							/>
+							<BranchCard key={branch.id} branch={branch} />
 						))}
 					</div>
 				</div>

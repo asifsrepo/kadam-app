@@ -99,8 +99,9 @@ const OnboardingPage = () => {
 						{Array.from({ length: totalSteps }).map((_, index) => (
 							<div
 								key={index}
-								className={`h-2 w-2 rounded-full ${index + 1 <= step ? "bg-primary" : "bg-muted"
-									}`}
+								className={`h-2 w-2 rounded-full ${
+									index + 1 <= step ? "bg-primary" : "bg-muted"
+								}`}
 							/>
 						))}
 					</div>
