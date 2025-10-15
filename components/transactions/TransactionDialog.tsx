@@ -38,10 +38,7 @@ interface TransactionDialogProps {
 	trigger?: ReactNode;
 }
 
-const TransactionDialog = ({
-	defaultType = "credit",
-	trigger,
-}: TransactionDialogProps) => {
+const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialogProps) => {
 	const [open, setOpen] = useState(false);
 	const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
 	const formId = useId();
@@ -166,16 +163,11 @@ const TransactionDialog = ({
 	return (
 		<Sheet open={open} onOpenChange={handleOpenChange}>
 			{trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
-			<SheetContent
-				side="bottom"
-				className="h-[90vh] rounded-t-xl p-0"
-			>
+			<SheetContent side="bottom" className="h-[90vh] rounded-t-xl p-0">
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-b border-border px-4 py-4 text-left">
+					<SheetHeader className="border-border border-b px-4 py-4 text-left">
 						<SheetTitle>New Transaction</SheetTitle>
-						<SheetDescription>
-							Create a new transaction for a customer
-						</SheetDescription>
+						<SheetDescription>Create a new transaction for a customer</SheetDescription>
 					</SheetHeader>
 
 					<div className="flex-1 overflow-y-auto">
@@ -197,7 +189,9 @@ const TransactionDialog = ({
 										const customer = customers.find((c) => c.id === value);
 										setSelectedCustomer(customer || null);
 									}}
-									error={!selectedCustomer ? "Please select a customer" : undefined}
+									error={
+										!selectedCustomer ? "Please select a customer" : undefined
+									}
 									disabled={isLoadingCustomers}
 								/>
 
@@ -206,15 +200,15 @@ const TransactionDialog = ({
 									<div className="rounded-lg border border-border bg-muted/30 p-4">
 										<div className="space-y-3">
 											<div className="flex items-center justify-between">
-												<h3 className="font-medium text-sm text-foreground">
+												<h3 className="font-medium text-foreground text-sm">
 													{selectedCustomer.name}
 												</h3>
 											</div>
-											<div className="flex items-center justify-between border-t border-border pt-2">
-												<span className="text-xs text-muted-foreground">
+											<div className="flex items-center justify-between border-border border-t pt-2">
+												<span className="text-muted-foreground text-xs">
 													Credit Limit
 												</span>
-												<span className="text-xs font-medium text-foreground">
+												<span className="font-medium text-foreground text-xs">
 													{formatCurrency(selectedCustomer.limit)}
 												</span>
 											</div>
@@ -262,7 +256,7 @@ const TransactionDialog = ({
 							</div>
 
 							{/* Bottom Action Buttons */}
-							<div className="border-t border-border bg-background p-4">
+							<div className="border-border border-t bg-background p-4">
 								<div className="flex gap-2">
 									<Button
 										type="button"
@@ -291,4 +285,4 @@ const TransactionDialog = ({
 	);
 };
 
-export default TransactionDialog
+export default TransactionDialog;

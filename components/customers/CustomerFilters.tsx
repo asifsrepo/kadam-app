@@ -1,17 +1,17 @@
 "use client";
 
-import { Filter, X } from "lucide-react";
-import { useState } from "react";
+import { ArrowDownAZ, ArrowUpAZ, Check, Filter, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 export interface CustomerFilters {
 	status: "all" | "active" | "inactive";
@@ -33,163 +33,372 @@ const CustomerFilters = ({
 	onClearFilters,
 	hasActiveFilters,
 }: CustomerFiltersProps) => {
-	const [showFilters, setShowFilters] = useState(false);
+	const [open, setOpen] = useState(false);
+	const [localFilters, setLocalFilters] = useState<CustomerFilters>(filters);
 
-	const updateFilter = <K extends keyof CustomerFilters>(key: K, value: CustomerFilters[K]) => {
-		onFiltersChange({ ...filters, [key]: value });
+	// Update local filters when props change
+	useEffect(() => {
+		setLocalFilters(filters);
+	}, [filters]);
+
+	const updateLocalFilter = <K extends keyof CustomerFilters>(
+		key: K,
+		value: CustomerFilters[K],
+	) => {
+		setLocalFilters((prev) => ({ ...prev, [key]: value }));
+	};
+
+	const handleApplyFilters = () => {
+		onFiltersChange(localFilters);
+		setOpen(false);
 	};
 
 	const handleClearFilters = () => {
+		const defaultFilters: CustomerFilters = {
+			status: "all",
+			balance: "all",
+			sortBy: "name",
+			sortOrder: "asc",
+		};
+		setLocalFilters(defaultFilters);
 		onClearFilters();
-		setShowFilters(false);
+		setOpen(false);
 	};
 
+	const statusOptions = [
+		{ value: "all", label: "All Customers", description: "Show everyone" },
+		{ value: "active", label: "Active", description: "Currently active" },
+		{ value: "inactive", label: "Inactive", description: "Not active" },
+	];
+
+	const balanceOptions = [
+		{ value: "all", label: "All Balances", description: "Any amount" },
+		{ value: "positive", label: "Owes Money", description: "Positive balance" },
+		{ value: "negative", label: "Has Credit", description: "Negative balance" },
+		{ value: "zero", label: "Zero Balance", description: "No balance" },
+	];
+
+	const sortOptions = [
+		{ value: "name", label: "Name", description: "Alphabetically" },
+		{ value: "createdAt", label: "Date", description: "By creation" },
+		{ value: "balance", label: "Balance", description: "By amount" },
+	];
+
 	return (
-		<>
-			{/* Filter Toggle Button */}
-			<Button
-				variant={hasActiveFilters ? "default" : "outline"}
-				size="sm"
-				onClick={() => setShowFilters(!showFilters)}
-				className="relative h-9 gap-2 px-3"
-			>
-				<Filter className="h-4 w-4" />
-				<span className="hidden sm:inline">Filter</span>
-				{hasActiveFilters && (
-					<div className="-right-1 -top-1 absolute h-3 w-3 rounded-full bg-destructive" />
-				)}
-			</Button>
-
-			{/* Filter Options Panel */}
-			{showFilters && (
-				<div className="mt-3 space-y-4 rounded-lg border border-border bg-card p-4">
-					<div className="flex items-center justify-between">
-						<h3 className="font-medium text-card-foreground text-sm">
-							Filter & Sort Options
-						</h3>
-						{hasActiveFilters && (
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={handleClearFilters}
-								className="h-8 gap-1 text-muted-foreground text-xs hover:text-foreground"
-							>
-								<X className="h-3 w-3" />
-								Clear
-							</Button>
-						)}
-					</div>
-
-					{/* Status Filter */}
-					<div className="space-y-2">
-						<label className="font-medium text-card-foreground text-sm">Status</label>
-						<RadioGroup
-							value={filters.status}
-							onValueChange={(value) =>
-								updateFilter("status", value as CustomerFilters["status"])
-							}
-							className="flex flex-wrap gap-4"
-						>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="all" id="status-all" />
-								<label htmlFor="status-all" className="font-normal text-sm">
-									All
-								</label>
-							</div>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="active" id="status-active" />
-								<label htmlFor="status-active" className="font-normal text-sm">
-									Active
-								</label>
-							</div>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="inactive" id="status-inactive" />
-								<label htmlFor="status-inactive" className="font-normal text-sm">
-									Inactive
-								</label>
-							</div>
-						</RadioGroup>
-					</div>
-
-					{/* Balance Filter */}
-					<div className="space-y-2">
-						<label className="font-medium text-card-foreground text-sm">Balance</label>
-						<RadioGroup
-							value={filters.balance}
-							onValueChange={(value) =>
-								updateFilter("balance", value as CustomerFilters["balance"])
-							}
-							className="flex flex-wrap gap-4"
-						>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="all" id="balance-all" />
-								<label htmlFor="balance-all" className="font-normal text-sm">
-									All
-								</label>
-							</div>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="positive" id="balance-positive" />
-								<label htmlFor="balance-positive" className="font-normal text-sm">
-									Owes Money
-								</label>
-							</div>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="negative" id="balance-negative" />
-								<label htmlFor="balance-negative" className="font-normal text-sm">
-									Has Credit
-								</label>
-							</div>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="zero" id="balance-zero" />
-								<label htmlFor="balance-zero" className="font-normal text-sm">
-									Zero Balance
-								</label>
-							</div>
-						</RadioGroup>
-					</div>
-
-					{/* Sort Options */}
-					<div className="grid gap-4 sm:grid-cols-2">
-						<div className="space-y-2">
-							<label className="font-medium text-card-foreground text-sm">
-								Sort By
-							</label>
-							<Select
-								value={filters.sortBy}
-								onValueChange={(value) =>
-									updateFilter("sortBy", value as CustomerFilters["sortBy"])
-								}
-							>
-								<SelectTrigger className="h-9">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="name">Name</SelectItem>
-									<SelectItem value="createdAt">Date Added</SelectItem>
-									<SelectItem value="balance">Balance</SelectItem>
-								</SelectContent>
-							</Select>
+		<Sheet open={open} onOpenChange={setOpen}>
+			<SheetTrigger asChild>
+				<Button
+					variant={hasActiveFilters ? "default" : "outline"}
+					size="sm"
+					className="relative h-9 gap-2 px-3"
+				>
+					<Filter className="h-4 w-4" />
+					<span className="hidden sm:inline">Filter</span>
+					{hasActiveFilters && (
+						<div className="-right-1 -top-1 absolute flex h-4 w-4 items-center justify-center rounded-full bg-destructive font-bold text-[10px] text-destructive-foreground">
+							{[
+								localFilters.status !== "all" ? 1 : 0,
+								localFilters.balance !== "all" ? 1 : 0,
+							].reduce((a, b) => a + b, 0)}
 						</div>
-
-						<div className="flex items-center justify-between space-x-2">
-							<label
-								htmlFor="sort-order"
-								className="font-medium text-card-foreground text-sm"
-							>
-								Descending
-							</label>
-							<Switch
-								id="sort-order"
-								checked={filters.sortOrder === "desc"}
-								onCheckedChange={(checked) =>
-									updateFilter("sortOrder", checked ? "desc" : "asc")
-								}
-							/>
+					)}
+				</Button>
+			</SheetTrigger>
+			<SheetContent side="bottom" className="h-[85vh] rounded-t-xl p-0">
+				<div className="flex h-full flex-col">
+					<SheetHeader className="border-border border-b px-4 py-4 text-left">
+						<div className="flex items-center justify-between">
+							<div>
+								<SheetTitle>Filters & Sort</SheetTitle>
+								<SheetDescription>Customize your customer view</SheetDescription>
+							</div>
+							{hasActiveFilters && (
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={handleClearFilters}
+									className="h-8 gap-1.5 text-xs"
+								>
+									<X className="h-3.5 w-3.5" />
+									Clear
+								</Button>
+							)}
 						</div>
+					</SheetHeader>
+
+					<div className="flex-1 overflow-y-auto">
+						<div className="space-y-5 p-4">
+							{/* Status Filter */}
+							<div className="space-y-2.5">
+								<div className="flex items-center justify-between">
+									<h3 className="font-semibold text-foreground text-sm">
+										Customer Status
+									</h3>
+									{localFilters.status !== "all" && (
+										<span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-[10px] text-primary">
+											Active
+										</span>
+									)}
+								</div>
+								<div className="space-y-2">
+									{statusOptions.map((option) => (
+										<button
+											key={option.value}
+											type="button"
+											onClick={() =>
+												updateLocalFilter(
+													"status",
+													option.value as CustomerFilters["status"],
+												)
+											}
+											className={cn(
+												"group relative flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-all",
+												localFilters.status === option.value
+													? "border-primary bg-primary/5"
+													: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+											)}
+										>
+											<div
+												className={cn(
+													"flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+													localFilters.status === option.value
+														? "border-primary bg-primary"
+														: "border-muted-foreground/30 group-hover:border-primary/50",
+												)}
+											>
+												{localFilters.status === option.value && (
+													<Check className="h-2.5 w-2.5 text-primary-foreground" />
+												)}
+											</div>
+
+											<div className="min-w-0 flex-1">
+												<div
+													className={cn(
+														"font-medium text-sm",
+														localFilters.status === option.value
+															? "text-primary"
+															: "text-foreground",
+													)}
+												>
+													{option.label}
+												</div>
+												<div className="mt-0.5 text-muted-foreground text-xs">
+													{option.description}
+												</div>
+											</div>
+										</button>
+									))}
+								</div>
+							</div>
+
+							<div className="border-border border-t" />
+
+							{/* Balance Filter */}
+							<div className="space-y-2.5">
+								<div className="flex items-center justify-between">
+									<h3 className="font-semibold text-foreground text-sm">
+										Balance Status
+									</h3>
+									{localFilters.balance !== "all" && (
+										<span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-[10px] text-primary">
+											Active
+										</span>
+									)}
+								</div>
+								<div className="space-y-2">
+									{balanceOptions.map((option) => (
+										<button
+											key={option.value}
+											type="button"
+											onClick={() =>
+												updateLocalFilter(
+													"balance",
+													option.value as CustomerFilters["balance"],
+												)
+											}
+											className={cn(
+												"group relative flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-all",
+												localFilters.balance === option.value
+													? "border-primary bg-primary/5"
+													: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+											)}
+										>
+											<div
+												className={cn(
+													"flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+													localFilters.balance === option.value
+														? "border-primary bg-primary"
+														: "border-muted-foreground/30 group-hover:border-primary/50",
+												)}
+											>
+												{localFilters.balance === option.value && (
+													<Check className="h-2.5 w-2.5 text-primary-foreground" />
+												)}
+											</div>
+
+											<div className="min-w-0 flex-1">
+												<div
+													className={cn(
+														"font-medium text-sm",
+														localFilters.balance === option.value
+															? "text-primary"
+															: "text-foreground",
+													)}
+												>
+													{option.label}
+												</div>
+												<div className="mt-0.5 text-muted-foreground text-xs">
+													{option.description}
+												</div>
+											</div>
+										</button>
+									))}
+								</div>
+							</div>
+
+							<div className="border-border border-t" />
+
+							{/* Sort Options */}
+							<div className="space-y-2.5">
+								<h3 className="font-semibold text-foreground text-sm">Sort By</h3>
+								<div className="grid grid-cols-3 gap-2">
+									{sortOptions.map((option) => (
+										<button
+											key={option.value}
+											type="button"
+											onClick={() =>
+												updateLocalFilter(
+													"sortBy",
+													option.value as CustomerFilters["sortBy"],
+												)
+											}
+											className={cn(
+												"flex flex-1 flex-col items-center gap-1.5 rounded-lg border p-2.5 transition-all",
+												localFilters.sortBy === option.value
+													? "border-primary bg-primary/5"
+													: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+											)}
+										>
+											<div
+												className={cn(
+													"flex h-6 w-6 items-center justify-center rounded-full",
+													localFilters.sortBy === option.value
+														? "bg-primary text-primary-foreground"
+														: "bg-muted text-muted-foreground",
+												)}
+											>
+												{localFilters.sortBy === option.value && (
+													<Check className="h-3 w-3" />
+												)}
+											</div>
+											<div className="text-center">
+												<div
+													className={cn(
+														"font-medium text-xs",
+														localFilters.sortBy === option.value
+															? "text-primary"
+															: "text-foreground",
+													)}
+												>
+													{option.label}
+												</div>
+												<div className="text-[10px] text-muted-foreground">
+													{option.description}
+												</div>
+											</div>
+										</button>
+									))}
+								</div>
+							</div>
+
+							{/* Sort Order */}
+							<div className="space-y-2.5">
+								<h3 className="font-semibold text-foreground text-sm">
+									Sort Order
+								</h3>
+								<div className="grid grid-cols-2 gap-2">
+									<button
+										type="button"
+										onClick={() => updateLocalFilter("sortOrder", "asc")}
+										className={cn(
+											"flex items-center gap-2.5 rounded-lg border p-3 transition-all",
+											localFilters.sortOrder === "asc"
+												? "border-primary bg-primary/5"
+												: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+										)}
+									>
+										<ArrowUpAZ
+											className={cn(
+												"h-4 w-4 shrink-0",
+												localFilters.sortOrder === "asc"
+													? "text-primary"
+													: "text-muted-foreground",
+											)}
+										/>
+										<div className="text-left">
+											<div
+												className={cn(
+													"font-medium text-sm",
+													localFilters.sortOrder === "asc"
+														? "text-primary"
+														: "text-foreground",
+												)}
+											>
+												Ascending
+											</div>
+											<div className="text-muted-foreground text-xs">
+												A → Z, 0 → 9
+											</div>
+										</div>
+									</button>
+									<button
+										type="button"
+										onClick={() => updateLocalFilter("sortOrder", "desc")}
+										className={cn(
+											"flex items-center gap-2.5 rounded-lg border p-3 transition-all",
+											localFilters.sortOrder === "desc"
+												? "border-primary bg-primary/5"
+												: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+										)}
+									>
+										<ArrowDownAZ
+											className={cn(
+												"h-4 w-4 shrink-0",
+												localFilters.sortOrder === "desc"
+													? "text-primary"
+													: "text-muted-foreground",
+											)}
+										/>
+										<div className="text-left">
+											<div
+												className={cn(
+													"font-medium text-sm",
+													localFilters.sortOrder === "desc"
+														? "text-primary"
+														: "text-foreground",
+												)}
+											>
+												Descending
+											</div>
+											<div className="text-muted-foreground text-xs">
+												Z → A, 9 → 0
+											</div>
+										</div>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className="border-border border-t bg-background p-4">
+						<Button onClick={handleApplyFilters} className="h-11 w-full font-semibold">
+							<Check className="mr-2 h-4 w-4" />
+							Apply Filters
+						</Button>
 					</div>
 				</div>
-			)}
-		</>
+			</SheetContent>
+		</Sheet>
 	);
 };
 

@@ -34,12 +34,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -55,7 +55,8 @@ const Dashboard = () => {
 	const { data: allCustomersStats, isLoading: statsLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id, "stats"],
 		queryFn: async () => {
-			if (!activeBranch?.id) return { totalCustomers: 0, totalDebt: 0, totalCredit: 0, netBalance: 0 };
+			if (!activeBranch?.id)
+				return { totalCustomers: 0, totalDebt: 0, totalCredit: 0, netBalance: 0 };
 
 			const { data: customersData, error: customersError } = await supabase
 				.from(Tables.Customers)
@@ -71,12 +72,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -85,8 +86,14 @@ const Dashboard = () => {
 			});
 
 			const totalCustomers = customersWithBalance.length;
-			const totalDebt = customersWithBalance.reduce((sum, customer) => sum + Math.max(0, customer.balance), 0);
-			const totalCredit = customersWithBalance.reduce((sum, customer) => sum + Math.max(0, -customer.balance), 0);
+			const totalDebt = customersWithBalance.reduce(
+				(sum, customer) => sum + Math.max(0, customer.balance),
+				0,
+			);
+			const totalCredit = customersWithBalance.reduce(
+				(sum, customer) => sum + Math.max(0, -customer.balance),
+				0,
+			);
 			const netBalance = totalDebt - totalCredit;
 
 			return { totalCustomers, totalDebt, totalCredit, netBalance };
@@ -122,10 +129,7 @@ const Dashboard = () => {
 					isLoading={statsLoading}
 				/>
 
-				<Customers
-					customers={recentCustomers}
-					isLoading={customersLoading}
-				/>
+				<Customers customers={recentCustomers} isLoading={customersLoading} />
 
 				<Transactions />
 			</div>

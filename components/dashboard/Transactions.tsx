@@ -49,19 +49,22 @@ const Transactions = () => {
 
 	const transactions = data?.pages.flat() ?? [];
 
-	const groupedTransactions = transactions.reduce((groups, transaction) => {
-		const date = new Date(transaction.createdAt).toLocaleDateString("en-US", {
-			weekday: "short",
-			month: "short",
-			day: "numeric",
-		});
+	const groupedTransactions = transactions.reduce(
+		(groups, transaction) => {
+			const date = new Date(transaction.createdAt).toLocaleDateString("en-US", {
+				weekday: "short",
+				month: "short",
+				day: "numeric",
+			});
 
-		if (!groups[date]) {
-			groups[date] = [];
-		}
-		groups[date].push(transaction);
-		return groups;
-	}, {} as Record<string, ITransactionWithCustomer[]>);
+			if (!groups[date]) {
+				groups[date] = [];
+			}
+			groups[date].push(transaction);
+			return groups;
+		},
+		{} as Record<string, ITransactionWithCustomer[]>,
+	);
 
 	// Intersection Observer for infinite scroll
 	const handleObserver = useCallback(
@@ -89,7 +92,7 @@ const Transactions = () => {
 	return (
 		<div className="mb-6">
 			<div className="mb-4 flex items-center justify-between">
-				<h2 className="font-semibold text-lg text-foreground">Transactions</h2>
+				<h2 className="font-semibold text-foreground text-lg">Transactions</h2>
 				<div className="flex shrink-0 items-start gap-2">
 					<TransactionDialog
 						defaultType="credit"
@@ -156,7 +159,9 @@ const Transactions = () => {
 				<div className="space-y-4">
 					{Object.entries(groupedTransactions).map(([date, dayTransactions]) => (
 						<div key={date}>
-							<h3 className="mb-2 font-medium text-muted-foreground text-sm">{date}</h3>
+							<h3 className="mb-2 font-medium text-muted-foreground text-sm">
+								{date}
+							</h3>
 							<div className="space-y-2">
 								{dayTransactions.map((transaction) => (
 									<Card
@@ -169,13 +174,17 @@ const Transactions = () => {
 													className={`h-2 w-2 shrink-0 rounded-full ${transaction.type === "credit" ? "bg-destructive" : "bg-primary"}`}
 												/>
 												<div className="min-w-0 flex-1">
-													<Link href={`/dashboard/customers/${transaction.customer.id}`}>
+													<Link
+														href={`/dashboard/customers/${transaction.customer.id}`}
+													>
 														<h4 className="truncate font-medium text-foreground text-sm">
 															{transaction.customer.name}
 														</h4>
 														<div className="flex items-center gap-1 text-muted-foreground text-xs">
 															<Phone className="h-3 w-3" />
-															<span className="truncate">{transaction.customer.phone}</span>
+															<span className="truncate">
+																{transaction.customer.phone}
+															</span>
 														</div>
 													</Link>
 												</div>
