@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ReactNode, useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ import { transactionSchema } from "@/lib/schema/transaction";
 import { createClient } from "@/lib/supabase/client";
 import { formatCurrency } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
-import { ICustomer } from "@/types/customers";
+import type { ICustomer } from "@/types/customers";
 import type { ITransaction } from "@/types/transaction";
 import CustomInput from "~/form-elements/CustomInput";
 import CustomSelect from "~/form-elements/CustomSelect";
@@ -38,33 +38,37 @@ interface TransactionDialogProps {
 	trigger?: ReactNode;
 }
 
-const DEMO_CUSTOMER:ICustomer = {
-	id: "1",
-	name: "John Doe",
-	address: "123 Main St",
-	email: "john.doe@example.com",
-	phone: "1234567890",
-	status: "active",
-	createdAt: new Date().toISOString(),
-	createdBy: "1",
-	branchId: "1",
-	limit: 1000,
-	idNumber: "1234567890",
-}
-
-export const TransactionDialog = ({
+const TransactionDialog = ({
 	defaultType = "credit",
 	trigger,
 }: TransactionDialogProps) => {
 	const [open, setOpen] = useState(false);
+	const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
 	const formId = useId();
-	const customer = DEMO_CUSTOMER;
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const supabase = createClient();
 	const { user } = useAuth();
 	const { activeBranch } = useStores();
 	const queryClient = useQueryClient();
+
+	// Fetch customers for the active branch
+	const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
+		queryKey: [QueryKeys.CustomersList, activeBranch?.id],
+		queryFn: async () => {
+			if (!activeBranch?.id) return [];
+			const { data, error } = await supabase
+				.from(Tables.Customers)
+				.select("*")
+				.eq("branchId", activeBranch.id)
+				.eq("status", "active")
+				.order("name");
+
+			if (error) throw error;
+			return data as ICustomer[];
+		},
+		enabled: !!activeBranch?.id,
+	});
 
 	const {
 		register,
@@ -85,8 +89,8 @@ export const TransactionDialog = ({
 	const watchedType = watch("type");
 
 	useEffect(() => {
-		if (!customer?.limit || watchedType !== "credit") return;
-		if (watchedAmount > customer?.limit) {
+		if (!selectedCustomer?.limit || watchedType !== "credit") return;
+		if (watchedAmount > selectedCustomer?.limit) {
 			setError("amount", {
 				message: "Amount cannot be greater than credit limit",
 			});
@@ -95,7 +99,7 @@ export const TransactionDialog = ({
 				message: undefined,
 			});
 		}
-	}, [watchedAmount, watchedType, customer, setError]);
+	}, [watchedAmount, watchedType, selectedCustomer, setError]);
 
 	const onSubmit = async (data: TransactionFormData) => {
 		if (!user?.id) {
@@ -103,10 +107,15 @@ export const TransactionDialog = ({
 			return;
 		}
 
+		if (!selectedCustomer) {
+			toast.error("Please select a customer");
+			return;
+		}
+
 		setIsSubmitting(true);
 		try {
 			const { error } = await supabase.from(Tables.Transactions).insert({
-				customerId: customer.id,
+				customerId: selectedCustomer.id,
 				amount: data.amount,
 				type: data.type,
 				notes: data.notes || "",
@@ -120,11 +129,12 @@ export const TransactionDialog = ({
 			toast.success("Transaction created successfully");
 			setOpen(false);
 			reset();
+			setSelectedCustomer(null);
 
 			setTimeout(async () => {
 				await Promise.all([
 					queryClient.invalidateQueries({
-						queryKey: [QueryKeys.CustomerDetails, customer.id],
+						queryKey: [QueryKeys.CustomerDetails, selectedCustomer.id],
 					}),
 					queryClient.invalidateQueries({
 						queryKey: [QueryKeys.TransactionsList],
@@ -142,9 +152,16 @@ export const TransactionDialog = ({
 	const handleOpenChange = (newOpen: boolean) => {
 		if (!newOpen) {
 			reset();
+			setSelectedCustomer(null);
 		}
 		setOpen(newOpen);
 	};
+
+	// Prepare customer options for the select
+	const customerOptions = customers.map((customer) => ({
+		value: customer.id,
+		label: `${customer.name} (${customer.phone})`,
+	}));
 
 	return (
 		<Sheet open={open} onOpenChange={handleOpenChange}>
@@ -157,7 +174,7 @@ export const TransactionDialog = ({
 					<SheetHeader className="border-b border-border px-4 py-4 text-left">
 						<SheetTitle>New Transaction</SheetTitle>
 						<SheetDescription>
-							Create a new transaction for {customer.name}
+							Create a new transaction for a customer
 						</SheetDescription>
 					</SheetHeader>
 
@@ -168,24 +185,42 @@ export const TransactionDialog = ({
 							id={formId}
 						>
 							<div className="flex-1 space-y-4 p-4">
-								{/* Customer Info Card */}
-								<div className="rounded-lg border border-border bg-muted/30 p-4">
-									<div className="space-y-3">
-										<div className="flex items-center justify-between">
-											<h3 className="font-medium text-sm text-foreground">
-												{customer.name}
-											</h3>
-										</div>
-										<div className="flex items-center justify-between border-t border-border pt-2">
-											<span className="text-xs text-muted-foreground">
-												Credit Limit
-											</span>
-											<span className="text-xs font-medium text-foreground">
-												{formatCurrency(customer.limit)}
-											</span>
+								{/* Customer Selection */}
+								<CustomSelect
+									className="w-full"
+									label="Select Customer"
+									placeholder="Search and select a customer..."
+									required
+									options={customerOptions}
+									value={selectedCustomer?.id || ""}
+									onValueChange={(value) => {
+										const customer = customers.find((c) => c.id === value);
+										setSelectedCustomer(customer || null);
+									}}
+									error={!selectedCustomer ? "Please select a customer" : undefined}
+									disabled={isLoadingCustomers}
+								/>
+
+								{/* Customer Info Card - Show when customer is selected */}
+								{selectedCustomer && (
+									<div className="rounded-lg border border-border bg-muted/30 p-4">
+										<div className="space-y-3">
+											<div className="flex items-center justify-between">
+												<h3 className="font-medium text-sm text-foreground">
+													{selectedCustomer.name}
+												</h3>
+											</div>
+											<div className="flex items-center justify-between border-t border-border pt-2">
+												<span className="text-xs text-muted-foreground">
+													Credit Limit
+												</span>
+												<span className="text-xs font-medium text-foreground">
+													{formatCurrency(selectedCustomer.limit)}
+												</span>
+											</div>
 										</div>
 									</div>
-								</div>
+								)}
 
 								{/* Form Fields */}
 								<div className="space-y-4">
@@ -209,6 +244,7 @@ export const TransactionDialog = ({
 										required
 										step="0.01"
 										min="0.01"
+										disabled={!selectedCustomer}
 										error={errors.amount?.message}
 										{...register("amount", { valueAsNumber: true })}
 									/>
@@ -218,6 +254,7 @@ export const TransactionDialog = ({
 										className="min-h-24"
 										placeholder="Add notes about this transaction..."
 										rows={4}
+										disabled={!selectedCustomer}
 										error={errors.notes?.message}
 										{...register("notes")}
 									/>
@@ -238,7 +275,7 @@ export const TransactionDialog = ({
 									</Button>
 									<SubmitButton
 										isLoading={isSubmitting}
-										disabled={isSubmitting}
+										disabled={isSubmitting || !selectedCustomer}
 										className="flex-1"
 										form={formId}
 									>
@@ -253,3 +290,5 @@ export const TransactionDialog = ({
 		</Sheet>
 	);
 };
+
+export default TransactionDialog

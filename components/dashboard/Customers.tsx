@@ -14,14 +14,8 @@ interface CustomersProps {
 const Customers = ({ customers, isLoading }: CustomersProps) => {
 	return (
 		<div className="mb-6">
-			<div className="mb-4 flex items-center justify-between">
+			<div className="mb-4">
 				<h2 className="font-semibold text-foreground text-lg">Recent Customers</h2>
-				<Button variant="outline" asChild>
-					<Link href="/dashboard/customers">
-						<ArrowUpRight className="mr-2 h-4 w-4" />
-						View All
-					</Link>
-				</Button>
 			</div>
 
 			{isLoading ? (
@@ -40,11 +34,21 @@ const Customers = ({ customers, isLoading }: CustomersProps) => {
 					))}
 				</div>
 			) : customers.length > 0 ? (
-				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-					{customers.map((customer) => (
-						<CustomerCard key={customer.id} customer={customer} />
-					))}
-				</div>
+				<>
+					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+						{customers.map((customer) => (
+							<CustomerCard key={customer.id} customer={customer} />
+						))}
+					</div>
+					<div className="mt-4 flex justify-center">
+						<Button variant="outline" asChild className="w-full">
+							<Link href="/dashboard/customers">
+								<ArrowUpRight className="mr-2 h-4 w-4" />
+								View All Customers
+							</Link>
+						</Button>
+					</div>
+				</>
 			) : (
 				<Card>
 					<CardContent className="flex flex-col items-center justify-center py-8">

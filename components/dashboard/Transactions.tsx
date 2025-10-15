@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { CreditCard, Phone, Plus } from "lucide-react";
+import { CreditCard, Phone, ShoppingCart, TrendingDown } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
 import type { ITransactionWithCustomer } from "@/types/transaction";
-import { TransactionDialog } from "../transactions/TransactionDialog";
+import TransactionDialog from "../transactions/TransactionDialog";
 
 const PAGE_SIZE = 10;
 
@@ -90,14 +90,36 @@ const Transactions = () => {
 		<div className="mb-6">
 			<div className="mb-4 flex items-center justify-between">
 				<h2 className="font-semibold text-lg text-foreground">Transactions</h2>
-				<TransactionDialog
-					trigger={
-						<Button size="sm" className="gap-2">
-							<Plus className="h-4 w-4" />
-							New Transaction
-						</Button>
-					}
-				/>
+				<div className="flex shrink-0 items-start gap-2">
+					<TransactionDialog
+						defaultType="credit"
+						trigger={
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-10 w-10 text-destructive hover:bg-destructive/10 md:h-8 md:w-8"
+								aria-label="Add credit transaction"
+							>
+								<ShoppingCart className="h-5 w-5 md:h-4 md:w-4" />
+								<span className="sr-only">Add credit transaction</span>
+							</Button>
+						}
+					/>
+					<TransactionDialog
+						defaultType="payment"
+						trigger={
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-10 w-10 text-primary hover:bg-primary/10 md:h-8 md:w-8"
+								aria-label="Add payment transaction"
+							>
+								<TrendingDown className="h-5 w-5 md:h-4 md:w-4" />
+								<span className="sr-only">Add payment transaction</span>
+							</Button>
+						}
+					/>
+				</div>
 			</div>
 
 			{isLoading ? (
