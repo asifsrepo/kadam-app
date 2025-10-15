@@ -177,6 +177,7 @@ const AuthPage = () => {
 				</form>
 			)}
 		</>
+		
 	);
 
 	return (
