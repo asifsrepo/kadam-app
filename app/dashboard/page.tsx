@@ -1,9 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Customers } from "@/components/dashboard/Customers";
-import { Stats } from "@/components/dashboard/Stats";
-import { Transactions } from "@/components/dashboard/Transactions";
+import Customers from "@/components/dashboard/Customers";
+import Stats from "@/components/dashboard/Stats";
+import Transactions from "@/components/dashboard/Transactions";
 import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
@@ -52,7 +52,6 @@ const Dashboard = () => {
 		enabled: !!activeBranch?.id,
 	});
 
-	// Calculate stats from all customers (we need separate query for accurate stats)
 	const { data: allCustomersStats, isLoading: statsLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id, "stats"],
 		queryFn: async () => {
@@ -99,7 +98,6 @@ const Dashboard = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			{/* Header */}
 			<div className="border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 				<div className="px-4 py-4 md:px-6 md:py-6">
 					<div className="flex items-center justify-between">

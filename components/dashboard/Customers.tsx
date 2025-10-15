@@ -11,7 +11,7 @@ interface CustomersProps {
 	isLoading: boolean;
 }
 
-export const Customers = ({ customers, isLoading }: CustomersProps) => {
+const Customers = ({ customers, isLoading }: CustomersProps) => {
 	return (
 		<div className="mb-6">
 			<div className="mb-4 flex items-center justify-between">
@@ -49,9 +49,7 @@ export const Customers = ({ customers, isLoading }: CustomersProps) => {
 				<Card>
 					<CardContent className="flex flex-col items-center justify-center py-8">
 						<Users className="mb-2 h-8 w-8 text-muted-foreground" />
-						<h3 className="mb-1 font-medium text-foreground">
-							No customers yet
-						</h3>
+						<h3 className="mb-1 font-medium text-foreground">No customers yet</h3>
 						<p className="text-center text-muted-foreground text-sm">
 							Get started by adding your first customer
 						</p>
@@ -67,3 +65,5 @@ export const Customers = ({ customers, isLoading }: CustomersProps) => {
 		</div>
 	);
 };
+
+export default Customers;

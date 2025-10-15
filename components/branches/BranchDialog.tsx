@@ -74,7 +74,7 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 		setIsLoading(true);
 
 		try {
-			const branchData = {
+			const _branchData = {
 				name: formData.name.trim(),
 				location: formData.location.trim(),
 				debtLimit: parseFloat(formData.debtLimit),
@@ -122,29 +122,20 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 
 	return (
 		<>
-			<Button
-				onClick={openDialog}
-				className="flex items-center gap-2"
-				variant={'outline'}
-			>
-				{mode === "edit" ? (
-					<Edit className="h-4 w-4" />
-				) : (
-					<Plus className="h-4 w-4" />
-				)}
+			<Button onClick={openDialog} className="flex items-center gap-2" variant={"outline"}>
+				{mode === "edit" ? <Edit className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
 			</Button>
 
 			<Dialog open={isOpen} onOpenChange={handleClose}>
-				<DialogContent className="max-w-md mx-4 p-4 sm:p-6">
+				<DialogContent className="mx-4 max-w-md p-4 sm:p-6">
 					<DialogHeader className="space-y-2">
-						<DialogTitle className="text-lg font-semibold text-foreground">
+						<DialogTitle className="font-semibold text-foreground text-lg">
 							{mode === "edit" ? "Edit Branch" : "Add New Branch"}
 						</DialogTitle>
-						<DialogDescription className="text-sm text-muted-foreground">
+						<DialogDescription className="text-muted-foreground text-sm">
 							{mode === "edit"
 								? "Update the branch information below."
-								: "Enter the details for your new branch."
-							}
+								: "Enter the details for your new branch."}
 						</DialogDescription>
 					</DialogHeader>
 
@@ -154,7 +145,9 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 								label="Branch Name"
 								name="name"
 								value={formData.name}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("name", e.target.value)}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									handleInputChange("name", e.target.value)
+								}
 								placeholder="Enter branch name"
 								error={errors.name}
 								required
@@ -164,7 +157,9 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 								label="Location"
 								name="location"
 								value={formData.location}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("location", e.target.value)}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									handleInputChange("location", e.target.value)
+								}
 								placeholder="Enter branch location"
 								error={errors.location}
 								required
@@ -175,7 +170,9 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 								name="debtLimit"
 								type="number"
 								value={formData.debtLimit}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("debtLimit", e.target.value)}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									handleInputChange("debtLimit", e.target.value)
+								}
 								placeholder="Enter debt limit amount"
 								error={errors.debtLimit}
 								required
@@ -184,11 +181,11 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 							/>
 						</div>
 
-						<DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-end pt-4">
+						<DialogFooter className="flex-col gap-2 pt-4 sm:flex-row sm:justify-end">
 							<button
 								type="button"
 								onClick={handleClose}
-								className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-muted-foreground bg-background border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
+								className="w-full rounded-md border border-border bg-background px-4 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 sm:w-auto"
 							>
 								Cancel
 							</button>
