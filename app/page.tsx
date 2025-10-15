@@ -18,7 +18,7 @@ const page = () => {
 							<Button>Dashboard</Button>
 						</Link>
 					) : (
-						<Link href={"/signin"}>
+						<Link href={"/auth"}>
 							<Button>Sign In</Button>
 						</Link>
 					)}

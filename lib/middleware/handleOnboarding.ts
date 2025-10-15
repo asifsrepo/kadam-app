@@ -7,7 +7,7 @@ const handleOnboarding = (request: NextRequest, user: any) => {
 	const onboardingStep = user?.user_metadata?.onboarding_step || 1;
 
 	if (!user || !user.user_metadata) {
-		return redirectTo(request, "/signin");
+		return redirectTo(request, "/auth");
 	}
 
 	if (!isOnboarded) {

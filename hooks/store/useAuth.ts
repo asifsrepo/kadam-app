@@ -95,7 +95,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
 			if (redirect) {
 				setTimeout(() => {
-					window.location.href = "/signin";
+					window.location.href = "/auth";
 				}, 100);
 			}
 		} catch (error) {

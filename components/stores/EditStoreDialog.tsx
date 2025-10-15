@@ -54,7 +54,7 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 					phone: data.phone.trim(),
 				})
 				.eq("id", storeId)
-				.eq("ownerId", user.id)
+				.eq("ownerId", user.id);
 
 			if (error) throw error;
 

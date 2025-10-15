@@ -46,5 +46,5 @@ export const handleUnauthenticatedOnProtectedRoutes = (
 	if (isAuthRoute(pathname)) return null;
 
 	// Block all other routes for unauthenticated users
-	return redirectTo(request, "/signin");
+	return redirectTo(request, "/auth");
 };
