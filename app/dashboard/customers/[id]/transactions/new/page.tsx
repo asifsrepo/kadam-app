@@ -110,7 +110,7 @@ const NewTransactionPage = () => {
 						queryKey: [QueryKeys.CustomerDetails, customerId],
 					}),
 					queryClient.invalidateQueries({
-						queryKey: [QueryKeys.TransactionsList, customerId],
+						queryKey: [QueryKeys.TransactionsList],
 					}),
 				]);
 			}, 200);

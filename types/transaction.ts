@@ -19,3 +19,7 @@ export interface ITransaction {
 	notes: string;
 	branchId: IBranch["id"];
 }
+
+export interface ITransactionWithCustomer extends ITransaction {
+	customer: ICustomer;
+}
