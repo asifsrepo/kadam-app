@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
 import type { ITransactionWithCustomer } from "@/types/transaction";
 import CustomSearchInput from "~/CustomSearchInput";
+import { toast } from "sonner";
 
 const TransactionsPage = () => {
     const router = useRouter();
@@ -107,7 +108,7 @@ const TransactionsPage = () => {
                             className="h-10 w-10 shrink-0"
                             onClick={() => {
                                 // TODO: Add filter logic
-                                console.log("Filter clicked");
+                                toast.warning("Filter clicked");
                             }}
                         >
                             <Filter className="h-4 w-4" />
@@ -118,7 +119,7 @@ const TransactionsPage = () => {
                             className="h-10 w-10 shrink-0"
                             onClick={() => {
                                 // TODO: Add create transaction logic
-                                console.log("Create transaction clicked");
+                                toast.warning("Create transaction clicked");
                             }}
                         >
                             <Plus className="h-4 w-4" />
