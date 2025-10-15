@@ -32,6 +32,7 @@ const CustomersPage = () => {
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id, searchQuery, filters],
 		queryFn: async ({ pageParam = 0 }) => {
+			// First, get all customers with their transactions
 			let query = supabase
 				.from(Tables.Customers)
 				.select("*, transactions:transactions(*)")
@@ -47,15 +48,21 @@ const CustomersPage = () => {
 				);
 			}
 
-			const ascending = filters.sortOrder === "asc";
-			query = query.order(filters.sortBy, { ascending });
+			// For non-balance sorting, apply server-side sorting
+			if (filters.sortBy !== "balance") {
+				const ascending = filters.sortOrder === "asc";
+				query = query.order(filters.sortBy, { ascending });
+			}
 
-			query = query.range(pageParam, pageParam + PAGE_SIZE - 1);
+			// Get a larger batch to account for balance filtering
+			const batchSize = filters.balance !== "all" ? PAGE_SIZE * 3 : PAGE_SIZE;
+			query = query.range(pageParam, pageParam + batchSize - 1);
 
 			const { data: customers, error } = await query;
 
 			if (error) throw error;
 
+			// Calculate balances for all customers
 			let processedCustomers = (customers ?? []).map((customer) => {
 				const transactions = customer.transactions ?? [];
 
@@ -73,6 +80,7 @@ const CustomersPage = () => {
 				};
 			}) as CustomerWithBalance[];
 
+			// Apply balance filter
 			if (filters.balance !== "all") {
 				processedCustomers = processedCustomers.filter((customer) => {
 					switch (filters.balance) {
@@ -88,7 +96,7 @@ const CustomersPage = () => {
 				});
 			}
 
-			// Apply client-side sorting for balance (since it's calculated)
+			// Apply sorting (including balance sorting)
 			if (filters.sortBy === "balance") {
 				processedCustomers.sort((a, b) => {
 					const result = a.balance - b.balance;
@@ -96,12 +104,21 @@ const CustomersPage = () => {
 				});
 			}
 
-			return processedCustomers;
+			// Return only the requested page size
+			return processedCustomers.slice(0, PAGE_SIZE);
 		},
 
 		initialPageParam: 0,
-		getNextPageParam: (lastPage, allPages) =>
-			lastPage?.length === PAGE_SIZE ? allPages.length * PAGE_SIZE : undefined,
+		getNextPageParam: (lastPage, allPages) => {
+			// If we got fewer results than requested, we've reached the end
+			if (!lastPage || lastPage.length < PAGE_SIZE) {
+				return undefined;
+			}
+			
+			// For balance filtering, we need to account for the larger batch size
+			const batchSize = filters.balance !== "all" ? PAGE_SIZE * 3 : PAGE_SIZE;
+			return allPages.length * batchSize;
+		},
 		enabled: !!activeBranch?.id,
 	});
 
