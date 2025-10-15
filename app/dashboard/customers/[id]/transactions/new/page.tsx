@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/store/useAuth";
+import useStores from "@/hooks/store/useStores";
 import type { TransactionFormData } from "@/lib/schema/transaction";
 import { transactionSchema } from "@/lib/schema/transaction";
 import { createClient } from "@/lib/supabase/client";
@@ -34,6 +35,7 @@ const NewTransactionPage = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const supabase = createClient();
 	const { user } = useAuth();
+	const { activeBranch } = useStores();
 	const queryClient = useQueryClient();
 	const [type] = useQueryState("type", parseAsString.withDefault("credit"));
 
@@ -95,6 +97,7 @@ const NewTransactionPage = () => {
 				notes: data.notes || "",
 				createdAt: new Date().toISOString(),
 				createdBy: user.id,
+				branchId: activeBranch?.id,
 			} as ITransaction);
 
 			if (error) throw error;
