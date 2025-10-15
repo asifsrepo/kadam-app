@@ -1,12 +1,14 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { CreditCard, Phone } from "lucide-react";
+import { CreditCard, Phone, Plus } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
 import type { ITransactionWithCustomer } from "@/types/transaction";
+import { TransactionDialog } from "../transactions/TransactionDialog";
 
 const PAGE_SIZE = 10;
 
@@ -86,8 +88,16 @@ const Transactions = () => {
 
 	return (
 		<div className="mb-6">
-			<div className="mb-4 flex items-center gap-2">
+			<div className="mb-4 flex items-center justify-between">
 				<h2 className="font-semibold text-lg text-foreground">Transactions</h2>
+				<TransactionDialog
+					trigger={
+						<Button size="sm" className="gap-2">
+							<Plus className="h-4 w-4" />
+							New Transaction
+						</Button>
+					}
+				/>
 			</div>
 
 			{isLoading ? (
@@ -162,7 +172,6 @@ const Transactions = () => {
 						</div>
 					))}
 
-					{/* Load more trigger */}
 					{hasNextPage && (
 						<div ref={loadMoreRef} className="flex justify-center py-4">
 							{isFetchingNextPage ? (
