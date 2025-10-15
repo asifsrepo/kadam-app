@@ -114,7 +114,7 @@ const CustomersPage = () => {
 			if (!lastPage || lastPage.length < PAGE_SIZE) {
 				return undefined;
 			}
-			
+
 			// For balance filtering, we need to account for the larger batch size
 			const batchSize = filters.balance !== "all" ? PAGE_SIZE * 3 : PAGE_SIZE;
 			return allPages.length * batchSize;

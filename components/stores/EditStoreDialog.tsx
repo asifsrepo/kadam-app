@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/store/useAuth";
-import useStores from "@/hooks/store/useStores";
 import { editStoreSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/client";
 import { EditStoreFormData, QueryKeys, Tables } from "@/types";
@@ -24,7 +23,6 @@ interface EditStoreDialogProps {
 
 const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStoreDialogProps) => {
 	const [open, setOpen] = useState(false);
-	const { setDebtLimit } = useStores();
 
 	const { user } = useAuth();
 	const supabase = createClient();
@@ -57,19 +55,17 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 				})
 				.eq("id", storeId)
 				.eq("ownerId", user.id)
-				.select("debtLimit");
 
 			if (error) throw error;
 
 			return storeData?.[0];
 		},
-		onSuccess: async (data) => {
+		onSuccess: async () => {
 			await queryClient.invalidateQueries({
 				queryKey: [QueryKeys.StoreWithBranches, user?.id],
 			});
 			toast.success("Store updated successfully");
 			setOpen(false);
-			setDebtLimit(data?.debtLimit || 0);
 		},
 		onError: (error) => {
 			console.error("Error updating store:", error);
