@@ -44,12 +44,6 @@ const Settings = () => {
 			icon: Building2,
 		},
 		{
-			title: "Transactions",
-			description: "View and manage your transactions",
-			href: "/dashboard/settings/transactions",
-			icon: CreditCard,
-		},
-		{
 			title: "Plans & Billing",
 			description: "Manage your subscription and billing details",
 			href: "/dashboard/settings/plans",
