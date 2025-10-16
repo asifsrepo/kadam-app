@@ -51,7 +51,7 @@ const AuthPage = () => {
 
 		try {
 			const redirectUrl = `${window.location.origin}/auth/callback`;
-			
+
 			const { error } = await supabase.auth.signInWithOAuth({
 				provider,
 				options: {
@@ -60,8 +60,7 @@ const AuthPage = () => {
 			});
 
 			if (error) throw error;
-			
-			// OAuth will handle the redirect automatically
+
 		} catch (error) {
 			toast.error(activeTab === "signin" ? "Sign in failed" : "Sign up failed", {
 				description: error instanceof Error ? error.message : "Please try again later.",
@@ -95,89 +94,87 @@ const AuthPage = () => {
 	};
 
 	const renderSignInContent = () => (
-		<>
-			{!isEmailSignIn ? (
-				<>
-					<div className="space-y-2.5">
-						<Button
-							variant="outline"
-							type="button"
-							onClick={() => handleOAuthSignIn("github")}
-							className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
-							disabled={isLoading !== null}
-						>
-							<Github size={18} />
-							Continue with GitHub
-						</Button>
-
-						<Button
-							variant="outline"
-							type="button"
-							onClick={() => handleOAuthSignIn("google")}
-							className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
-							disabled={isLoading !== null}
-						>
-							<Image alt="Google" src="/assets/google.svg" width={18} height={18} />
-							Continue with Google
-						</Button>
-					</div>
-
-					<div className="relative my-4">
-						<Separator />
-						<div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 bg-background px-2 text-muted-foreground text-xs">
-							or
-						</div>
-					</div>
+		!isEmailSignIn ? (
+			<>
+				<div className="space-y-2.5">
+					<Button
+						variant="outline"
+						type="button"
+						onClick={() => handleOAuthSignIn("github")}
+						className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+						disabled={isLoading !== null}
+					>
+						<Github size={18} />
+						Continue with GitHub
+					</Button>
 
 					<Button
 						variant="outline"
 						type="button"
-						onClick={() => setIsEmailSignIn(true)}
+						onClick={() => handleOAuthSignIn("google")}
 						className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
 						disabled={isLoading !== null}
 					>
-						<Mail size={18} />
-						Sign in with Email
+						<Image alt="Google" src="/assets/google.svg" width={18} height={18} />
+						Continue with Google
 					</Button>
-				</>
-			) : (
-				<form onSubmit={handleSubmit(handleEmailSignIn)} className="space-y-3">
-					<CustomInput
-						label="Email"
-						type="email"
-						placeholder="Enter your email"
-						required
-						error={errors.email?.message}
-						{...register("email")}
-					/>
-					<CustomInput
-						label="Password"
-						type="password"
-						placeholder="Enter your password"
-						required
-						error={errors.password?.message}
-						{...register("password")}
-					/>
-					<div className="flex gap-2 pt-1">
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() => setIsEmailSignIn(false)}
-							className="h-10 flex-1 font-medium text-sm"
-							disabled={isLoading !== null}
-						>
-							Back
-						</Button>
-						<SubmitButton
-							isLoading={isLoading === "email"}
-							className="h-10 flex-1 font-medium text-sm"
-						>
-							Sign In
-						</SubmitButton>
+				</div>
+
+				<div className="relative my-4">
+					<Separator />
+					<div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 bg-background px-2 text-muted-foreground text-xs">
+						or
 					</div>
-				</form>
-			)}
-		</>
+				</div>
+
+				<Button
+					variant="outline"
+					type="button"
+					onClick={() => setIsEmailSignIn(true)}
+					className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+					disabled={isLoading !== null}
+				>
+					<Mail size={18} />
+					Sign in with Email
+				</Button>
+			</>
+		) : (
+			<form onSubmit={handleSubmit(handleEmailSignIn)} className="space-y-3">
+				<CustomInput
+					label="Email"
+					type="email"
+					placeholder="Enter your email"
+					required
+					error={errors.email?.message}
+					{...register("email")}
+				/>
+				<CustomInput
+					label="Password"
+					type="password"
+					placeholder="Enter your password"
+					required
+					error={errors.password?.message}
+					{...register("password")}
+				/>
+				<div className="flex gap-2 pt-1">
+					<Button
+						type="button"
+						variant="outline"
+						onClick={() => setIsEmailSignIn(false)}
+						className="h-10 flex-1 font-medium text-sm"
+						disabled={isLoading !== null}
+					>
+						Back
+					</Button>
+					<SubmitButton
+						isLoading={isLoading === "email"}
+						className="h-10 flex-1 font-medium text-sm"
+					>
+						Sign In
+					</SubmitButton>
+				</div>
+			</form>
+		)
 	);
 
 	const renderSignUpContent = () => (
