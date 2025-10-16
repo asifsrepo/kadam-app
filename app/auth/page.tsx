@@ -50,17 +50,22 @@ const AuthPage = () => {
 		setIsLoading(provider);
 
 		try {
+			const redirectUrl = `${window.location.origin}/auth/callback`;
+			
 			const { error } = await supabase.auth.signInWithOAuth({
 				provider,
+				options: {
+					redirectTo: redirectUrl,
+				},
 			});
 
 			if (error) throw error;
-			router.push("/dashboard");
+			
+			// OAuth will handle the redirect automatically
 		} catch (error) {
 			toast.error(activeTab === "signin" ? "Sign in failed" : "Sign up failed", {
 				description: error instanceof Error ? error.message : "Please try again later.",
 			});
-		} finally {
 			setIsLoading(null);
 		}
 	};
@@ -89,7 +94,7 @@ const AuthPage = () => {
 		}
 	};
 
-	const renderAuthContent = () => (
+	const renderSignInContent = () => (
 		<>
 			{!isEmailSignIn ? (
 				<>
@@ -117,27 +122,23 @@ const AuthPage = () => {
 						</Button>
 					</div>
 
-					{activeTab === "signin" && (
-						<>
-							<div className="relative my-4">
-								<Separator />
-								<div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 bg-background px-2 text-muted-foreground text-xs">
-									or
-								</div>
-							</div>
+					<div className="relative my-4">
+						<Separator />
+						<div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 bg-background px-2 text-muted-foreground text-xs">
+							or
+						</div>
+					</div>
 
-							<Button
-								variant="outline"
-								type="button"
-								onClick={() => setIsEmailSignIn(true)}
-								className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
-								disabled={isLoading !== null}
-							>
-								<Mail size={18} />
-								Sign in with Email
-							</Button>
-						</>
-					)}
+					<Button
+						variant="outline"
+						type="button"
+						onClick={() => setIsEmailSignIn(true)}
+						className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+						disabled={isLoading !== null}
+					>
+						<Mail size={18} />
+						Sign in with Email
+					</Button>
 				</>
 			) : (
 				<form onSubmit={handleSubmit(handleEmailSignIn)} className="space-y-3">
@@ -177,7 +178,32 @@ const AuthPage = () => {
 				</form>
 			)}
 		</>
-		
+	);
+
+	const renderSignUpContent = () => (
+		<div className="space-y-2.5">
+			<Button
+				variant="outline"
+				type="button"
+				onClick={() => handleOAuthSignIn("github")}
+				className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+				disabled={isLoading !== null}
+			>
+				<Github size={18} />
+				Continue with GitHub
+			</Button>
+
+			<Button
+				variant="outline"
+				type="button"
+				onClick={() => handleOAuthSignIn("google")}
+				className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+				disabled={isLoading !== null}
+			>
+				<Image alt="Google" src="/assets/google.svg" width={18} height={18} />
+				Continue with Google
+			</Button>
+		</div>
 	);
 
 	return (
@@ -204,10 +230,10 @@ const AuthPage = () => {
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="signin" className="mt-4 space-y-4">
-							{renderAuthContent()}
+							{renderSignInContent()}
 						</TabsContent>
-						<TabsContent value="signup" className="mt-4 space-y-4">
-							{renderAuthContent()}
+						<TabsContent value="signup" className="mt-4">
+							{renderSignUpContent()}
 						</TabsContent>
 					</Tabs>
 
