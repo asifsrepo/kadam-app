@@ -60,7 +60,6 @@ const AuthPage = () => {
 			});
 
 			if (error) throw error;
-
 		} catch (error) {
 			toast.error(activeTab === "signin" ? "Sign in failed" : "Sign up failed", {
 				description: error instanceof Error ? error.message : "Please try again later.",
@@ -93,7 +92,7 @@ const AuthPage = () => {
 		}
 	};
 
-	const renderSignInContent = () => (
+	const renderSignInContent = () =>
 		!isEmailSignIn ? (
 			<>
 				<div className="space-y-2.5">
@@ -174,8 +173,7 @@ const AuthPage = () => {
 					</SubmitButton>
 				</div>
 			</form>
-		)
-	);
+		);
 
 	const renderSignUpContent = () => (
 		<div className="space-y-2.5">
