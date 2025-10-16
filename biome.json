@@ -55,11 +55,6 @@
 			"arrowParentheses": "always"
 		}
 	},
-	"html": {
-		"formatter": {
-			"selfCloseVoidElements": "always"
-		}
-	},
 	"assist": {
 		"actions": {
 			"source": {
