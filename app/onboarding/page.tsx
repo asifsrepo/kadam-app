@@ -26,7 +26,7 @@ const OnboardingPage = () => {
 
 	const handleComplete = (step: number) => {
 		if (step === 3) {
-			window.location.href = "/dashboard";
+			window.location.href = "/";
 			return;
 		}
 		setStep(step + 1);
