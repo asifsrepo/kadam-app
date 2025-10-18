@@ -1,6 +1,6 @@
 import type { NextRequest, NextResponse } from "next/server";
 import type { IUser } from "@/types";
-import { continueNext, isAuthRoute, isPublicRoute, redirectTo } from "./utils";
+import { continueNext, isAuthRoute, redirectTo } from "./utils";
 
 /**
  * Handles authenticated users trying to access authentication routes.
@@ -14,11 +14,11 @@ export const handleAuthenticatedOnAuthRoutes = (
 	user: IUser,
 ): NextResponse | null => {
 	const { pathname } = request.nextUrl;
-
+	
 	if (user && isAuthRoute(pathname)) {
 		return redirectTo(request, "/");
 	}
-
+	
 	if (!user && isAuthRoute(pathname)) return continueNext();
 
 	return null;
@@ -38,9 +38,6 @@ export const handleUnauthenticatedOnProtectedRoutes = (
 
 	// If user is fully authenticated, allow access
 	if (user) return null;
-
-	// Don't block public routes
-	if (isPublicRoute(pathname)) return null;
 
 	// Don't block auth routes (sign-in, sign-up, etc.)
 	if (isAuthRoute(pathname)) return null;

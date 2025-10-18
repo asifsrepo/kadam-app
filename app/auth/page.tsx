@@ -48,9 +48,7 @@ const AuthPage = () => {
 
 	const handleOAuthSignIn = async (provider: "github" | "google") => {
 		setIsLoading(provider);
-
 		try {
-
 			const { error } = await supabase.auth.signInWithOAuth({
 				provider
 			});
