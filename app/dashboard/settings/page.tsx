@@ -71,7 +71,7 @@ const Settings = () => {
 								onClick={item.onClick}
 								className="group flex min-h-[108px] w-full items-center gap-4 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent md:p-5"
 							>
-								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary md:h-12 md:w-12">
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg md:h-12 md:w-12">
 									<Icon className="h-5 w-5 md:h-6 md:w-6" />
 								</div>
 
@@ -95,7 +95,7 @@ const Settings = () => {
 							href={item.href}
 							className="group flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent md:p-5"
 						>
-							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary md:h-12 md:w-12">
+							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg md:h-12 md:w-12">
 								<Icon className="h-5 w-5 md:h-6 md:w-6" />
 							</div>
 
