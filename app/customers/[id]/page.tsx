@@ -77,7 +77,7 @@ const CustomerDetailsPage = () => {
 						</div>
 					</div>
 					<Button size="sm" className="h-8 shrink-0 text-xs" asChild>
-						<Link href={`/dashboard/customers/${customer.id}/transactions/new`}>
+						<Link href={`/customers/${customer.id}/transactions/new`}>
 							<Plus className="mr-1 h-3 w-3" />
 							Add
 						</Link>

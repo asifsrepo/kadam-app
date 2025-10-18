@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import DashboardLayout from "@/components/DashboardLayout";
 import Providers from "@/components/layout/Providers";
 import { fontMap, getAllFontVariables } from "@/lib/fonts";
 import { getSelectedColorScheme, getSelectedFont } from "@/lib/server/settings-helpers";
@@ -17,7 +18,11 @@ const RootLayout = async ({ children }: WrapperProps) => {
 			className={`${allFontVariables} ${selectedColorScheme}`}
 		>
 			<body className={`antialiased ${selectedFontConfig.className}`}>
-				<Providers>{children}</Providers>
+				<Providers>
+					<DashboardLayout>
+						{children}
+					</DashboardLayout>
+				</Providers>
 			</body>
 		</html>
 	);

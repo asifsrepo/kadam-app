@@ -77,7 +77,7 @@ const AuthPage = () => {
 
 			await initialize();
 			toast.success("Welcome back!");
-			router.push("/dashboard");
+			router.push("/");
 		} catch (error) {
 			toast.error("Sign in failed", {
 				description:

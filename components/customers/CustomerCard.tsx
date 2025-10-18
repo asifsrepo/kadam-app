@@ -16,7 +16,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 		const isButtonClick = target.closest("button") || target.closest("a");
 
 		if (!isButtonClick) {
-			router.push(`/dashboard/customers/${customer.id}`);
+			router.push(`/customers/${customer.id}`);
 		}
 	};
 	return (
@@ -53,7 +53,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							asChild
 						>
 							<Link
-								href={`/dashboard/customers/${customer.id}/transactions/new?type=credit`}
+								href={`/customers/${customer.id}/transactions/new?type=credit`}
 							>
 								<ShoppingCart className="h-4 w-4" />
 							</Link>
@@ -66,7 +66,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							asChild
 						>
 							<Link
-								href={`/dashboard/customers/${customer.id}/transactions/new?type=payment`}
+								href={`/customers/${customer.id}/transactions/new?type=payment`}
 							>
 								<TrendingDown className="h-4 w-4" />
 							</Link>

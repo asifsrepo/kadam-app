@@ -19,7 +19,7 @@ const handleOnboarding = (request: NextRequest, user: any) => {
 
 	if (isOnboarded) {
 		if (pathname === "/onboarding") {
-			return redirectTo(request, "/dashboard");
+			return redirectTo(request, "/");
 		}
 
 		return continueNext();

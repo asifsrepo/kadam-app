@@ -29,25 +29,25 @@ const Settings = () => {
 		{
 			title: "Customers",
 			description: "View and manage your customers",
-			href: "/dashboard/customers",
+			href: "/customers",
 			icon: Users2,
 		},
 		{
 			title: "Branch Management",
 			description: "View and manage your branches",
-			href: "/dashboard/settings/branches",
+			href: "/settings/branches",
 			icon: Building2,
 		},
 		{
 			title: "Appearance",
 			description: "Customize theme and colors",
-			href: "/dashboard/settings/appearance",
+			href: "/settings/appearance",
 			icon: Palette,
 		},
 		{
 			title: "Plans & Billing",
 			description: "Manage subscription and billing",
-			href: "/dashboard/settings/plans",
+			href: "/settings/plans",
 			icon: CreditCard,
 		},
 		{

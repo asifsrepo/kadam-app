@@ -175,7 +175,7 @@ const Transactions = () => {
 												/>
 												<div className="min-w-0 flex-1">
 													<Link
-														href={`/dashboard/customers/${transaction.customer.id}`}
+														href={`/customers/${transaction.customer.id}`}
 													>
 														<h4 className="truncate font-medium text-foreground text-sm">
 															{transaction.customer.name}

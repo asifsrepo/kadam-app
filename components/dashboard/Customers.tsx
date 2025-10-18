@@ -42,7 +42,7 @@ const Customers = ({ customers, isLoading }: CustomersProps) => {
 					</div>
 					<div className="mt-4 flex justify-center">
 						<Button variant="outline" asChild className="w-full">
-							<Link href="/dashboard/customers">
+							<Link href="/customers">
 								<ArrowUpRight className="mr-2 h-4 w-4" />
 								View All Customers
 							</Link>
@@ -58,7 +58,7 @@ const Customers = ({ customers, isLoading }: CustomersProps) => {
 							Get started by adding your first customer
 						</p>
 						<Button className="mt-3" asChild>
-							<Link href="/dashboard/customers/new">
+							<Link href="/customers/new">
 								<Plus className="mr-2 h-4 w-4" />
 								Add Customer
 							</Link>

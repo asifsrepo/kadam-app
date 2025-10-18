@@ -17,12 +17,12 @@ const NotFound = () => {
 				</p>
 			</div>
 			{user ? (
-				<Link href="/dashboard" passHref>
+				<Link href="/" passHref>
 					<Button>Go to Dashboard</Button>
 				</Link>
 			) : (
-				<Link href="/" passHref>
-					<Button>Go to Home </Button>
+				<Link href="/signin" passHref>
+					<Button>signin </Button>
 				</Link>
 			)}
 		</div>

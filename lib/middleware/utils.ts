@@ -44,7 +44,7 @@ export const continueNext = (supabaseResponse?: NextResponse): NextResponse => {
  * This is useful for redirecting users to different pages.
  *
  * @param request - The incoming Next.js request object
- * @param redirectPath - The path to redirect to (e.g., "/dashboard", "/auth")
+ * @param redirectPath - The path to redirect to (e.g., "/", "/auth")
  * @returns NextResponse that redirects to the specified path
  */
 export const redirectTo = (request: NextRequest, redirectPath: string): NextResponse => {

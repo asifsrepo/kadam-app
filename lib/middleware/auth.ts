@@ -16,7 +16,7 @@ export const handleAuthenticatedOnAuthRoutes = (
 	const { pathname } = request.nextUrl;
 
 	if (user && isAuthRoute(pathname)) {
-		return redirectTo(request, "/dashboard");
+		return redirectTo(request, "/");
 	}
 
 	if (!user && isAuthRoute(pathname)) return continueNext();
