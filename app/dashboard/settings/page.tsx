@@ -25,12 +25,6 @@ const Settings = () => {
 	};
 
 	const settingsItems = [
-		// {
-		// 	title: "Staff Management",
-		// 	description: "Add and manage staff members and permissions",
-		// 	href: "/dashboard/settings/staffs",
-		// 	icon: Users,
-		// },
 		{
 			title: "Customers",
 			description: "View and manage your customer database",
