@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, ChevronRight, CreditCard, LogOut, Users2 } from "lucide-react";
+import { Building2, ChevronRight, CreditCard, LogOut, Palette, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import ShopInfo from "@/components/stores/ShopInfo";
@@ -36,6 +36,12 @@ const Settings = () => {
 			description: "View and manage your branches",
 			href: "/dashboard/settings/branches",
 			icon: Building2,
+		},
+		{
+			title: "Appearance",
+			description: "Customize theme and colors",
+			href: "/dashboard/settings/appearance",
+			icon: Palette,
 		},
 		{
 			title: "Plans & Billing",
