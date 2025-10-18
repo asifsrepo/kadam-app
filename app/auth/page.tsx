@@ -25,7 +25,7 @@ const AuthPage = () => {
 	const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
 	const supabase = createClient();
 	const { initialize } = useAuth();
-	const router = useRouter();
+	const router = useRouter();	
 
 	const {
 		handleSubmit,
@@ -50,13 +50,9 @@ const AuthPage = () => {
 		setIsLoading(provider);
 
 		try {
-			const redirectUrl = `${window.location.origin}/auth/callback`;
 
 			const { error } = await supabase.auth.signInWithOAuth({
-				provider,
-				options: {
-					redirectTo: redirectUrl,
-				},
+				provider
 			});
 
 			if (error) throw error;
