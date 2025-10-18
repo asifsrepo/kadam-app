@@ -34,12 +34,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -72,12 +72,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -105,22 +105,18 @@ const Dashboard = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			<div className="border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-				<div className="px-4 py-4 md:px-6 md:py-6">
-					<div className="flex items-center justify-between">
-						<div>
-							<h1 className="font-bold text-2xl text-foreground md:text-3xl">
-								Dashboard
-							</h1>
-							<p className="text-muted-foreground text-sm md:text-base">
-								Overview of your business
-							</p>
-						</div>
+			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+				<div className="px-3 py-3 md:px-6 md:py-4">
+					<div>
+						<h1 className="font-semibold text-lg md:text-2xl">Dashboard</h1>
+						<p className="text-muted-foreground text-xs md:text-sm">
+							Overview of your business
+						</p>
 					</div>
 				</div>
 			</div>
 
-			<div className="p-4 md:p-6">
+			<div className="p-3 md:p-6">
 				<Stats
 					totalCustomers={allCustomersStats?.totalCustomers || 0}
 					totalDebt={allCustomersStats?.totalDebt || 0}

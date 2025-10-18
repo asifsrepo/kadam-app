@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import ShopInfo from "@/components/stores/ShopInfo";
 import { useAuth } from "@/hooks/store/useAuth";
+import BackButton from "~/BackButton";
 import ConfirmationDialog from "~/ConfirmationDialog";
 
 const Settings = () => {
@@ -27,7 +28,7 @@ const Settings = () => {
 	const settingsItems = [
 		{
 			title: "Customers",
-			description: "View and manage your customer database",
+			description: "View and manage your customers",
 			href: "/dashboard/customers",
 			icon: Users2,
 		},
@@ -45,7 +46,7 @@ const Settings = () => {
 		},
 		{
 			title: "Plans & Billing",
-			description: "Manage your subscription and billing details",
+			description: "Manage subscription and billing",
 			href: "/dashboard/settings/plans",
 			icon: CreditCard,
 		},
@@ -59,63 +60,71 @@ const Settings = () => {
 	];
 
 	return (
-		<div className="flex flex-col gap-4 p-4 md:gap-6 md:p-6">
-			<div className="flex flex-col gap-2">
-				<h1 className="font-bold text-2xl text-foreground md:text-3xl">Settings</h1>
-				<ShopInfo variant="settings" />
+		<div className="min-h-screen bg-background pb-24">
+			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+				<div className="px-3 py-3 md:px-6 md:py-4">
+					<div className="flex items-center gap-3">
+						<BackButton />
+						<h1 className="font-semibold text-lg md:text-2xl">Settings</h1>
+					</div>
+				</div>
 			</div>
 
-			<div className="flex flex-col gap-3 md:gap-4">
-				{settingsItems.map((item) => {
-					const Icon = item.icon;
-					const isLogout = item.title === "Sign Out";
+			<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
+				<ShopInfo variant="settings" />
 
-					if (isLogout) {
+				<div className="flex flex-col gap-3 md:gap-4">
+					{settingsItems.map((item) => {
+						const Icon = item.icon;
+						const isLogout = item.title === "Sign Out";
+
+						if (isLogout) {
+							return (
+								<button
+									key={item.title}
+									onClick={item.onClick}
+									className="group flex min-h-[88px] w-full items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent md:min-h-[96px] md:gap-4 md:p-5"
+								>
+									<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary md:h-12 md:w-12">
+										<Icon className="h-5 w-5 md:h-6 md:w-6" />
+									</div>
+
+									<div className="flex min-w-0 flex-1 flex-col gap-0.5 md:gap-1">
+										<h3 className="font-semibold text-base text-card-foreground group-hover:text-accent-foreground md:text-lg">
+											{item.title}
+										</h3>
+										<p className="text-muted-foreground text-xs md:text-sm">
+											{item.description}
+										</p>
+									</div>
+
+									<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />
+								</button>
+							);
+						}
+
 						return (
-							<button
-								key={item.title}
-								onClick={item.onClick}
-								className="group flex min-h-[108px] w-full items-center gap-4 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent md:p-5"
+							<Link
+								key={item.href}
+								href={item.href}
+								className="group flex min-h-[88px] items-center gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent md:min-h-[96px] md:gap-4 md:p-5"
 							>
-								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg md:h-12 md:w-12">
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary md:h-12 md:w-12">
 									<Icon className="h-5 w-5 md:h-6 md:w-6" />
 								</div>
 
-								<div className="flex min-w-0 flex-1 flex-col gap-1">
-									<h3 className="font-semibold text-card-foreground group-hover:text-accent-foreground">
+								<div className="flex min-w-0 flex-1 flex-col gap-0.5 md:gap-1">
+									<h3 className="font-semibold text-base text-card-foreground group-hover:text-accent-foreground md:text-lg">
 										{item.title}
 									</h3>
-									<p className="text-muted-foreground text-sm">
-										{item.description}
-									</p>
+									<p className="text-muted-foreground text-xs md:text-sm">{item.description}</p>
 								</div>
 
 								<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />
-							</button>
+							</Link>
 						);
-					}
-
-					return (
-						<Link
-							key={item.href}
-							href={item.href}
-							className="group flex items-center gap-4 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent md:p-5"
-						>
-							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg md:h-12 md:w-12">
-								<Icon className="h-5 w-5 md:h-6 md:w-6" />
-							</div>
-
-							<div className="flex min-w-0 flex-1 flex-col gap-1">
-								<h3 className="font-semibold text-card-foreground group-hover:text-accent-foreground">
-									{item.title}
-								</h3>
-								<p className="text-muted-foreground text-sm">{item.description}</p>
-							</div>
-
-							<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />
-						</Link>
-					);
-				})}
+					})}
+				</div>
 			</div>
 
 			<ConfirmationDialog
