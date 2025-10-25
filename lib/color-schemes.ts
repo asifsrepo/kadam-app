@@ -119,7 +119,17 @@ export const colorSchemes: Record<string, ColorScheme> = {
 		defaultFont: "Fira Code",
 		parentTheme: "default",
 	},
-	// Keep your existing themes
+	honeybee: {
+		name: "Honeybee",
+		preview: {
+			background: "oklch(0.9884 0.0156 91.5418)",
+			foreground: "oklch(0.2775 0.0221 66.7042)",
+			primary: "oklch(0.8281 0.1689 84.9225)",
+			secondary: "oklch(0.8326 0.1125 74.5039)",
+			accent: "oklch(0.9336 0.0407 84.5781)",
+		},
+		defaultFont: "Nunito Sans",
+	},
 	"mocha-mouse": {
 		name: "Mocha Mouse",
 		preview: {
@@ -163,7 +173,7 @@ export const colorSchemes: Record<string, ColorScheme> = {
 			accent: "oklch(0.9461 0 0)",
 		},
 		defaultFont: "Outfit",
-	},
+	}
 };
 
 export const colorSchemeOptions = Object.keys(colorSchemes) as Array<keyof typeof colorSchemes>;

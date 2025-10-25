@@ -10,10 +10,8 @@ import { IUser } from "./types";
 export const middleware = async (request: NextRequest) => {
 	const { supabase, supabaseResponse } = createSupabaseClient(request);
 
-	const { data, error } = await supabase.auth.getUser();
-	if (error) {
-		console.error("Get user error:", error);
-	}
+	const { data } = await supabase.auth.getUser();
+
 	const user = data?.user;
 
 	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);

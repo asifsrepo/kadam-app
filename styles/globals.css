@@ -6,6 +6,7 @@
 @import "./notePad.css";
 @import "./default.css";
 @import "./supabase.css";
+@import "./honeybee.css";
 
 @custom-variant dark (&:is(.dark *));
 
