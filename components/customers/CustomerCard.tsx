@@ -44,27 +44,29 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							</div>
 						</div>
 					</div>
-					<div className="flex shrink-0 items-start gap-1">
+					<div className="flex shrink-0 flex-col items-end gap-1">
 						<Button
 							variant="outline"
-							size="icon"
-							className="h-8 w-8 text-destructive hover:bg-destructive/10"
+							size="sm"
+							className="h-8 w-full justify-start gap-2 text-destructive hover:bg-destructive/10"
 							aria-label={`Add credit transaction for ${customer.name}`}
 							asChild
 						>
 							<Link href={`/customers/${customer.id}/transactions/new?type=credit`}>
 								<ShoppingCart className="h-4 w-4" />
+								<span className="text-xs">Credit</span>
 							</Link>
 						</Button>
 						<Button
 							variant="outline"
-							size="icon"
-							className="h-8 w-8 text-primary hover:bg-primary/10"
+							size="sm"
+							className="h-8 w-full justify-start gap-2 text-primary hover:bg-primary/10"
 							aria-label={`Add payment transaction for ${customer.name}`}
 							asChild
 						>
 							<Link href={`/customers/${customer.id}/transactions/new?type=payment`}>
 								<TrendingDown className="h-4 w-4" />
+								<span className="text-xs">Payment</span>
 							</Link>
 						</Button>
 					</div>

@@ -1,9 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ShoppingCart } from "lucide-react";
 import Customers from "@/components/dashboard/Customers";
 import Stats from "@/components/dashboard/Stats";
 import Transactions from "@/components/dashboard/Transactions";
+import TransactionDialog from "@/components/transactions/TransactionDialog";
+import { Button } from "@/components/ui/button";
 import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
@@ -34,12 +37,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -72,12 +75,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -107,11 +110,27 @@ const Dashboard = () => {
 		<div className="min-h-screen bg-background pb-24">
 			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 				<div className="px-3 py-3 md:px-6 md:py-4">
-					<div>
-						<h1 className="font-semibold text-lg md:text-2xl">Dashboard</h1>
-						<p className="text-muted-foreground text-xs md:text-sm">
-							Overview of your business
-						</p>
+					<div className="flex items-center justify-between">
+						<div>
+							<h1 className="font-semibold text-lg md:text-2xl">Dashboard</h1>
+							<p className="text-muted-foreground text-xs md:text-sm">
+								Overview of your business
+							</p>
+						</div>
+						<TransactionDialog
+							defaultType="credit"
+							trigger={
+								<Button
+									variant="outline"
+									size="icon"
+									className="h-10 w-10 md:h-8 md:w-8"
+									aria-label="Add credit transaction"
+								>
+									<ShoppingCart className="h-5 w-5 md:h-4 md:w-4" />
+									<span className="sr-only">Add credit transaction</span>
+								</Button>
+							}
+						/>
 					</div>
 				</div>
 			</div>
