@@ -60,9 +60,7 @@ const ThemeModeSettings = () => {
 				</div>
 				<div className="flex-1">
 					<h2 className="font-semibold text-base">Theme Mode</h2>
-					<p className="text-muted-foreground text-xs">
-						Choose light, dark, or system
-					</p>
+					<p className="text-muted-foreground text-xs">Choose light, dark, or system</p>
 				</div>
 			</div>
 

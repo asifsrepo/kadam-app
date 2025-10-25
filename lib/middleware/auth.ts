@@ -14,11 +14,11 @@ export const handleAuthenticatedOnAuthRoutes = (
 	user: IUser,
 ): NextResponse | null => {
 	const { pathname } = request.nextUrl;
-	
+
 	if (user && isAuthRoute(pathname)) {
 		return redirectTo(request, "/");
 	}
-	
+
 	if (!user && isAuthRoute(pathname)) return continueNext();
 
 	return null;

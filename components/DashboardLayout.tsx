@@ -25,13 +25,11 @@ const DashboardLayout = ({ children }: WrapperProps) => {
 	const pathname = usePathname();
 	const activeTab = pathname === "/" ? "dashboard" : "settings";
 
-	if (pathname === '/auth' || pathname === "onboarding") return children;
+	if (pathname === "/auth" || pathname === "onboarding") return children;
 
 	return (
 		<main className="flex h-screen flex-col">
-			<div className="flex-1 overflow-auto pb-16">
-				{children}
-			</div>
+			<div className="flex-1 overflow-auto pb-16">{children}</div>
 
 			<FloatingMenu />
 
@@ -58,8 +56,9 @@ const DashboardLayout = ({ children }: WrapperProps) => {
 								<Icon className="h-6 w-6" />
 							</div>
 							<span
-								className={`font-medium text-xs ${active ? "text-primary" : "text-muted-foreground"
-									}`}
+								className={`font-medium text-xs ${
+									active ? "text-primary" : "text-muted-foreground"
+								}`}
 								style={{
 									letterSpacing: 0.1,
 									marginTop: 2,

@@ -6,12 +6,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 interface BackButtonProps {
-
 	className?: string;
-	onClick?: () => void;
 }
 
-const BackButton = ({ className = "", onClick }: BackButtonProps) => {
+const BackButton = ({ className = "" }: BackButtonProps) => {
 	const router = useRouter();
 
 	return (

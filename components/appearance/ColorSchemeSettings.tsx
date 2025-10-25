@@ -112,7 +112,9 @@ const ColorSchemeSettings = ({ initialColorScheme = "default" }: ColorSchemeSett
 											/>
 											<div
 												className="h-6 w-6 rounded-md shadow-sm ring-1 ring-black/5"
-												style={{ backgroundColor: variant.preview.secondary }}
+												style={{
+													backgroundColor: variant.preview.secondary,
+												}}
 											/>
 										</div>
 										<span className="truncate font-medium text-sm">
@@ -143,9 +145,7 @@ const ColorSchemeSettings = ({ initialColorScheme = "default" }: ColorSchemeSett
 				</div>
 				<div className="flex-1">
 					<h2 className="font-semibold text-base">Color Theme</h2>
-					<p className="text-muted-foreground text-xs">
-						Choose your preferred colors
-					</p>
+					<p className="text-muted-foreground text-xs">Choose your preferred colors</p>
 				</div>
 			</div>
 

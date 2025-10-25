@@ -90,7 +90,7 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 							className={cn(
 								"truncate font-semibold",
 								isSettings
-									? "text-sm text-card-foreground md:text-base"
+									? "text-card-foreground text-sm md:text-base"
 									: "text-base md:text-lg",
 							)}
 						>
@@ -109,7 +109,9 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 						</div>
 						<div className="flex items-center gap-1.5 text-xs md:text-sm">
 							<Store className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-							<span className="truncate text-muted-foreground">ID: {store.storeId}</span>
+							<span className="truncate text-muted-foreground">
+								ID: {store.storeId}
+							</span>
 						</div>
 					</div>
 				</div>

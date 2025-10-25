@@ -34,12 +34,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -72,12 +72,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,

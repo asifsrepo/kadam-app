@@ -24,9 +24,7 @@ const FontSettings = ({ initialFont = "Inter" }: FontSettingsProps) => {
 				</div>
 				<div className="flex-1">
 					<h2 className="font-semibold text-base">Typography</h2>
-					<p className="text-muted-foreground text-xs">
-						Choose your preferred font
-					</p>
+					<p className="text-muted-foreground text-xs">Choose your preferred font</p>
 				</div>
 			</div>
 

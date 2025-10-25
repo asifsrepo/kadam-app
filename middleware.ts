@@ -23,7 +23,6 @@ export const middleware = async (request: NextRequest) => {
 	const protectedRouteResponse = handleUnauthenticatedOnProtectedRoutes(request, user as IUser);
 	if (protectedRouteResponse) return protectedRouteResponse;
 
-
 	const onboardingResponse = handleOnboarding(request, user as IUser);
 	if (onboardingResponse) return onboardingResponse;
 

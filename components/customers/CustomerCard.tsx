@@ -52,9 +52,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							aria-label={`Add credit transaction for ${customer.name}`}
 							asChild
 						>
-							<Link
-								href={`/customers/${customer.id}/transactions/new?type=credit`}
-							>
+							<Link href={`/customers/${customer.id}/transactions/new?type=credit`}>
 								<ShoppingCart className="h-4 w-4" />
 							</Link>
 						</Button>
@@ -65,9 +63,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							aria-label={`Add payment transaction for ${customer.name}`}
 							asChild
 						>
-							<Link
-								href={`/customers/${customer.id}/transactions/new?type=payment`}
-							>
+							<Link href={`/customers/${customer.id}/transactions/new?type=payment`}>
 								<TrendingDown className="h-4 w-4" />
 							</Link>
 						</Button>

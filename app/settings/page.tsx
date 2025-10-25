@@ -117,7 +117,9 @@ const Settings = () => {
 									<h3 className="font-semibold text-base text-card-foreground group-hover:text-accent-foreground md:text-lg">
 										{item.title}
 									</h3>
-									<p className="text-muted-foreground text-xs md:text-sm">{item.description}</p>
+									<p className="text-muted-foreground text-xs md:text-sm">
+										{item.description}
+									</p>
 								</div>
 
 								<ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent-foreground" />
