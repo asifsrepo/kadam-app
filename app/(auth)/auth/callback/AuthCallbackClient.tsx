@@ -1,34 +1,42 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/store/useAuth";
 import { createClient } from "@/lib/supabase/client";
 
 const AuthCallbackClient = () => {
 	const supabase = createClient();
 	const { initialize } = useAuth();
-	const router = useRouter();
 
 	useEffect(() => {
 		const handleAuthCallback = async () => {
-			const { data, error } = await supabase.auth.getSession();
+			toast.promise(async () => {
+				const { data, error } = await supabase.auth.getSession();
 
-			if (error) {
-				return;
-			}
+				if (error) {
+					throw new Error(error.message);
+				}
 
-			if (data.session) {
-				await initialize();
+				if (data.session) {
+					await initialize();
 
-				setTimeout(() => {
-					router.push("/");
-				}, 1400);
-			}
+					setTimeout(() => {
+						window.location.href = "/";
+					}, 1400);
+				} else {
+					throw new Error("No session found. Please try signing in again.");
+				}
+			}, {
+				loading: "Verifying your authentication...",
+				success: "Authentication verified successfully!",
+				error: "Failed to verify authentication. Please try again.",
+			});	
+
 		};
 
 		handleAuthCallback();
-	}, [supabase, initialize, router]);
+	}, [supabase, initialize]);
 
 	return null;
 };
