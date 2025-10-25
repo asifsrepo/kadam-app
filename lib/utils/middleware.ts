@@ -1,21 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/constants/routes";
-
-/**
- * Checks if a given pathname is a public route.
- * Public routes are accessible to all users, authenticated or not.
- */
-export const isPublicRoute = (pathname: string): boolean => {
-	return PUBLIC_ROUTES.includes(pathname);
-};
-
-/**
- * Checks if a given pathname is an authentication route.
- * Authentication routes are used for signing in or signing up.
- */
-export const isAuthRoute = (pathname: string): boolean => {
-	return AUTH_ROUTES.includes(pathname);
-};
 
 export const continueNext = (supabaseResponse?: NextResponse): NextResponse => {
 	return supabaseResponse || NextResponse.next();
