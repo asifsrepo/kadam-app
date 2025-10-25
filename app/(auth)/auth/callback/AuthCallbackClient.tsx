@@ -28,10 +28,10 @@ const AuthCallbackClient = () => {
 					throw new Error("No session found. Please try signing in again.");
 				}
 			}, {
-				loading: "Verifying your authentication...",
-				success: "Authentication verified successfully!",
-				error: "Failed to verify authentication. Please try again.",
-			});	
+				loading: "Signing you in...",
+				success: "Welcome back!",
+				error: "Something went wrong. Please try signing in again.",
+			});
 
 		};
 
