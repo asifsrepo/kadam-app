@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse } from "next/server";
  * Authentication routes are used for signing in or signing up.
  */
 export const isAuthRoute = (pathname: string): boolean => {
-	return pathname === "/auth";
+	return pathname === "/auth" || pathname.startsWith("/auth/");
 };
 
 /**

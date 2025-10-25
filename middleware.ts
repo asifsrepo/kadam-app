@@ -9,27 +9,23 @@ import { IUser } from "./types";
 
 export const middleware = async (request: NextRequest) => {
 	const { supabase, supabaseResponse } = createSupabaseClient(request);
-	const { data } = await supabase.auth.getUser();
-	const user = data?.user;
 
-	console.log("🟥 USER 🟥:",user);
-	
+	const { data, error } = await supabase.auth.getUser();
+	if (error) {
+		console.error("Get user error:", error);
+	}
+	const user = data?.user;
 
 	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
 	if (authRouteResponse) return authRouteResponse;
 
-	console.log("🟨 AUTH ROUTE RESPONSE 🟨",authRouteResponse);
-
 	// Handle unauthenticated users on protected routes (show 404)
 	const protectedRouteResponse = handleUnauthenticatedOnProtectedRoutes(request, user as IUser);
-	if (protectedRouteResponse) return protectedRouteResponse;	
+	if (protectedRouteResponse) return protectedRouteResponse;
 
-	console.log("🟥 PROTECTED ROUTE RESPONSE 🟥", protectedRouteResponse);
-	
+
 	const onboardingResponse = handleOnboarding(request, user as IUser);
 	if (onboardingResponse) return onboardingResponse;
-
-	console.log("🟨 ONBOARDING RESPONSE 🟨", onboardingResponse);
 
 	return supabaseResponse;
 };
