@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
-import submitShopInfo from "@/app/onboarding/actions/submitShopInfo";
+import submitShopInfo from "@/actions/onboarding/submitShopInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";

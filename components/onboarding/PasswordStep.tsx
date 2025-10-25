@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Check, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import submitPassword from "@/app/onboarding/actions/submitPassword";
+import submitPassword from "@/actions/onboarding/submitPassword";
 import { passwordSchema } from "@/lib/schema/onboarding";
 import { PasswordFormData } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
