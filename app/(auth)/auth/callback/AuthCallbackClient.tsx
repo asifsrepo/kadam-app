@@ -23,7 +23,7 @@ const AuthCallbackClient = () => {
 
 				setTimeout(() => {
 					router.push("/");
-				}, 40);
+				}, 1400);
 			}
 		};
 
