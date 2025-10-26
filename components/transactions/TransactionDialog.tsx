@@ -30,13 +30,15 @@ import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
 
 interface TransactionDialogProps {
-	defaultType?: "credit" | "payment";
+	defaultCustomer?: ICustomer;
 	trigger?: ReactNode;
 }
 
-const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialogProps) => {
+const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps) => {
 	const [open, setOpen] = useState(false);
-	const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
+	const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(
+		defaultCustomer || null,
+	);
 	const formId = useId();
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,7 +47,6 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 	const { activeBranch } = useStores();
 	const queryClient = useQueryClient();
 
-	// Fetch customers for the active branch
 	const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id],
 		queryFn: async () => {
@@ -60,7 +61,7 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 			if (error) throw error;
 			return data as ICustomer[];
 		},
-		enabled: !!activeBranch?.id,
+		enabled: !!activeBranch?.id && !defaultCustomer,
 	});
 
 	const {
@@ -74,12 +75,18 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 	} = useForm<TransactionFormData>({
 		resolver: zodResolver(transactionSchema),
 		defaultValues: {
-			type: defaultType,
+			type: "credit",
 		},
 	});
 
 	const watchedAmount = watch("amount");
 	const watchedType = watch("type");
+
+	useEffect(() => {
+		if (defaultCustomer) {
+			setSelectedCustomer(defaultCustomer);
+		}
+	}, [defaultCustomer]);
 
 	useEffect(() => {
 		if (!selectedCustomer?.limit || watchedType !== "credit") return;
@@ -145,21 +152,30 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 	const handleOpenChange = (newOpen: boolean) => {
 		if (!newOpen) {
 			reset();
-			setSelectedCustomer(null);
+			setSelectedCustomer(defaultCustomer || null);
 		}
 		setOpen(newOpen);
 	};
 
-	// Prepare customer options for the select
-	const customerOptions = customers.map((customer) => ({
-		value: customer.id,
-		label: `${customer.name} (${customer.phone})`,
-	}));
+	const customerOptions = !defaultCustomer
+		? customers.map((customer) => ({
+				value: customer.id,
+				label: `${customer.name} (${customer.phone})`,
+			}))
+		: [];
+
+	const onSheetContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		e.stopPropagation();
+	};
 
 	return (
-		<Sheet open={open} onOpenChange={handleOpenChange}>
+		<Sheet open={open} onOpenChange={handleOpenChange} modal={true}>
 			{trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
-			<SheetContent side="bottom" className="h-[90vh] rounded-t-xl p-0">
+			<SheetContent
+				side="bottom"
+				className="h-[90vh] rounded-t-xl p-0"
+				onClick={onSheetContentClick}
+			>
 				<div className="flex h-full flex-col">
 					<SheetHeader className="border-border border-b px-4 py-4 text-left">
 						<SheetTitle>New Transaction</SheetTitle>
@@ -173,25 +189,27 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 							id={formId}
 						>
 							<div className="flex-1 space-y-4 p-4">
-								{/* Customer Selection */}
-								<CustomSelect
-									className="w-full"
-									label="Select Customer"
-									placeholder="Search and select a customer..."
-									required
-									options={customerOptions}
-									value={selectedCustomer?.id || ""}
-									onValueChange={(value) => {
-										const customer = customers.find((c) => c.id === value);
-										setSelectedCustomer(customer || null);
-									}}
-									error={
-										!selectedCustomer ? "Please select a customer" : undefined
-									}
-									disabled={isLoadingCustomers}
-								/>
+								{!defaultCustomer && (
+									<CustomSelect
+										className="w-full"
+										label="Select Customer"
+										placeholder="Search and select a customer..."
+										required
+										options={customerOptions}
+										value={selectedCustomer?.id || ""}
+										onValueChange={(value) => {
+											const customer = customers.find((c) => c.id === value);
+											setSelectedCustomer(customer || null);
+										}}
+										error={
+											!selectedCustomer
+												? "Please select a customer"
+												: undefined
+										}
+										disabled={isLoadingCustomers}
+									/>
+								)}
 
-								{/* Customer Info Card - Show when customer is selected */}
 								{selectedCustomer && (
 									<div className="rounded-lg border border-border bg-muted/30 p-4">
 										<div className="space-y-3">
@@ -212,7 +230,6 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 									</div>
 								)}
 
-								{/* Form Fields */}
 								<div className="space-y-4">
 									<TransactionTypeSelector
 										value={watch("type")}

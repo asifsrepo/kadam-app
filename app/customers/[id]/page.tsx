@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Plus } from "lucide-react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import TransactionDialog from "@/components/transactions/TransactionDialog";
 import TransactionListing from "@/components/transactions/TransactionListing";
 import TransactionsSkeleton from "@/components/transactions/TransactionsSkeleton";
 import { Badge } from "@/components/ui/badge";
@@ -76,12 +76,20 @@ const CustomerDetailsPage = () => {
 							<h1 className="truncate font-semibold text-base">{customer.name}</h1>
 						</div>
 					</div>
-					<Button size="sm" className="h-8 shrink-0 text-xs" asChild>
-						<Link href={`/customers/${customer.id}/transactions/new`}>
-							<Plus className="mr-1 h-3 w-3" />
-							Add
-						</Link>
-					</Button>
+					<TransactionDialog
+						trigger={
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-10 w-10 md:h-8 md:w-8"
+								aria-label="Add credit transaction"
+							>
+								<Plus className="h-5 w-5 md:h-4 md:w-4" />
+								<span className="sr-only">Add credit transaction</span>
+							</Button>
+						}
+						defaultCustomer={customer}
+					/>
 				</div>
 			</div>
 

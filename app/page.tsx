@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ShoppingCart } from "lucide-react";
+import { Plus } from "lucide-react";
 import Customers from "@/components/dashboard/Customers";
 import Stats from "@/components/dashboard/Stats";
 import Transactions from "@/components/dashboard/Transactions";
@@ -118,7 +118,6 @@ const Dashboard = () => {
 							</p>
 						</div>
 						<TransactionDialog
-							defaultType="credit"
 							trigger={
 								<Button
 									variant="outline"
@@ -126,7 +125,7 @@ const Dashboard = () => {
 									className="h-10 w-10 md:h-8 md:w-8"
 									aria-label="Add credit transaction"
 								>
-									<ShoppingCart className="h-5 w-5 md:h-4 md:w-4" />
+									<Plus className="h-5 w-5 md:h-4 md:w-4" />
 									<span className="sr-only">Add credit transaction</span>
 								</Button>
 							}
