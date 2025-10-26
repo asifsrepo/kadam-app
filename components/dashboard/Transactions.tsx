@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
+import { getDateLabel } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
 import type { ITransactionWithCustomer } from "@/types/transaction";
 
@@ -23,14 +24,14 @@ const Transactions = () => {
 			const { data: transactions, error: transactionsError } = await supabase
 				.from(Tables.Transactions)
 				.select(`
-					*,
-					customer:customerId (
-						id,
-						name,
-						phone,
-						email
-					)
-				`)
+                    *,
+                    customer:customerId (
+                        id,
+                        name,
+                        phone,
+                        email
+                    )
+                `)
 				.eq("branchId", activeBranch.id)
 				.order("createdAt", { ascending: false })
 				.range(pageParam, pageParam + PAGE_SIZE - 1);
@@ -49,22 +50,17 @@ const Transactions = () => {
 
 	const groupedTransactions = transactions.reduce(
 		(groups, transaction) => {
-			const date = new Date(transaction.createdAt).toLocaleDateString("en-US", {
-				weekday: "short",
-				month: "short",
-				day: "numeric",
-			});
+			const dateLabel = getDateLabel(transaction.createdAt);
 
-			if (!groups[date]) {
-				groups[date] = [];
+			if (!groups[dateLabel]) {
+				groups[dateLabel] = [];
 			}
-			groups[date].push(transaction);
+			groups[dateLabel].push(transaction);
 			return groups;
 		},
 		{} as Record<string, ITransactionWithCustomer[]>,
 	);
 
-	// Intersection Observer for infinite scroll
 	const handleObserver = useCallback(
 		(entries: IntersectionObserverEntry[]) => {
 			const [target] = entries;
@@ -160,7 +156,7 @@ const Transactions = () => {
 													<p
 														className={`font-bold text-sm ${transaction.type === "credit" ? "text-destructive" : "text-primary"}`}
 													>
-														${transaction.amount.toFixed(2)}
+														{transaction.amount.toFixed(2)}
 													</p>
 												</div>
 											</div>

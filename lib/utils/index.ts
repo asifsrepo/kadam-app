@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format, isToday, isYesterday } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { ZodError } from "zod";
 
@@ -54,3 +55,18 @@ export const formatCurrency = (amount: number = 0, decimals: number = 2): string
 		maximumFractionDigits: decimals,
 	}).format(amount);
 };
+
+export const getDateLabel = (dateString: string): string => {
+    const date = new Date(dateString);
+
+    if (isToday(date)) {
+        return "Today";
+    }
+    
+    if (isYesterday(date)) {
+        return "Yesterday";
+    }
+    
+    return format(date, "EEE, MMM d");
+};
+
