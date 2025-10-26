@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/layout/DashboardLayout";
 import Providers from "@/components/layout/Providers";
 import { fontMap, getAllFontVariables } from "@/lib/fonts";
 import { getSelectedColorScheme, getSelectedFont } from "@/lib/server/settings-helpers";

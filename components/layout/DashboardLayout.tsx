@@ -1,17 +1,17 @@
 "use client";
 
-import { LayoutDashboard, Settings } from "lucide-react";
+import { HomeIcon, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import FloatingMenu from "@/components/FloatingMenu";
 import { WrapperProps } from "@/types";
+import FloatingMenu from "./FloatingMenu";
 
 const NAV_ITEMS = [
 	{
-		label: "Dashboard",
+		label: "Home",
 		href: "/",
-		icon: LayoutDashboard,
-		key: "dashboard",
+		icon: HomeIcon,
+		key: "home",
 	},
 	{
 		label: "Settings",
@@ -23,7 +23,7 @@ const NAV_ITEMS = [
 
 const DashboardLayout = ({ children }: WrapperProps) => {
 	const pathname = usePathname();
-	const activeTab = pathname === "/" ? "dashboard" : "settings";
+	const activeTab = pathname === "/" ? "home" : "settings";
 
 	if (pathname === "/auth" || pathname === "onboarding") return children;
 
