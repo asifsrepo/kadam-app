@@ -11,28 +11,30 @@ const AuthCallbackClient = () => {
 
 	useEffect(() => {
 		const handleAuthCallback = async () => {
-			toast.promise(async () => {
-				const { data, error } = await supabase.auth.getSession();
+			toast.promise(
+				async () => {
+					const { data, error } = await supabase.auth.getSession();
 
-				if (error) {
-					throw new Error(error.message);
-				}
+					if (error) {
+						throw new Error(error.message);
+					}
 
-				if (data.session) {
-					await initialize();
+					if (data.session) {
+						await initialize();
 
-					setTimeout(() => {
-						window.location.href = "/";
-					}, 1400);
-				} else {
-					throw new Error("No session found. Please try signing in again.");
-				}
-			}, {
-				loading: "Signing you in...",
-				success: "Welcome back!",
-				error: "Something went wrong. Please try signing in again.",
-			});
-
+						setTimeout(() => {
+							window.location.href = "/";
+						}, 1400);
+					} else {
+						throw new Error("No session found. Please try signing in again.");
+					}
+				},
+				{
+					loading: "Signing you in...",
+					success: "Welcome back!",
+					error: "Something went wrong. Please try signing in again.",
+				},
+			);
 		};
 
 		handleAuthCallback();

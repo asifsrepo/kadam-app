@@ -173,7 +173,7 @@ export const colorSchemes: Record<string, ColorScheme> = {
 			accent: "oklch(0.9461 0 0)",
 		},
 		defaultFont: "Outfit",
-	}
+	},
 };
 
 export const colorSchemeOptions = Object.keys(colorSchemes) as Array<keyof typeof colorSchemes>;

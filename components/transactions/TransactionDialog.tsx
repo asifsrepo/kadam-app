@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ReactNode, useEffect, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import TransactionTypeSelector from "@/components/transactions/TransactionTypeSelector";
 import { Button } from "@/components/ui/button";
 import {
 	Sheet,
@@ -27,11 +28,6 @@ import CustomInput from "~/form-elements/CustomInput";
 import CustomSelect from "~/form-elements/CustomSelect";
 import CustomTextArea from "~/form-elements/CustomTextArea";
 import SubmitButton from "~/form-elements/SubmitButton";
-
-const TRANSACTION_TYPES = [
-	{ value: "credit", label: "Credit (Customer takes goods)" },
-	{ value: "payment", label: "Payment (Customer pays back)" },
-];
 
 interface TransactionDialogProps {
 	defaultType?: "credit" | "payment";
@@ -218,17 +214,13 @@ const TransactionDialog = ({ defaultType = "credit", trigger }: TransactionDialo
 
 								{/* Form Fields */}
 								<div className="space-y-4">
-									<CustomSelect
-										className="w-full"
-										label="Transaction Type"
-										placeholder="Select type"
-										required
-										options={TRANSACTION_TYPES}
+									<TransactionTypeSelector
 										value={watch("type")}
-										onValueChange={(value) =>
-											setValue("type", value as "credit" | "payment")
+										onValueChange={(value: "credit" | "payment") =>
+											setValue("type", value)
 										}
 										error={errors.type?.message}
+										disabled={!selectedCustomer}
 									/>
 
 									<CustomInput
