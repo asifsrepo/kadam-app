@@ -5,14 +5,18 @@ import {
 } from "./lib/middleware/auth";
 import createSupabaseClient from "./lib/middleware/createSupabaseClient";
 import handleOnboarding from "./lib/middleware/handleOnboarding";
+import { continueNext, isPublicRoute } from "./lib/middleware/utils";
 import { IUser } from "./types";
 
 export const middleware = async (request: NextRequest) => {
+	if (isPublicRoute(request.nextUrl.pathname)) return continueNext();
+	
 	const { supabase, supabaseResponse } = createSupabaseClient(request);
 
 	const { data } = await supabase.auth.getUser();
 
 	const user = data?.user;
+
 
 	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
 	if (authRouteResponse) return authRouteResponse;

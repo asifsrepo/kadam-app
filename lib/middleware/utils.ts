@@ -40,3 +40,18 @@ export const continueNext = (supabaseResponse?: NextResponse): NextResponse => {
 export const redirectTo = (request: NextRequest, redirectPath: string): NextResponse => {
 	return NextResponse.redirect(new URL(redirectPath, request.url));
 };
+
+export const isPublicRoute = (pathname: string): boolean => {
+	// Static assets and system files
+	const publicPaths = [
+		"/manifest.json",
+		"/browserconfig.xml", 
+		"/robots.txt",
+		"/sitemap.xml",
+		"/favicon/",
+		"/assets/"
+	];
+
+	// Check if pathname starts with any public path
+	return publicPaths.some((path) => pathname.startsWith(path));
+};
