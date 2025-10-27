@@ -16,8 +16,8 @@ const Dashboard = () => {
 	const supabase = createClient();
 	const { activeBranch } = useStores();
 
-	const { data: customers, isLoading: customersLoading } = useQuery({
-		queryKey: [QueryKeys.CustomersList, activeBranch?.id],
+	const { data: customers = [], isLoading: customersLoading } = useQuery({
+		queryKey: [QueryKeys.CustomersList, activeBranch?.id, 'recent'],
 		queryFn: async () => {
 			if (!activeBranch?.id) return [];
 
@@ -33,16 +33,16 @@ const Dashboard = () => {
 
 			if (customersError) throw customersError;
 
-			const customersWithBalance = (customersData ?? []).map((customer) => {
+			const customersWithBalance = customersData.map((customer) => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -75,12 +75,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+					.filter((t: { type: string; }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -103,8 +103,6 @@ const Dashboard = () => {
 		},
 		enabled: !!activeBranch?.id,
 	});
-
-	const recentCustomers = customers || [];
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
@@ -143,7 +141,10 @@ const Dashboard = () => {
 					isLoading={statsLoading}
 				/>
 
-				<Customers customers={recentCustomers} isLoading={customersLoading} />
+				<Customers
+					customers={customers}
+					isLoading={customersLoading}
+				/>
 
 				<Transactions />
 			</div>

@@ -22,7 +22,7 @@ import { transactionSchema } from "@/lib/schema/transaction";
 import { createClient } from "@/lib/supabase/client";
 import { formatCurrency } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
-import type { ICustomer } from "@/types/customers";
+import type { CustomerWithBalance, ICustomer } from "@/types/customers";
 import type { ITransaction } from "@/types/transaction";
 import CustomInput from "~/form-elements/CustomInput";
 import CustomSelect from "~/form-elements/CustomSelect";
@@ -53,7 +53,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 			if (!activeBranch?.id) return [];
 			const { data, error } = await supabase
 				.from(Tables.Customers)
-				.select("*")
+				.select("id,name,phone,limit")
 				.eq("branchId", activeBranch.id)
 				.eq("status", "active")
 				.order("name");
@@ -114,7 +114,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 
 		setIsSubmitting(true);
 		try {
-			const { error } = await supabase.from(Tables.Transactions).insert({
+			const newTransaction: ITransaction = {
 				customerId: selectedCustomer.id,
 				amount: data.amount,
 				type: data.type,
@@ -122,25 +122,66 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 				createdAt: new Date().toISOString(),
 				createdBy: user.id,
 				branchId: activeBranch?.id,
-			} as ITransaction);
+			} as ITransaction;
+
+			const { error } = await supabase.from(Tables.Transactions).insert(newTransaction);
 
 			if (error) throw error;
+
+			queryClient.setQueryData<CustomerWithBalance[]>(
+				[QueryKeys.CustomersList, activeBranch?.id, "recent"],
+				(oldData) => {
+					if (!oldData) return oldData;
+
+					return oldData.map((customer) => {
+						if (customer.id !== selectedCustomer.id) return customer;
+
+						const balanceChange =
+							data.type === "credit" ? data.amount : -data.amount;
+
+						return {
+							...customer,
+							balance: customer.balance + balanceChange,
+						};
+					});
+				},
+			);
+
+			queryClient.setQueryData<{
+				totalCustomers: number;
+				totalDebt: number;
+				totalCredit: number;
+				netBalance: number;
+			}>([QueryKeys.CustomersList, activeBranch?.id, "stats"], (oldStats) => {
+				if (!oldStats) return oldStats;
+
+				if (data.type === "credit") {
+					return {
+						...oldStats,
+						totalDebt: oldStats.totalDebt + data.amount,
+						netBalance: oldStats.netBalance + data.amount,
+					};
+				} else {
+					return {
+						...oldStats,
+						totalCredit: oldStats.totalCredit + data.amount,
+						netBalance: oldStats.netBalance - data.amount,
+					};
+				}
+			});
+
+			queryClient.invalidateQueries({
+				queryKey: [QueryKeys.TransactionsList],
+			});
+
+			queryClient.invalidateQueries({
+				queryKey: [QueryKeys.CustomerDetails, selectedCustomer.id],
+			});
 
 			toast.success("Transaction created successfully");
 			setOpen(false);
 			reset();
 			setSelectedCustomer(null);
-
-			setTimeout(async () => {
-				await Promise.all([
-					queryClient.invalidateQueries({
-						queryKey: [QueryKeys.CustomerDetails, selectedCustomer.id],
-					}),
-					queryClient.invalidateQueries({
-						queryKey: [QueryKeys.TransactionsList],
-					}),
-				]);
-			}, 200);
 		} catch (error) {
 			toast.error("Failed to create transaction. Please try again.");
 			console.error("Error creating transaction:", error);
@@ -159,9 +200,9 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 
 	const customerOptions = !defaultCustomer
 		? customers.map((customer) => ({
-				value: customer.id,
-				label: `${customer.name} (${customer.phone})`,
-			}))
+			value: customer.id,
+			label: `${customer.name} (${customer.phone})`,
+		}))
 		: [];
 
 	const onSheetContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
