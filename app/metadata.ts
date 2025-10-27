@@ -43,6 +43,18 @@ export const metadata: Metadata = {
 		"apple-mobile-web-app-status-bar-style": "default",
 		"apple-mobile-web-app-title": "Hysabee",
 	},
+	robots: {
+        index: true,
+        follow: true,
+        nocache: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
 	openGraph: {
 		type: "website",
 		url: APP_URL,
@@ -56,4 +68,16 @@ export const metadata: Metadata = {
 		site: "@Hysabee",
 		card: "summary_large_image",
 	},
+	appleWebApp: {
+        capable: true,
+        title: `${APP_NAME} - Debt Management for Retail Stores`,
+        statusBarStyle: "black-translucent",
+    },
+	authors: [
+        {
+            name: "Muhammed Sinan",
+            url: "https://github.com/sinanptm",
+        }
+    ]
 };
+
