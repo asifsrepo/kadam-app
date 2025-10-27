@@ -42,7 +42,8 @@ export const redirectTo = (request: NextRequest, redirectPath: string): NextResp
 };
 
 export const isPublicRoute = (pathname: string): boolean => {
-	// Static assets and system files
+	console.log("🟥", pathname);
+	
 	const publicPaths = [
 		"/manifest.json",
 		"/browserconfig.xml", 
