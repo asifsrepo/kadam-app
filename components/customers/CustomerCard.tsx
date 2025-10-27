@@ -20,7 +20,6 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 		}
 	};
 
-
 	return (
 		<Card className="cursor-pointer transition-shadow hover:shadow-md">
 			<CardContent className="p-3" onClick={onCardClick}>

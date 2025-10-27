@@ -57,16 +57,15 @@ export const formatCurrency = (amount: number = 0, decimals: number = 2): string
 };
 
 export const getDateLabel = (dateString: string): string => {
-    const date = new Date(dateString);
+	const date = new Date(dateString);
 
-    if (isToday(date)) {
-        return "Today";
-    }
-    
-    if (isYesterday(date)) {
-        return "Yesterday";
-    }
-    
-    return format(date, "EEE, MMM d");
+	if (isToday(date)) {
+		return "Today";
+	}
+
+	if (isYesterday(date)) {
+		return "Yesterday";
+	}
+
+	return format(date, "EEE, MMM d");
 };
-

@@ -17,7 +17,7 @@ const Dashboard = () => {
 	const { activeBranch } = useStores();
 
 	const { data: customers = [], isLoading: customersLoading } = useQuery({
-		queryKey: [QueryKeys.CustomersList, activeBranch?.id, 'recent'],
+		queryKey: [QueryKeys.CustomersList, activeBranch?.id, "recent"],
 		queryFn: async () => {
 			if (!activeBranch?.id) return [];
 
@@ -37,12 +37,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -75,12 +75,12 @@ const Dashboard = () => {
 				const transactions = customer.transactions ?? [];
 
 				const totalCredit = transactions
-					.filter((t: { type: string; }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "credit")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				const totalPaid = transactions
-					.filter((t: { type: string; }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number; }) => sum + t.amount, 0);
+					.filter((t: { type: string }) => t.type === "payment")
+					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
 				return {
 					...customer,
@@ -141,10 +141,7 @@ const Dashboard = () => {
 					isLoading={statsLoading}
 				/>
 
-				<Customers
-					customers={customers}
-					isLoading={customersLoading}
-				/>
+				<Customers customers={customers} isLoading={customersLoading} />
 
 				<Transactions />
 			</div>

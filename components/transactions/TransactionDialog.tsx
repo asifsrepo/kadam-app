@@ -136,8 +136,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 					return oldData.map((customer) => {
 						if (customer.id !== selectedCustomer.id) return customer;
 
-						const balanceChange =
-							data.type === "credit" ? data.amount : -data.amount;
+						const balanceChange = data.type === "credit" ? data.amount : -data.amount;
 
 						return {
 							...customer,
@@ -200,9 +199,9 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 
 	const customerOptions = !defaultCustomer
 		? customers.map((customer) => ({
-			value: customer.id,
-			label: `${customer.name} (${customer.phone})`,
-		}))
+				value: customer.id,
+				label: `${customer.name} (${customer.phone})`,
+			}))
 		: [];
 
 	const onSheetContentClick = (e: React.MouseEvent<HTMLDivElement>) => {

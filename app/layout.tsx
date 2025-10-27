@@ -21,9 +21,7 @@ const RootLayout = async ({ children }: WrapperProps) => {
 		>
 			<body className={`antialiased ${selectedFontConfig.className}`}>
 				<Providers>
-					<DashboardLayout>
-						{children}
-					</DashboardLayout>
+					<DashboardLayout>{children}</DashboardLayout>
 				</Providers>
 			</body>
 		</html>
