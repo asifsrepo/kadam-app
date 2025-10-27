@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Phone, Store } from "lucide-react";
+import { Phone } from "lucide-react";
 import EditStoreDialog from "@/components/stores/EditStoreDialog";
 import { CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
@@ -106,12 +106,6 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 								)}
 							/>
 							<span className="truncate text-muted-foreground">{store.phone}</span>
-						</div>
-						<div className="flex items-center gap-1.5 text-xs md:text-sm">
-							<Store className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-							<span className="truncate text-muted-foreground">
-								ID: {store.storeId}
-							</span>
 						</div>
 					</div>
 				</div>

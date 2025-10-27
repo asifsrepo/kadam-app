@@ -1,18 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Building2, Check, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useDebounce } from "use-debounce";
 import submitShopInfo from "@/actions/onboarding/submitShopInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import useStores from "@/hooks/store/useStores";
 import { shopInfoSchema } from "@/lib/schema/onboarding";
-import { createClient } from "@/lib/supabase/client";
-import { ShopInfoFormData, Tables } from "@/types";
+import { ShopInfoFormData } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 
@@ -31,25 +28,18 @@ const ShopInfoStep = ({
 }: ShopInfoStepProps) => {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
-	const supabase = createClient();
 	const { setActiveBranch } = useStores();
-
-	// State for checking storeId
-	const [isCheckingStoreId, setIsCheckingStoreId] = useState(false);
 
 	const {
 		handleSubmit,
 		formState: { errors },
 		register,
 		control,
-		watch,
-		setError,
 	} = useForm<ShopInfoFormData>({
 		resolver: zodResolver(shopInfoSchema),
 		defaultValues: {
 			name: "",
 			phone: "",
-			storeId: "",
 			branches: [
 				{
 					name: "",
@@ -60,45 +50,6 @@ const ShopInfoStep = ({
 			],
 		},
 	});
-
-	const storeId = watch("storeId");
-	const [debouncedStoreId] = useDebounce(storeId, 500);
-
-	useEffect(() => {
-		if (!debouncedStoreId || debouncedStoreId.length < 4) return;
-		let isMounted = true;
-		setIsCheckingStoreId(true);
-
-		(async () => {
-			const { data, error } = await supabase
-				.from(Tables.Stores)
-				.select("id")
-				.eq("storeId", debouncedStoreId)
-				.single();
-
-			if (!isMounted) return;
-
-			if (error && error.code !== "PGRST116" && error.message) {
-				toast.error("Failed to fetch Store Id. Please try again.");
-				setIsCheckingStoreId(false);
-				return;
-			}
-
-			if (data) {
-				setError("storeId", {
-					message: "This Store Id is already taken. Please choose another one.",
-				});
-			} else {
-				setError("storeId", { message: undefined });
-			}
-
-			setIsCheckingStoreId(false);
-		})();
-
-		return () => {
-			isMounted = false;
-		};
-	}, [debouncedStoreId, supabase, setError]);
 
 	const { fields, append, remove } = useFieldArray({
 		control: control,
@@ -156,14 +107,6 @@ const ShopInfoStep = ({
 						required
 						error={errors.phone?.message}
 						{...register("phone")}
-					/>
-					<CustomInput
-						label="Store Id"
-						placeholder="Enter your Store Id"
-						required
-						error={errors.storeId?.message}
-						disabled={isCheckingStoreId || isSubmitting}
-						{...register("storeId")}
 					/>
 					<div className="space-y-3">
 						<div className="flex items-center justify-between">
