@@ -11,9 +11,7 @@ const Providers = ({ children }: WrapperProps) => {
 			<QueryProvider>
 				<Toaster richColors position="top-right" closeButton />
 				<NuqsAdapter>{children}</NuqsAdapter>
-				<Analytics
-					debug={false}
-				/>
+				<Analytics debug={false} />
 			</QueryProvider>
 		</ThemeProvider>
 	);
