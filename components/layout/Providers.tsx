@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { WrapperProps } from "@/types";
@@ -10,6 +11,9 @@ const Providers = ({ children }: WrapperProps) => {
 			<QueryProvider>
 				<Toaster richColors position="top-right" closeButton />
 				<NuqsAdapter>{children}</NuqsAdapter>
+				<Analytics
+					debug={false}
+				/>
 			</QueryProvider>
 		</ThemeProvider>
 	);
