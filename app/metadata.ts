@@ -38,6 +38,10 @@ export const metadata: Metadata = {
 		"theme-color": "#ffffff",
 		"msapplication-TileColor": "#ffffff",
 		"msapplication-config": "/browserconfig.xml",
+		"mobile-web-app-capable": "yes",
+		"apple-mobile-web-app-capable": "yes",
+		"apple-mobile-web-app-status-bar-style": "default",
+		"apple-mobile-web-app-title": "Hysabee",
 	},
 	openGraph: {
 		type: "website",
@@ -45,7 +49,7 @@ export const metadata: Metadata = {
 		title: `${APP_NAME} - Debt Management for Retail Stores`,
 		description:
 			"Hysabee is a comprehensive debt management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
-		images: [`${APP_URL}/og/logo.png`],
+		// images: [`${APP_URL}/og/logo.png`],
 	},
 	twitter: {
 		title: `${APP_NAME} - Debt Management for Retail Stores`,
