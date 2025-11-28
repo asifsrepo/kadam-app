@@ -42,15 +42,13 @@ export const redirectTo = (request: NextRequest, redirectPath: string): NextResp
 };
 
 export const isPublicRoute = (pathname: string): boolean => {
-	console.log("🟥", pathname);
-	
 	const publicPaths = [
 		"/manifest.json",
-		"/browserconfig.xml", 
+		"/browserconfig.xml",
 		"/robots.txt",
 		"/sitemap.xml",
 		"/favicon/",
-		"/assets/"
+		"/assets/",
 	];
 
 	// Check if pathname starts with any public path

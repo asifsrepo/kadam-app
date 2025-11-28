@@ -10,13 +10,12 @@ import { IUser } from "./types";
 
 export const middleware = async (request: NextRequest) => {
 	if (isPublicRoute(request.nextUrl.pathname)) return continueNext();
-	
+
 	const { supabase, supabaseResponse } = createSupabaseClient(request);
 
 	const { data } = await supabase.auth.getUser();
 
 	const user = data?.user;
-
 
 	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
 	if (authRouteResponse) return authRouteResponse;
