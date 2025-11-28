@@ -3,26 +3,7 @@ import { DODO_PAYMENTS_WEBHOOK_SECRET } from "@/config";
 import { createClient } from "@/lib/supabase/server";
 import { Tables } from "@/types";
 
-// WebhookPayload type structure from Dodo Payments
-type WebhookPayload = {
-	type: string;
-	data: {
-		subscription_id?: string;
-		customer_id?: string;
-		status?: string;
-		current_period_start?: number;
-		current_period_end?: number;
-		cancel_at_period_end?: boolean;
-		cancelled_at?: number;
-		interval?: string;
-		metadata?: {
-			user_id?: string;
-			plan_id?: string;
-			billing_period?: string;
-		};
-		[key: string]: any;
-	};
-};
+type WebhookPayload = any;
 
 const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 	const supabase = await createClient();
@@ -33,6 +14,15 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 
 	if (!subscriptionData?.subscription_id || !subscriptionData?.customer_id) {
 		console.error("Missing subscription_id or customer_id in webhook payload");
+		return;
+	}
+
+	// Handle null values by converting to undefined
+	const subscriptionId = subscriptionData.subscription_id ?? undefined;
+	const customerId = subscriptionData.customer_id ?? undefined;
+
+	if (!subscriptionId || !customerId) {
+		console.error("Invalid subscription_id or customer_id in webhook payload");
 		return;
 	}
 
@@ -76,8 +66,8 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 	// Upsert subscription
 	const subscriptionRecord = {
 		userId,
-		subscriptionId: subscriptionData.subscription_id,
-		customerId: subscriptionData.customer_id,
+		subscriptionId: subscriptionId,
+		customerId: customerId,
 		status,
 		currentPeriodStart: subscriptionData.current_period_start
 			? new Date(subscriptionData.current_period_start * 1000)
@@ -85,7 +75,7 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		currentPeriodEnd: subscriptionData.current_period_end
 			? new Date(subscriptionData.current_period_end * 1000)
 			: new Date(),
-		cancelAtPeriodEnd: subscriptionData.cancel_at_period_end || false,
+		cancelAtPeriodEnd: subscriptionData.cancel_at_period_end ?? false,
 		cancelledAt: subscriptionData.cancelled_at
 			? new Date(subscriptionData.cancelled_at * 1000)
 			: null,

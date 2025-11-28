@@ -1,3 +1,5 @@
+import { Zap } from "lucide-react";
+
 export * from "./custom";
 export * from "./props";
 export * from "./schema";
@@ -23,3 +25,19 @@ export const QueryKeys = {
 	StoreWithBranches: "storeWithBranches",
 	Branches: "branches",
 };
+
+export interface PlanFeature {
+	text: string;
+	included: boolean;
+}
+export interface Plan {
+	id: string;
+	name: string;
+	description: string;
+	icon: typeof Zap;
+	monthlyPrice: number;
+	yearlyPrice: number;
+	features: PlanFeature[];
+	popular?: boolean;
+	badge?: string;
+}
