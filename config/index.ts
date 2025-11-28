@@ -17,6 +17,7 @@ export const COLOR_SCHEME_COOKIE_EXPIRY_DAYS = 365;
 
 export const DODO_PAYMENTS_API_KEY = process.env.DODO_PAYMENTS_API_KEY ?? "";
 export const DODO_PAYMENTS_RETURN_URL = process.env.DODO_PAYMENTS_RETURN_URL ?? "";
+export const DODO_PAYMENTS_WEBHOOK_SECRET = process.env.DODO_WEBHOOK_SECRET ?? "";
 export const DODO_PAYMENTS_ENVIRONMENT = (process.env.DODO_PAYMENTS_ENVIRONMENT ?? "test_mode") as
 	| "live_mode"
 	| "test_mode";

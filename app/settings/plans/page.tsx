@@ -1,7 +1,9 @@
 "use client";
 
-import { Check, Crown, Sparkles, Zap } from "lucide-react";
+import { Check, Crown, ExternalLink, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import createCheckoutSession from "@/app/(server)/actions/subscriptions/createCheckoutSession";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +16,13 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { useSubscription } from "@/hooks/store/useSubscription";
+import {
+	formatSubscriptionStatus,
+	getPlanDisplayName,
+	isCancellingAtPeriodEnd,
+} from "@/lib/utils/subscriptions";
+import type { BillingPeriod, SubscriptionPlan } from "@/types/subscription";
 import BackButton from "~/BackButton";
 
 interface PlanFeature {
@@ -35,6 +44,8 @@ interface Plan {
 
 const PlansPage = () => {
 	const [isYearly, setIsYearly] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const { subscription, isLoading: subscriptionLoading, isActive } = useSubscription();
 
 	const plans: Plan[] = [
 		{
@@ -97,9 +108,45 @@ const PlansPage = () => {
 		},
 	];
 
-	const handleSubscribe = (planId: string) => {
-		// TODO: Implement subscription logic
-		console.log(`Subscribe to ${planId} - ${isYearly ? "Yearly" : "Monthly"}`);
+	const handleSubscribe = async (planId: string) => {
+		if (isLoading) return;
+
+		setIsLoading(true);
+		try {
+			const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
+			const { data, error } = await createCheckoutSession({
+				planId: planId as SubscriptionPlan,
+				billingPeriod,
+			});
+
+			if (error) {
+				toast.error("Failed to create checkout session", {
+					description: error,
+				});
+				return;
+			}
+
+			if (data?.checkout_url) {
+				window.location.href = data.checkout_url;
+			} else {
+				toast.error("Invalid checkout URL received");
+			}
+		} catch (error) {
+			console.error("Error creating checkout session:", error);
+			toast.error("Failed to create checkout session");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleOpenCustomerPortal = async () => {
+		if (!subscription?.customerId) {
+			toast.error("Customer ID not found");
+			return;
+		}
+
+		const portalUrl = `/customer-portal?customer_id=${subscription.customerId}`;
+		window.location.href = portalUrl;
 	};
 
 	const formatPrice = (price: number) => {
@@ -122,6 +169,104 @@ const PlansPage = () => {
 		}
 		return 0;
 	};
+
+	if (subscriptionLoading) {
+		return (
+			<div className="min-h-screen bg-background pb-24">
+				<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+					<div className="px-3 py-2.5 md:px-6 md:py-4">
+						<div className="flex items-center gap-2 md:gap-3">
+							<BackButton />
+							<div className="min-w-0 flex-1">
+								<h1 className="font-semibold text-base md:text-2xl">Plans & Billing</h1>
+								<p className="truncate text-muted-foreground text-xs md:text-sm">
+									Loading...
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// If user has an active subscription, show customer portal
+	if (subscription && isActive) {
+		return (
+			<div className="min-h-screen bg-background pb-24">
+				<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+					<div className="px-3 py-2.5 md:px-6 md:py-4">
+						<div className="flex items-center gap-2 md:gap-3">
+							<BackButton />
+							<div className="min-w-0 flex-1">
+								<h1 className="font-semibold text-base md:text-2xl">Plans & Billing</h1>
+								<p className="truncate text-muted-foreground text-xs md:text-sm">
+									Manage your subscription
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
+					<Card className="border-border">
+						<CardHeader className="px-3 pt-3 pb-2 md:px-6 md:pt-6 md:pb-4">
+							<CardTitle className="text-base md:text-lg">Current Plan</CardTitle>
+							<CardDescription className="text-xs md:text-sm">
+								You are currently subscribed to the {getPlanDisplayName(subscription.planId)}{" "}
+								plan
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-3 px-3 md:space-y-4 md:px-6">
+							<div className="space-y-2 md:space-y-2.5">
+								<div className="flex items-center justify-between">
+									<span className="text-muted-foreground text-xs md:text-sm">Status</span>
+									<Badge variant={isActive ? "default" : "secondary"} className="text-xs">
+										{formatSubscriptionStatus(subscription.status)}
+									</Badge>
+								</div>
+								<div className="flex items-center justify-between">
+									<span className="text-muted-foreground text-xs md:text-sm">
+										Billing Period
+									</span>
+									<span className="text-foreground text-xs md:text-sm capitalize">
+										{subscription.billingPeriod}
+									</span>
+								</div>
+								{subscription.currentPeriodEnd && (
+									<div className="flex items-center justify-between">
+										<span className="text-muted-foreground text-xs md:text-sm">
+											Renews On
+										</span>
+										<span className="text-foreground text-xs md:text-sm">
+											{new Date(subscription.currentPeriodEnd).toLocaleDateString()}
+										</span>
+									</div>
+								)}
+								{isCancellingAtPeriodEnd(subscription) && (
+									<div className="rounded-lg border border-destructive/20 bg-destructive/5 p-2 md:p-3">
+										<p className="text-destructive text-xs md:text-sm">
+											Your subscription will cancel at the end of the current billing
+											period.
+										</p>
+									</div>
+								)}
+							</div>
+						</CardContent>
+						<CardFooter className="px-3 pt-3 pb-3 md:px-6 md:pt-4 md:pb-6">
+							<Button
+								onClick={handleOpenCustomerPortal}
+								className="h-9 w-full text-xs md:h-10 md:text-sm"
+							>
+								<ExternalLink className="mr-2 h-3 w-3 md:h-4 md:w-4" />
+								Manage Subscription
+							</Button>
+						</CardFooter>
+					</Card>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
@@ -257,8 +402,13 @@ const PlansPage = () => {
 										onClick={() => handleSubscribe(plan.id)}
 										variant={isPopular ? "default" : "outline"}
 										className="h-9 w-full text-xs md:h-10 md:text-sm"
+										disabled={isLoading}
 									>
-										{isYearly ? "Subscribe Yearly" : "Subscribe Monthly"}
+										{isLoading
+											? "Loading..."
+											: isYearly
+												? "Subscribe Yearly"
+												: "Subscribe Monthly"}
 									</Button>
 								</CardFooter>
 							</Card>
@@ -268,7 +418,7 @@ const PlansPage = () => {
 
 				{/* Additional Info */}
 				<div className="rounded-lg border border-border bg-card p-3 md:p-4">
-					<p className="text-center text-[10px] text-muted-foreground leading-relaxed md:text-sm md:text-xs">
+					<p className="text-center text-[10px] text-muted-foreground leading-relaxed md:text-xs">
 						All plans include a 14-day free trial. Cancel anytime. No credit card
 						required for trial.
 					</p>

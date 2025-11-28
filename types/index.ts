@@ -1,6 +1,7 @@
 export * from "./custom";
 export * from "./props";
 export * from "./schema";
+export * from "./subscription";
 export * from "./transaction";
 export * from "./user";
 
@@ -10,6 +11,7 @@ export const Tables = {
 	Transactions: "transactions",
 	Stores: "stores",
 	Branches: "branches",
+	Subscriptions: "subscriptions",
 };
 
 export const QueryKeys = {

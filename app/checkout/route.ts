@@ -7,13 +7,15 @@ import {
 
 export const GET = Checkout({
 	bearerToken: DODO_PAYMENTS_API_KEY,
-	returnUrl: DODO_PAYMENTS_RETURN_URL,
+	returnUrl: DODO_PAYMENTS_RETURN_URL || undefined,
 	environment: DODO_PAYMENTS_ENVIRONMENT,
 	type: "static",
 });
 
 export const POST = Checkout({
 	bearerToken: DODO_PAYMENTS_API_KEY,
-	returnUrl: DODO_PAYMENTS_RETURN_URL,
+	returnUrl: DODO_PAYMENTS_RETURN_URL || undefined,
 	environment: DODO_PAYMENTS_ENVIRONMENT,
+	type: "session",
 });
+
