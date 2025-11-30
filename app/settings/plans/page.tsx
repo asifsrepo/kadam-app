@@ -44,6 +44,7 @@ const PlansPage = () => {
 				planId: planId as SubscriptionPlan,
 				billingPeriod,
 			});
+			
 
 			if (error) {
 				toast.error("Failed to create checkout session", {

@@ -1,8 +1,13 @@
 "use server";
 
-import { BASE_URL } from "@/config";
+import DodoPayments from "dodopayments";
+import {
+	DODO_PAYMENTS_API_KEY,
+	DODO_PAYMENTS_RETURN_URL,
+} from "@/config";
 import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
+import { Tables } from "@/types";
 import type { BillingPeriod, SubscriptionPlan } from "@/types/subscription";
 
 interface CreateCheckoutSessionParams {
@@ -21,57 +26,52 @@ const createCheckoutSession = async ({
 		} = await supabase.auth.getUser();
 		if (!user) throw new Error("User not found");
 
+		// Get user profile for name and email
+		const { data: profile } = await supabase
+			.from(Tables.UserProfiles)
+			.select("name, phone")
+			.eq("id", user.id)
+			.single();
+
 		// Get product ID based on plan and billing period
 		// This should match the product IDs configured in Dodo Payments dashboard
-		const productId = `${planId}_${billingPeriod}`;
+		const productId = `${planId}`;
 
-		// Determine the checkout URL - use BASE_URL if available, otherwise construct from request
-		const checkoutUrl = BASE_URL
-			? `${BASE_URL}/checkout`
-			: process.env.NEXT_PUBLIC_BASE_URL
-				? `${process.env.NEXT_PUBLIC_BASE_URL}/checkout`
-				: "/checkout";
-
-		// Create checkout session via POST to /checkout
-		// The checkout route handler will process this and call Dodo Payments API
-		const response = await fetch(checkoutUrl, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				product_id: productId,
-				metadata: {
-					user_id: user.id,
-					plan_id: planId,
-					billing_period: billingPeriod,
-				},
-				// For subscription products, include subscription details
-				subscription: {
-					interval: billingPeriod === "yearly" ? "year" : "month",
-					interval_count: 1,
-				},
-			}),
+		// Initialize Dodo Payments client
+		const client = new DodoPayments({
+			bearerToken: DODO_PAYMENTS_API_KEY,
 		});
 
-		if (!response.ok) {
-			const errorText = await response.text();
-			let errorMessage = "Failed to create checkout session";
-			try {
-				const errorJson = JSON.parse(errorText);
-				errorMessage = errorJson.message || errorJson.error || errorMessage;
-			} catch {
-				errorMessage = errorText || errorMessage;
-			}
-			throw new Error(errorMessage);
+		// Create checkout session using SDK
+		// Reference: https://docs.dodopayments.com/developer-resources/subscription-integration-guide
+		const session = await client.checkoutSessions.create({
+			product_cart: [
+				{
+					product_id: productId,
+					quantity: 1,
+				},
+			],
+			// Optional: configure trials for subscription products
+			subscription_data: {
+				// trial_period_days: 14, // Uncomment if you want to add trial period
+			},
+			customer: {
+				email: user.email || "",
+				name: profile?.name || user.user_metadata?.name || "",
+			},
+			return_url: DODO_PAYMENTS_RETURN_URL || undefined,
+			metadata: {
+				user_id: user.id,
+				plan_id: planId,
+				billing_period: billingPeriod,
+			},
+		});
+
+		if (!session.checkout_url) {
+			throw new Error("Invalid response from Dodo Payments API");
 		}
 
-		const data = await response.json();
-		if (!data.checkout_url) {
-			throw new Error("Invalid response from checkout endpoint");
-		}
-
-		return data;
+		return session;
 	});
 };
 

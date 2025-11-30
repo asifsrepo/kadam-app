@@ -77,6 +77,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      dodopayments:
+        specifier: ^2.6.1
+        version: 2.6.1
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.1.0)
@@ -1107,8 +1110,8 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
-  dodopayments@2.4.4:
-    resolution: {integrity: sha512-/wkSKOH4+qB1xyniFxn7M8S/VVUKm93uEtWSBP2jwo01EpZ4OiFmJMDM3hgLO60+yAzvYNSflhxMXzdQFW1v/g==}
+  dodopayments@2.6.1:
+    resolution: {integrity: sha512-c+fFlTxWHOtysKSYd9SD2f0W06oxd+mbHSBF9PQ+vBF2sB69y1djftMp8pGWytZXCxJNFD7/M3OfJfYY31auFg==}
     hasBin: true
 
   enhanced-resolve@5.18.3:
@@ -1505,7 +1508,7 @@ snapshots:
 
   '@dodopayments/core@0.3.2(zod@4.1.11)':
     dependencies:
-      dodopayments: 2.4.4
+      dodopayments: 2.6.1
       standardwebhooks: 1.0.0
       zod: 4.1.11
 
@@ -2340,7 +2343,7 @@ snapshots:
 
   detect-node-es@1.1.0: {}
 
-  dodopayments@2.4.4:
+  dodopayments@2.6.1:
     dependencies:
       standardwebhooks: 1.0.0
 
