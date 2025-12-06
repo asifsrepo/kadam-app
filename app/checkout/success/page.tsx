@@ -2,7 +2,6 @@
 
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -12,34 +11,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useSubscription } from "@/hooks/store/useSubscription";
-import { getPlanDisplayName } from "@/lib/utils/subscriptions";
+import { useSubscription } from "@/hooks/queries/useSubscription";
 import BackButton from "~/BackButton";
 
 const CheckoutSuccessPage = () => {
 	const searchParams = useSearchParams();
 	const router = useRouter();
-	const { refreshSubscription, subscription } = useSubscription();
+	const { subscription } = useSubscription();
 
 	const subscriptionId = searchParams.get("subscription_id");
 	const status = searchParams.get("status");
-	const [isRefreshing, setIsRefreshing] = useState(false);
-
-	useEffect(() => {
-		// Refresh subscription data when page loads
-		if (subscriptionId) {
-			setIsRefreshing(true);
-			refreshSubscription().finally(() => {
-				setIsRefreshing(false);
-			});
-		}
-	}, [subscriptionId, refreshSubscription]);
 
 	const handleGoToHome = () => {
 		router.push("/");
 	};
 
-	// If we have subscription_id, consider it a success (Dodo redirects here after successful checkout)
 	const isSuccess = !!subscriptionId;
 
 	return (
@@ -53,7 +39,9 @@ const CheckoutSuccessPage = () => {
 								Checkout {isSuccess ? "Success" : "Status"}
 							</h1>
 							<p className="truncate text-muted-foreground text-xs md:text-sm">
-								{isSuccess ? "Your subscription is active" : "Processing your subscription"}
+								{isSuccess
+									? "Your subscription is active"
+									: "Processing your subscription"}
 							</p>
 						</div>
 					</div>
@@ -75,9 +63,7 @@ const CheckoutSuccessPage = () => {
 							)}
 						</div>
 						<CardTitle className="text-center text-base md:text-lg">
-							{isSuccess
-								? "Subscription Activated!"
-								: "Processing Your Subscription"}
+							{isSuccess ? "Subscription Activated!" : "Processing Your Subscription"}
 						</CardTitle>
 						<CardDescription className="text-center text-xs md:text-sm">
 							{isSuccess
@@ -89,7 +75,9 @@ const CheckoutSuccessPage = () => {
 					<CardContent className="space-y-3 px-3 md:space-y-4 md:px-6">
 						{subscriptionId && (
 							<div className="space-y-2.5 rounded-lg border border-border bg-card p-3 md:space-y-3 md:p-4">
-								<h3 className="font-semibold text-sm md:text-base">Subscription Details</h3>
+								<h3 className="font-semibold text-sm md:text-base">
+									Subscription Details
+								</h3>
 								<div className="space-y-2 md:space-y-2.5">
 									{subscription ? (
 										<>
@@ -98,14 +86,14 @@ const CheckoutSuccessPage = () => {
 													Plan
 												</span>
 												<span className="font-medium text-foreground text-xs md:text-sm">
-													{getPlanDisplayName(subscription.planId)}
+													{subscription.planName}
 												</span>
 											</div>
 											<div className="flex items-center justify-between">
 												<span className="text-muted-foreground text-xs md:text-sm">
 													Billing Period
 												</span>
-												<span className="font-medium text-foreground text-xs md:text-sm capitalize">
+												<span className="font-medium text-foreground text-xs capitalize md:text-sm">
 													{subscription.billingPeriod}
 												</span>
 											</div>
@@ -113,7 +101,7 @@ const CheckoutSuccessPage = () => {
 												<span className="text-muted-foreground text-xs md:text-sm">
 													Status
 												</span>
-												<span className="font-medium text-foreground text-xs md:text-sm capitalize">
+												<span className="font-medium text-foreground text-xs capitalize md:text-sm">
 													{subscription.status}
 												</span>
 											</div>
@@ -123,7 +111,9 @@ const CheckoutSuccessPage = () => {
 														Next Billing Date
 													</span>
 													<span className="font-medium text-foreground text-xs md:text-sm">
-														{new Date(subscription.currentPeriodEnd).toLocaleDateString()}
+														{new Date(
+															subscription.currentPeriodEnd,
+														).toLocaleDateString()}
 													</span>
 												</div>
 											)}
@@ -135,7 +125,7 @@ const CheckoutSuccessPage = () => {
 													<span className="text-muted-foreground text-xs md:text-sm">
 														Status
 													</span>
-													<span className="font-medium text-foreground text-xs md:text-sm capitalize">
+													<span className="font-medium text-foreground text-xs capitalize md:text-sm">
 														{status}
 													</span>
 												</div>
@@ -154,20 +144,11 @@ const CheckoutSuccessPage = () => {
 							</div>
 						)}
 
-						{isRefreshing && (
-							<div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-3 md:p-4">
-								<Loader2 className="h-4 w-4 animate-spin text-primary md:h-5 md:w-5" />
-								<span className="text-muted-foreground text-xs md:text-sm">
-									Updating subscription information...
-								</span>
-							</div>
-						)}
-
 						{isSuccess && (
 							<div className="rounded-lg border border-primary/20 bg-primary/5 p-3 md:p-4">
-								<p className="text-center text-xs text-primary leading-relaxed md:text-sm">
-									Thank you for subscribing! Your subscription is now active and you have
-									access to all premium features.
+								<p className="text-center text-primary text-xs leading-relaxed md:text-sm">
+									Thank you for subscribing! Your subscription is now active and
+									you have access to all premium features.
 								</p>
 							</div>
 						)}

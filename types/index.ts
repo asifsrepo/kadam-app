@@ -24,6 +24,8 @@ export const QueryKeys = {
 	CustomersTransactions: "customersTransactions",
 	StoreWithBranches: "storeWithBranches",
 	Branches: "branches",
+	UserSubscription: "userSubscription",
+	SubscriptionHistory: "subscriptionHistory",
 };
 
 export interface PlanFeature {

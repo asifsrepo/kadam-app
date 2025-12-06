@@ -6,8 +6,8 @@ import { tryCatch } from "@/lib/utils";
 import { Tables } from "@/types";
 import type { ISubscription } from "@/types/subscription";
 
-const getUserSubscription = async () => {
-	return await tryCatch<ISubscription | null>(async () => {
+const getUserSubscriptionsHistory = async () => {
+	return await tryCatch<ISubscription[]>(async () => {
 		const supabase = await createClient();
 		const {
 			data: { user },
@@ -18,34 +18,25 @@ const getUserSubscription = async () => {
 			.from(Tables.Subscriptions)
 			.select("*")
 			.eq("userId", user.id)
-			.order("createdAt", { ascending: false })
-			.limit(1)
-			.single();
+			.order("createdAt", { ascending: false });
 
 		if (error) {
-			if (error.code === "PGRST116") {
-				return null;
-			}
 			throw error;
 		}
 
-		return data as ISubscription;
+		return (data as ISubscription[]) || [];
 	});
 };
 
 export const GET = async () => {
-	const result = await getUserSubscription();
+	const result = await getUserSubscriptionsHistory();
 
 	if (result.success && result.data) {
 		return NextResponse.json(result.data);
 	}
 
-	if (result.success && !result.data) {
-		return NextResponse.json({ error: "No subscription found" }, { status: 404 });
-	}
-
 	return NextResponse.json(
-		{ error: result.error || "Failed to fetch subscription" },
+		{ error: result.error || "Failed to fetch subscription history" },
 		{ status: 500 },
 	);
 };

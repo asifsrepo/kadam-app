@@ -119,13 +119,7 @@ const PlanCard = ({
 			<CardFooter className="px-3 pt-3 pb-3 md:px-6 md:pt-4 md:pb-6">
 				<Button
 					onClick={() => onSubscribe(plan.id)}
-					variant={
-						isCurrentPlan
-							? "secondary"
-							: isPopular
-								? "default"
-								: "outline"
-					}
+					variant={isCurrentPlan ? "secondary" : isPopular ? "default" : "outline"}
 					className="h-9 w-full text-xs md:h-10 md:text-sm"
 					disabled={isDisabled}
 				>
@@ -137,4 +131,3 @@ const PlanCard = ({
 };
 
 export default PlanCard;
-

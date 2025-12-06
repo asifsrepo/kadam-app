@@ -27,5 +27,5 @@ export interface ISubscription {
 	createdAt: Date;
 	updatedAt: Date;
 	planName: SubscriptionName;
+	price: number;
 }
-

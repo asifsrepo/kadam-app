@@ -61,35 +61,78 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 
 	// Validate planName - should be "basic", "pro", or "enterprise"
 	const validPlanNames = ["basic", "pro", "enterprise"];
-	const planName = planNameFromMetadata && validPlanNames.includes(planNameFromMetadata)
-		? planNameFromMetadata
-		: "basic";
+	const planName =
+		planNameFromMetadata && validPlanNames.includes(planNameFromMetadata)
+			? planNameFromMetadata
+			: "basic";
 
 	const billingPeriod = billingPeriodFromMetadata || "monthly";
 
+	// Check if this subscription already exists to determine if it's new
+	const { data: existingSubscription } = await supabase
+		.from(Tables.Subscriptions)
+		.select("id, status, price")
+		.eq("subscriptionId", subscriptionId)
+		.single();
+
+	const isNewSubscription = !existingSubscription;
+
+	// Extract price from webhook payload (amount paid at time of subscription)
+	// This preserves the original price even if prices change later
+	const priceFromWebhook =
+		eventData.amount ||
+		eventData.total_amount ||
+		eventData.amount_paid ||
+		eventData.billing?.amount ||
+		eventData.price ||
+		0;
+
+	// If this is a new active subscription, deactivate all other subscriptions for this user
+	// This ensures only one active subscription per user
+	if (isNewSubscription && status === "active" && userId) {
+		await supabase
+			.from(Tables.Subscriptions)
+			.update({
+				status: "cancelled",
+				updatedAt: new Date(),
+			})
+			.eq("userId", userId)
+			.in("status", ["active", "trialing"])
+			.neq("subscriptionId", subscriptionId);
+	}
+
 	const currentPeriodStart = eventData.current_period_start
 		? new Date(
-			typeof eventData.current_period_start === "number"
-				? eventData.current_period_start * 1000
-				: eventData.current_period_start,
-		)
+				typeof eventData.current_period_start === "number"
+					? eventData.current_period_start * 1000
+					: eventData.current_period_start,
+			)
 		: new Date();
 
 	const currentPeriodEnd = eventData.current_period_end
 		? new Date(
-			typeof eventData.current_period_end === "number"
-				? eventData.current_period_end * 1000
-				: eventData.current_period_end,
-		)
+				typeof eventData.current_period_end === "number"
+					? eventData.current_period_end * 1000
+					: eventData.current_period_end,
+			)
 		: new Date();
 
 	const cancelledAt = eventData.cancelled_at
 		? new Date(
-			typeof eventData.cancelled_at === "number"
-				? eventData.cancelled_at * 1000
-				: eventData.cancelled_at,
-		)
+				typeof eventData.cancelled_at === "number"
+					? eventData.cancelled_at * 1000
+					: eventData.cancelled_at,
+			)
 		: null;
+
+	// Determine price: use existing price if subscription exists, otherwise use webhook price
+	// This preserves the original subscription price even if prices change
+	const price =
+		existingSubscription?.price && existingSubscription.price > 0
+			? existingSubscription.price
+			: priceFromWebhook > 0
+				? priceFromWebhook
+				: 0;
 
 	const subscriptionRecord: any = {
 		subscriptionId: subscriptionId,
@@ -98,6 +141,7 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		planName,
 		billingPeriod,
 		status,
+		price,
 		currentPeriodStart,
 		currentPeriodEnd,
 		cancelAtPeriodEnd: eventData.cancel_at_period_end ?? false,
@@ -118,7 +162,6 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		console.error("Subscription record:", subscriptionRecord);
 		throw error;
 	}
-
 };
 
 export const POST = Webhooks({
@@ -152,4 +195,3 @@ export const POST = Webhooks({
 		await updateSubscriptionInDB(payload);
 	},
 });
-

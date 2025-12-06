@@ -35,4 +35,3 @@ const BillingToggle = ({ isYearly, onChange }: BillingToggleProps) => {
 };
 
 export default BillingToggle;
-

@@ -18,4 +18,3 @@ export const POST = Checkout({
 	environment: DODO_PAYMENTS_ENVIRONMENT,
 	type: "session",
 });
-

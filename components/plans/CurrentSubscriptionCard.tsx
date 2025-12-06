@@ -40,7 +40,7 @@ const CurrentSubscriptionCard = ({
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-muted-foreground text-xs md:text-sm">Billing Period</span>
-					<span className="text-foreground text-xs md:text-sm capitalize">
+					<span className="text-foreground text-xs capitalize md:text-sm">
 						{subscription.billingPeriod}
 					</span>
 				</div>
@@ -68,4 +68,3 @@ const CurrentSubscriptionCard = ({
 };
 
 export default CurrentSubscriptionCard;
-

@@ -6,8 +6,12 @@ import createCheckoutSession from "@/app/(server)/actions/subscriptions/createCh
 import BillingToggle from "@/components/plans/BillingToggle";
 import CurrentSubscriptionCard from "@/components/plans/CurrentSubscriptionCard";
 import PlanCard from "@/components/plans/PlanCard";
+import SubscriptionHistory from "@/components/plans/SubscriptionHistory";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { PLANS } from "@/constants";
-import { useSubscription } from "@/hooks/store/useSubscription";
+import { useSubscription } from "@/hooks/queries/useSubscription";
+import { useSubscriptionHistory } from "@/hooks/queries/useSubscriptionHistory";
 import { getPlanDisplayName } from "@/lib/utils/subscriptions";
 import { Plan } from "@/types";
 import type { BillingPeriod, SubscriptionName } from "@/types/subscription";
@@ -15,8 +19,12 @@ import BackButton from "~/BackButton";
 
 const PlansPage = () => {
 	const { subscription, isLoading: subscriptionLoading, isActive } = useSubscription();
+	const { subscriptionHistory, isLoading: isHistoryLoading } = useSubscriptionHistory(
+		isActive && !!subscription,
+	);
 	const [isYearly, setIsYearly] = useState(subscription?.billingPeriod === "yearly");
 	const [isLoading, setIsLoading] = useState(false);
+	const [showChangePlan, setShowChangePlan] = useState(false);
 
 	useEffect(() => {
 		if (subscription?.billingPeriod) {
@@ -166,7 +174,9 @@ const PlansPage = () => {
 						<div className="flex items-center gap-2 md:gap-3">
 							<BackButton />
 							<div className="min-w-0 flex-1">
-								<h1 className="font-semibold text-base md:text-2xl">Plans & Billing</h1>
+								<h1 className="font-semibold text-base md:text-2xl">
+									Plans & Billing
+								</h1>
 								<p className="truncate text-muted-foreground text-xs md:text-sm">
 									Loading...
 								</p>
@@ -196,46 +206,146 @@ const PlansPage = () => {
 
 			<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
 				{subscription && isActive && (
-					<CurrentSubscriptionCard
-						subscription={subscription}
-						onManageClick={handleOpenCustomerPortal}
-						planName={getPlanDisplayName(subscription.planName)}
-					/>
+					<>
+						<CurrentSubscriptionCard
+							subscription={subscription}
+							onManageClick={handleOpenCustomerPortal}
+							planName={getPlanDisplayName(subscription.planName)}
+						/>
+
+						{!showChangePlan && (
+							<>
+								<div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 md:p-4">
+									<div className="min-w-0 flex-1">
+										<h3 className="font-semibold text-sm md:text-base">
+											Subscription History
+										</h3>
+										<p className="text-muted-foreground text-xs md:text-sm">
+											View all your past and current subscriptions
+										</p>
+									</div>
+									<Button
+										onClick={() => setShowChangePlan(true)}
+										variant="outline"
+										className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+									>
+										Change Plan
+									</Button>
+								</div>
+
+								{isHistoryLoading ? (
+									<Card className="border-border">
+										<CardContent className="px-3 py-6 md:px-6 md:py-8">
+											<p className="text-center text-muted-foreground text-xs md:text-sm">
+												Loading subscription history...
+											</p>
+										</CardContent>
+									</Card>
+								) : (
+									<SubscriptionHistory
+										subscriptions={subscriptionHistory}
+										formatPrice={formatPrice}
+									/>
+								)}
+							</>
+						)}
+
+						{showChangePlan && (
+							<div className="space-y-3 md:space-y-4">
+								<div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 md:p-4">
+									<div className="min-w-0 flex-1">
+										<h3 className="font-semibold text-sm md:text-base">
+											Change Your Plan
+										</h3>
+										<p className="text-muted-foreground text-xs md:text-sm">
+											Select a new plan to upgrade or downgrade
+										</p>
+									</div>
+									<Button
+										onClick={() => setShowChangePlan(false)}
+										variant="outline"
+										className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+									>
+										Cancel
+									</Button>
+								</div>
+
+								<BillingToggle isYearly={isYearly} onChange={setIsYearly} />
+
+								<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+									{PLANS.map((plan) => {
+										const isCurrentPlan =
+											currentPlanProductId === plan.id &&
+											isCurrentBillingPeriod;
+										const buttonText = getButtonText(plan.id);
+										const isDisabled = isCurrentPlan || isLoading;
+
+										return (
+											<PlanCard
+												key={plan.id}
+												plan={plan}
+												isYearly={isYearly}
+												isCurrentPlan={isCurrentPlan}
+												isPopular={plan.popular || false}
+												buttonText={isLoading ? "Loading..." : buttonText}
+												isDisabled={isDisabled}
+												onSubscribe={handleSubscribe}
+												formatPrice={formatPrice}
+												getCurrentPrice={getCurrentPrice}
+												getSavings={getSavings}
+											/>
+										);
+									})}
+								</div>
+
+								<div className="rounded-lg border border-border bg-card p-3 md:p-4">
+									<p className="text-center text-[10px] text-muted-foreground leading-relaxed md:text-xs">
+										All plans include a 14-day free trial. Cancel anytime. No
+										credit card required for trial.
+									</p>
+								</div>
+							</div>
+						)}
+					</>
 				)}
 
-				<BillingToggle isYearly={isYearly} onChange={setIsYearly} />
+				{(!subscription || !isActive) && (
+					<>
+						<BillingToggle isYearly={isYearly} onChange={setIsYearly} />
 
-				<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
-					{PLANS.map((plan) => {
-						const isCurrentPlan =
-							currentPlanProductId === plan.id && isCurrentBillingPeriod;
-						const buttonText = getButtonText(plan.id);
-						const isDisabled = isCurrentPlan || isLoading;
+						<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+							{PLANS.map((plan) => {
+								const isCurrentPlan =
+									currentPlanProductId === plan.id && isCurrentBillingPeriod;
+								const buttonText = getButtonText(plan.id);
+								const isDisabled = isCurrentPlan || isLoading;
 
-						return (
-							<PlanCard
-								key={plan.id}
-								plan={plan}
-								isYearly={isYearly}
-								isCurrentPlan={isCurrentPlan}
-								isPopular={plan.popular || false}
-								buttonText={isLoading ? "Loading..." : buttonText}
-								isDisabled={isDisabled}
-								onSubscribe={handleSubscribe}
-								formatPrice={formatPrice}
-								getCurrentPrice={getCurrentPrice}
-								getSavings={getSavings}
-							/>
-						);
-					})}
-				</div>
+								return (
+									<PlanCard
+										key={plan.id}
+										plan={plan}
+										isYearly={isYearly}
+										isCurrentPlan={isCurrentPlan}
+										isPopular={plan.popular || false}
+										buttonText={isLoading ? "Loading..." : buttonText}
+										isDisabled={isDisabled}
+										onSubscribe={handleSubscribe}
+										formatPrice={formatPrice}
+										getCurrentPrice={getCurrentPrice}
+										getSavings={getSavings}
+									/>
+								);
+							})}
+						</div>
 
-				<div className="rounded-lg border border-border bg-card p-3 md:p-4">
-					<p className="text-center text-[10px] text-muted-foreground leading-relaxed md:text-xs">
-						All plans include a 14-day free trial. Cancel anytime. No credit card
-						required for trial.
-					</p>
-				</div>
+						<div className="rounded-lg border border-border bg-card p-3 md:p-4">
+							<p className="text-center text-[10px] text-muted-foreground leading-relaxed md:text-xs">
+								All plans include a 14-day free trial. Cancel anytime. No credit
+								card required for trial.
+							</p>
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);

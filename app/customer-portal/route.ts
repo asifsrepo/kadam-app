@@ -5,4 +5,3 @@ export const GET = CustomerPortal({
 	bearerToken: DODO_PAYMENTS_API_KEY,
 	environment: DODO_PAYMENTS_ENVIRONMENT,
 });
-
