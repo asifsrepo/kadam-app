@@ -6,7 +6,7 @@ export const APP_URL = "https://hysabee.com";
 
 export const PLANS: Plan[] = [
     {
-        id: "pay_2IjeQm4hqU6RA4Z4kwDee",
+        id: "pdt_JceCn4OiEZ625soqXm2BR",
         name: "Basic",
         description: "Perfect for small stores getting started",
         icon: Zap,
@@ -24,7 +24,7 @@ export const PLANS: Plan[] = [
         ],
     },
     {
-        id: "pdt_JceCn4OiEZ625soqXm2BR",
+        id: "pdt_sW8b7BMWOAgX1cq0T9vVD",
         name: "Pro",
         description: "Best for growing businesses",
         icon: Sparkles,

@@ -40,6 +40,7 @@ const createCheckoutSession = async ({
 		// Initialize Dodo Payments client
 		const client = new DodoPayments({
 			bearerToken: DODO_PAYMENTS_API_KEY,
+			environment:"test_mode"
 		});
 
 		// Create checkout session using SDK
