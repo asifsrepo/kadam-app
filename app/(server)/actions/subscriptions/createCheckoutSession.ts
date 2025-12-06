@@ -8,16 +8,18 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
 import { Tables } from "@/types";
-import type { BillingPeriod, SubscriptionPlan } from "@/types/subscription";
+import type { BillingPeriod, SubscriptionName } from "@/types/subscription";
 
 interface CreateCheckoutSessionParams {
-	planId: SubscriptionPlan;
+	productId: string;
 	billingPeriod: BillingPeriod;
+	planName: SubscriptionName;
 }
 
 const createCheckoutSession = async ({
-	planId,
+	productId,
 	billingPeriod,
+	planName,
 }: CreateCheckoutSessionParams) => {
 	return await tryCatch<{ checkout_url: string }>(async () => {
 		const supabase = await createClient();
@@ -32,10 +34,6 @@ const createCheckoutSession = async ({
 			.select("name, phone")
 			.eq("id", user.id)
 			.single();
-
-		// Get product ID based on plan and billing period
-		// This should match the product IDs configured in Dodo Payments dashboard
-		const productId = `${planId}`;
 
 		// Initialize Dodo Payments client
 		const client = new DodoPayments({
@@ -63,7 +61,7 @@ const createCheckoutSession = async ({
 			return_url: DODO_PAYMENTS_RETURN_URL || undefined,
 			metadata: {
 				user_id: user.id,
-				plan_id: planId,
+				plan_name: planName,
 				billing_period: billingPeriod,
 			},
 		});

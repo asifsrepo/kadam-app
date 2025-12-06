@@ -53,13 +53,17 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		userId = existingSubscription?.userId;
 	}
 
-	const planIdFromMetadata = eventData.metadata?.plan_id;
+	// Extract planName and billingPeriod from metadata
+	const planNameFromMetadata = eventData.metadata?.plan_name;
 	const billingPeriodFromMetadata = eventData.metadata?.billing_period;
 
-	let planId = "basic";
-	if (planIdFromMetadata) {
-		planId = planIdFromMetadata;
-	}
+	const productId = eventData.product_id;
+
+	// Validate planName - should be "basic", "pro", or "enterprise"
+	const validPlanNames = ["basic", "pro", "enterprise"];
+	const planName = planNameFromMetadata && validPlanNames.includes(planNameFromMetadata)
+		? planNameFromMetadata
+		: "basic";
 
 	const billingPeriod = billingPeriodFromMetadata || "monthly";
 
@@ -90,13 +94,14 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 	const subscriptionRecord: any = {
 		subscriptionId: subscriptionId,
 		customerId: customerId || undefined,
+		productId: productId || undefined,
+		planName,
+		billingPeriod,
 		status,
 		currentPeriodStart,
 		currentPeriodEnd,
 		cancelAtPeriodEnd: eventData.cancel_at_period_end ?? false,
 		cancelledAt,
-		planId,
-		billingPeriod,
 		updatedAt: new Date(),
 	};
 

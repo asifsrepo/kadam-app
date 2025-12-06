@@ -1,5 +1,6 @@
 "use server";
 
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
 import { Tables } from "@/types";
@@ -22,7 +23,6 @@ const getUserSubscription = async () => {
 			.single();
 
 		if (error) {
-			// If no subscription found, return null instead of error
 			if (error.code === "PGRST116") {
 				return null;
 			}
@@ -33,5 +33,16 @@ const getUserSubscription = async () => {
 	});
 };
 
-export default getUserSubscription;
-
+export const GET = async () => {
+	const result = await getUserSubscription();
+	
+	if (result.success && result.data) {
+		return NextResponse.json(result.data);
+	}
+	
+	if (result.success && !result.data) {
+		return NextResponse.json({ error: "No subscription found" }, { status: 404 });
+	}
+	
+	return NextResponse.json({ error: result.error || "Failed to fetch subscription" }, { status: 500 });
+};

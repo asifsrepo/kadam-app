@@ -1,12 +1,15 @@
-import type { ISubscription, SubscriptionPlan, SubscriptionStatus } from "@/types/subscription";
+import type { ISubscription, SubscriptionName, SubscriptionStatus } from "@/types/subscription";
 
 /**
- * Maps plan ID and billing period to Dodo Payments product ID
- * This should match the product IDs configured in Dodo Payments dashboard
+ * Gets the plan display name
  */
-export const getPlanProductId = (planId: SubscriptionPlan, isYearly: boolean): string => {
-	const period = isYearly ? "yearly" : "monthly";
-	return `${planId}_${period}`;
+export const getPlanDisplayName = (planName: SubscriptionName): string => {
+	const planNames: Record<SubscriptionName, string> = {
+		basic: "Basic",
+		pro: "Pro",
+		enterprise: "Enterprise",
+	};
+	return planNames[planName] || planName;
 };
 
 /**
@@ -39,16 +42,3 @@ export const isCancellingAtPeriodEnd = (subscription: ISubscription | null): boo
 	if (!subscription) return false;
 	return subscription.cancelAtPeriodEnd && subscription.status === "active";
 };
-
-/**
- * Gets the plan display name
- */
-export const getPlanDisplayName = (planId: SubscriptionPlan): string => {
-	const planNames: Record<SubscriptionPlan, string> = {
-		basic: "Basic",
-		pro: "Pro",
-		enterprise: "Enterprise",
-	};
-	return planNames[planId] || planId;
-};
-

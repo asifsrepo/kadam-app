@@ -8,7 +8,7 @@ export type SubscriptionStatus =
 	| "past_due"
 	| "trialing";
 
-export type SubscriptionPlan = "basic" | "pro" | "enterprise";
+export type SubscriptionName = "basic" | "pro" | "enterprise";
 
 export type BillingPeriod = "monthly" | "yearly";
 
@@ -17,7 +17,7 @@ export interface ISubscription {
 	userId: IUser["id"];
 	customerId: string; // Dodo Payments customer ID
 	subscriptionId: string; // Dodo Payments subscription ID
-	planId: SubscriptionPlan;
+	productId: string; // dodo payment product id
 	billingPeriod: BillingPeriod;
 	status: SubscriptionStatus;
 	currentPeriodStart: Date;
@@ -26,5 +26,6 @@ export interface ISubscription {
 	cancelledAt?: Date;
 	createdAt: Date;
 	updatedAt: Date;
+	planName: SubscriptionName;
 }
 

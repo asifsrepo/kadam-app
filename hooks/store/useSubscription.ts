@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { create } from "zustand";
-import getUserSubscription from "@/app/(server)/actions/subscriptions/getUserSubscription";
+import { BASE_URL } from "@/config";
 import { isSubscriptionActive } from "@/lib/utils/subscriptions";
 import type { ISubscription } from "@/types/subscription";
 
@@ -20,6 +20,26 @@ const initialState = {
 	isInitialized: false,
 };
 
+const getUserSubscription = async () => {
+	try {
+		const url = `${BASE_URL}/api/subscriptions`;
+		const response = await fetch(url);
+
+		if (!response.ok) {
+			if (response.status === 404) {
+				return { data: null, error: null, success: true };
+			}
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const data = await response.json();
+		return { data, error: null, success: true };
+	} catch (error) {
+		console.error("Error getting user subscription:", error);
+		return { data: null, error: error instanceof Error ? error.message : "Unknown error", success: false };
+	}
+};
+
 export const useSubscriptionStore = create<SubscriptionState>()((set, get) => ({
 	...initialState,
 
@@ -29,11 +49,11 @@ export const useSubscriptionStore = create<SubscriptionState>()((set, get) => ({
 
 		set({ isLoading: true });
 		try {
-			const { data, error } = await getUserSubscription();
-			if (error) throw new Error(error);
+			const result = await getUserSubscription();
+			if (result.error) throw new Error(result.error);
 
 			set({
-				subscription: data || null,
+				subscription: result.data || null,
 				isInitialized: true,
 			});
 		} catch (error) {
@@ -47,10 +67,10 @@ export const useSubscriptionStore = create<SubscriptionState>()((set, get) => ({
 	loadSubscription: async () => {
 		set({ isLoading: true });
 		try {
-			const { data, error } = await getUserSubscription();
-			if (error) throw new Error(error);
+			const result = await getUserSubscription();
+			if (result.error) throw new Error(result.error);
 
-			set({ subscription: data || null });
+			set({ subscription: result.data || null });
 		} catch (error) {
 			console.error("Error loading subscription:", error);
 			set({ subscription: null });
