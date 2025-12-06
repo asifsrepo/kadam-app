@@ -15,9 +15,7 @@ import BackButton from "~/BackButton";
 
 const PlansPage = () => {
 	const { subscription, isLoading: subscriptionLoading, isActive } = useSubscription();
-	const [isYearly, setIsYearly] = useState(
-		subscription?.billingPeriod === "yearly" ? true : false,
-	);
+	const [isYearly, setIsYearly] = useState(subscription?.billingPeriod === "yearly");
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
@@ -26,29 +24,25 @@ const PlansPage = () => {
 		}
 	}, [subscription?.billingPeriod]);
 
-	// Get current plan product ID from subscription
 	const currentPlanProductId = subscription?.productId || null;
 	const isCurrentBillingPeriod =
 		subscription?.billingPeriod === (isYearly ? "yearly" : "monthly");
 
-	// Map product IDs to plan names for comparison
-	const getPlanNameFromProductId = (productId: string): SubscriptionName | null => {
-		const productIdToPlan: Record<string, SubscriptionName> = {
-			"pdt_JceCn4OiEZ625soqXm2BR": "basic",
-			"pdt_sW8b7BMWOAgX1cq0T9vVD": "pro",
-			enterprise: "enterprise",
-		};
-		return productIdToPlan[productId] || null;
+	const findPlanByProductId = (productId: string): Plan | null => {
+		return PLANS.find((plan) => plan.id === productId) || null;
 	};
 
-	// Get plan tier for upgrade/downgrade comparison
+	const planNameToSubscriptionName = (planName: string): SubscriptionName | null => {
+		const normalized = planName.toLowerCase();
+		if (normalized === "basic" || normalized === "pro" || normalized === "enterprise") {
+			return normalized as SubscriptionName;
+		}
+		return null;
+	};
+
 	const getPlanTier = (planName: SubscriptionName): number => {
-		const planTiers: Record<SubscriptionName, number> = {
-			basic: 1,
-			pro: 2,
-			enterprise: 3,
-		};
-		return planTiers[planName] || 0;
+		const plan = PLANS.find((p) => planNameToSubscriptionName(p.name) === planName);
+		return plan ? PLANS.indexOf(plan) + 1 : 0;
 	};
 
 	const getButtonText = (planId: string): string => {
@@ -62,7 +56,8 @@ const PlansPage = () => {
 		}
 
 		const currentPlanName = subscription.planName;
-		const planName = getPlanNameFromProductId(planId);
+		const plan = findPlanByProductId(planId);
+		const planName = plan ? planNameToSubscriptionName(plan.name) : null;
 
 		if (!planName || !currentPlanName) {
 			return isYearly ? "Subscribe Yearly" : "Subscribe Monthly";
@@ -93,8 +88,14 @@ const PlansPage = () => {
 		setIsLoading(true);
 		try {
 			const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
-			const planName = getPlanNameFromProductId(planId);
+			const plan = findPlanByProductId(planId);
 
+			if (!plan) {
+				toast.error("Invalid plan selected");
+				return;
+			}
+
+			const planName = planNameToSubscriptionName(plan.name);
 			if (!planName) {
 				toast.error("Invalid plan selected");
 				return;
