@@ -23,6 +23,8 @@ export const formatSubscriptionStatus = (status: SubscriptionStatus): string => 
 		on_hold: "On Hold",
 		past_due: "Past Due",
 		trialing: "Trial",
+		upgraded: "Upgraded",
+		downgraded: "Downgraded",
 	};
 	return statusMap[status] || status;
 };

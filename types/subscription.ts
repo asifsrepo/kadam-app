@@ -6,7 +6,9 @@ export type SubscriptionStatus =
 	| "expired"
 	| "on_hold"
 	| "past_due"
-	| "trialing";
+	| "trialing"
+	| "upgraded"
+	| "downgraded";
 
 export type SubscriptionName = "basic" | "pro" | "enterprise";
 
