@@ -43,6 +43,15 @@ const PlanCard = ({
 	const currentPrice = getCurrentPrice(plan);
 	const savings = getSavings(plan);
 
+	// Calculate percentage savings
+	const getSavingsPercentage = () => {
+		if (savings <= 0 || plan.monthlyPrice <= 0) return 0;
+		const yearlyMonthlyCost = plan.monthlyPrice * 12;
+		return Math.round((savings / yearlyMonthlyCost) * 100);
+	};
+
+	const savingsPercentage = getSavingsPercentage();
+
 	return (
 		<Card
 			className={`relative flex flex-col transition-all ${
@@ -91,12 +100,12 @@ const PlanCard = ({
 							{formatPrice(currentPrice)}
 						</span>
 						<span className="text-muted-foreground text-xs md:text-sm">
-							/{isYearly ? "year" : "month"}
+							/month
 						</span>
 					</div>
-					{savings > 0 && (
+					{savingsPercentage > 0 && (
 						<p className="text-[10px] text-muted-foreground md:text-xs">
-							Save {formatPrice(savings)} per year
+							Save {savingsPercentage}% per year
 						</p>
 					)}
 				</div>

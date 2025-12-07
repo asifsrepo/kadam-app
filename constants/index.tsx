@@ -27,7 +27,8 @@ export const PLANS: Plan[] = [
 		description: "Best for growing businesses",
 		icon: Sparkles,
 		monthlyPrice: 77.00,
-		yearlyPrice: 673.00,
+		yearlyPrice: 56.00,
+		yearlySavings: 252.00,
 		popular: true,
 		badge: "Most Popular",
 		features: [
