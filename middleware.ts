@@ -15,17 +15,17 @@ export const middleware = async (request: NextRequest) => {
 
 	const { data } = await supabase.auth.getUser();
 
-	// const user = data?.user;
+	const user = data?.user;
 
-	// const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
-	// if (authRouteResponse) return authRouteResponse;
+	const authRouteResponse = handleAuthenticatedOnAuthRoutes(request, user as IUser);
+	if (authRouteResponse) return authRouteResponse;
 
-	// // Handle unauthenticated users on protected routes (show 404)
-	// const protectedRouteResponse = handleUnauthenticatedOnProtectedRoutes(request, user as IUser);
-	// if (protectedRouteResponse) return protectedRouteResponse;
+	// Handle unauthenticated users on protected routes (show 404)
+	const protectedRouteResponse = handleUnauthenticatedOnProtectedRoutes(request, user as IUser);
+	if (protectedRouteResponse) return protectedRouteResponse;
 
-	// const onboardingResponse = handleOnboarding(request, user as IUser);
-	// if (onboardingResponse) return onboardingResponse;
+	const onboardingResponse = handleOnboarding(request, user as IUser);
+	if (onboardingResponse) return onboardingResponse;
 
 	return supabaseResponse;
 };
