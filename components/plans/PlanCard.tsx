@@ -14,7 +14,6 @@ import { Plan } from "@/types";
 
 interface PlanCardProps {
 	plan: Plan;
-	isYearly: boolean;
 	isCurrentPlan: boolean;
 	isPopular: boolean;
 	buttonText: string;
@@ -28,7 +27,6 @@ interface PlanCardProps {
 
 const PlanCard = ({
 	plan,
-	isYearly,
 	isCurrentPlan,
 	isPopular,
 	buttonText,
