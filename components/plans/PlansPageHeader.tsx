@@ -12,7 +12,9 @@ const PlansPageHeader = ({ subtitle = "Choose the perfect plan" }: PlansPageHead
 					<BackButton />
 					<div className="min-w-0 flex-1">
 						<h1 className="font-semibold text-base md:text-2xl">Plans & Billing</h1>
-						<p className="truncate text-muted-foreground text-xs md:text-sm">{subtitle}</p>
+						<p className="truncate text-muted-foreground text-xs md:text-sm">
+							{subtitle}
+						</p>
 					</div>
 				</div>
 			</div>
@@ -21,4 +23,3 @@ const PlansPageHeader = ({ subtitle = "Choose the perfect plan" }: PlansPageHead
 };
 
 export default PlansPageHeader;
-

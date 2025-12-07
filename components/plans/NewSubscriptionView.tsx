@@ -36,8 +36,7 @@ const NewSubscriptionView = ({
 			<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
 				{PLANS.map((plan) => {
 					const planId = isYearly ? plan.yearlyPlanId : plan.monthlyPlanId;
-					const isCurrentPlan =
-						currentPlanProductId === planId && isCurrentBillingPeriod;
+					const isCurrentPlan = currentPlanProductId === planId && isCurrentBillingPeriod;
 					const buttonText = getButtonText(planId);
 					const isDisabled = isCurrentPlan || isLoading;
 
@@ -65,4 +64,3 @@ const NewSubscriptionView = ({
 };
 
 export default NewSubscriptionView;
-

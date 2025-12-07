@@ -29,4 +29,3 @@ const ExpiredSubscriptionCard = ({ onRenew, isLoading }: ExpiredSubscriptionCard
 };
 
 export default ExpiredSubscriptionCard;
-

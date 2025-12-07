@@ -13,12 +13,7 @@ export const PLANS: Plan[] = [
 		icon: Zap,
 		monthlyPrice: 0,
 		yearlyPrice: 0,
-		features: [
-			"Up to 10 customers",
-			"1 Branch",
-			"Basic credit tracking",
-			"Simple report",
-		],
+		features: ["Up to 10 customers", "1 Branch", "Basic credit tracking", "Simple report"],
 	},
 	{
 		monthlyPlanId: "pdt_aJADFFMPqBp7aLSkIoptV",
@@ -26,8 +21,8 @@ export const PLANS: Plan[] = [
 		name: "Pro",
 		description: "Best for growing businesses",
 		icon: Sparkles,
-		monthlyPrice: 77.00,
-		yearlyPrice: 56.00,
+		monthlyPrice: 77.0,
+		yearlyPrice: 56.0,
 		popular: true,
 		badge: "Most Popular",
 		features: [
@@ -38,5 +33,5 @@ export const PLANS: Plan[] = [
 			"Advanced analytics",
 			"Priority support",
 		],
-	}
+	},
 ];

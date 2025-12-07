@@ -97,9 +97,7 @@ const PlanCard = ({
 						<span className="font-bold text-2xl md:text-3xl">
 							{formatPrice(currentPrice)}
 						</span>
-						<span className="text-muted-foreground text-xs md:text-sm">
-							/month
-						</span>
+						<span className="text-muted-foreground text-xs md:text-sm">/month</span>
 					</div>
 					{savingsPercentage > 0 && (
 						<p className="text-[10px] text-muted-foreground md:text-xs">

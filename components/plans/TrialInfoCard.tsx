@@ -10,4 +10,3 @@ const TrialInfoCard = () => {
 };
 
 export default TrialInfoCard;
-

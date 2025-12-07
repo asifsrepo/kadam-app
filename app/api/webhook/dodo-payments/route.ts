@@ -156,7 +156,7 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		// Payment event or fallback - calculate from created_at and billing_period
 		currentPeriodStart = new Date(eventData.created_at);
 		const periodStart = new Date(currentPeriodStart);
-		
+
 		if (billingPeriod === "yearly") {
 			periodStart.setFullYear(periodStart.getFullYear() + 1);
 		} else {
@@ -176,9 +176,7 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 	}
 
 	// Extract cancelled_at date
-	const cancelledAt = eventData.cancelled_at
-		? new Date(eventData.cancelled_at)
-		: null;
+	const cancelledAt = eventData.cancelled_at ? new Date(eventData.cancelled_at) : null;
 
 	// Determine price: use existing price if subscription exists, otherwise use webhook price
 	// This preserves the original subscription price even if prices change

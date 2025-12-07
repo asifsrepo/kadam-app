@@ -43,11 +43,13 @@ const SubscriptionHistorySection = ({
 					</CardContent>
 				</Card>
 			) : (
-				<SubscriptionHistory subscriptions={subscriptionHistory} formatPrice={formatPrice} />
+				<SubscriptionHistory
+					subscriptions={subscriptionHistory}
+					formatPrice={formatPrice}
+				/>
 			)}
 		</>
 	);
 };
 
 export default SubscriptionHistorySection;
-

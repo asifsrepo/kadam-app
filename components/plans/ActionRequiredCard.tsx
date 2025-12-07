@@ -30,4 +30,3 @@ const ActionRequiredCard = ({ isPastDue, onUpdatePayment }: ActionRequiredCardPr
 };
 
 export default ActionRequiredCard;
-

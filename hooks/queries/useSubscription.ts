@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "@/config";
-import {
-	isCancellingAtPeriodEnd,
-	isSubscriptionActive,
-} from "@/lib/utils/subscriptions";
+import { isCancellingAtPeriodEnd, isSubscriptionActive } from "@/lib/utils/subscriptions";
 import { QueryKeys } from "@/types";
 
 export const useSubscription = () => {

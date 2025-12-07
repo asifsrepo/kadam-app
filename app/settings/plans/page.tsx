@@ -15,8 +15,12 @@ import type { Plan } from "@/types";
 import type { BillingPeriod, SubscriptionName } from "@/types/subscription";
 
 const PlansPage = () => {
-	const { subscription, isLoading: subscriptionLoading, isActive, refetch: refetchSubscription } =
-		useSubscription();
+	const {
+		subscription,
+		isLoading: subscriptionLoading,
+		isActive,
+		refetch: refetchSubscription,
+	} = useSubscription();
 
 	const status = subscription?.status;
 	const isPastDue = status === "past_due";
@@ -63,10 +67,7 @@ const PlansPage = () => {
 		setIsLoading(true);
 
 		const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
-		const plan = PLANS.find(
-			(p) =>
-				(isYearly ? p.yearlyPlanId : p.monthlyPlanId) === planId,
-		);
+		const plan = PLANS.find((p) => (isYearly ? p.yearlyPlanId : p.monthlyPlanId) === planId);
 		const planName = plan ? planNameToSubscriptionName(plan.name) : null;
 
 		if (!plan || !planName) {

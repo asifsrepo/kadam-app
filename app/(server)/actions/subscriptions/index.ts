@@ -1,7 +1,11 @@
 "use server";
 
 import DodoPayments from "dodopayments";
-import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_ENVIRONMENT, DODO_PAYMENTS_RETURN_URL } from "@/config";
+import {
+	DODO_PAYMENTS_API_KEY,
+	DODO_PAYMENTS_ENVIRONMENT,
+	DODO_PAYMENTS_RETURN_URL,
+} from "@/config";
 import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
 import { Tables } from "@/types";
@@ -23,7 +27,7 @@ export const createCheckoutSession = async ({
 	billingPeriod,
 	planName,
 }: CreateCheckoutSessionParams) => {
-	return await tryCatch<{ checkout_url: string; }>(async () => {
+	return await tryCatch<{ checkout_url: string }>(async () => {
 		const supabase = await createClient();
 		const {
 			data: { user },
@@ -53,7 +57,6 @@ export const createCheckoutSession = async ({
 				plan_name: planName,
 				billing_period: billingPeriod,
 			},
-
 		});
 
 		if (!session.checkout_url) {
