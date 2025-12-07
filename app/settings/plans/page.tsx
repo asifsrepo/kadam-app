@@ -4,34 +4,28 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { changePlan, createCheckoutSession } from "@/app/(server)/actions/subscriptions";
 import ActionRequiredCard from "@/components/plans/ActionRequiredCard";
-import ChangePlanSection from "@/components/plans/ChangePlanSection";
-import CurrentSubscriptionCard from "@/components/plans/CurrentSubscriptionCard";
+import BillingToggle from "@/components/plans/BillingToggle";
 import ExpiredSubscriptionCard from "@/components/plans/ExpiredSubscriptionCard";
-import NewSubscriptionView from "@/components/plans/NewSubscriptionView";
+import PlanCard from "@/components/plans/PlanCard";
 import PlansPageHeader from "@/components/plans/PlansPageHeader";
-import SubscriptionHistorySection from "@/components/plans/SubscriptionHistorySection";
+import TrialInfoCard from "@/components/plans/TrialInfoCard";
 import { PLANS } from "@/constants";
 import { useSubscription } from "@/hooks/queries/useSubscription";
-import { useSubscriptionHistory } from "@/hooks/queries/useSubscriptionHistory";
-import { getPlanDisplayName } from "@/lib/utils/subscriptions";
 import type { Plan } from "@/types";
 import type { BillingPeriod, SubscriptionName } from "@/types/subscription";
 
 const PlansPage = () => {
-	const {
-		subscription,
-		isLoading: subscriptionLoading,
-		isActive,
-		refetch: refetchSubscription,
-	} = useSubscription();
+	const { subscription, isLoading: subscriptionLoading, isActive, refetch: refetchSubscription } =
+		useSubscription();
 
-	const { subscriptionHistory, isLoading: isHistoryLoading } = useSubscriptionHistory(
-		!!subscription,
-	);
+	const status = subscription?.status;
+	const isPastDue = status === "past_due";
+	const isOnHold = status === "on_hold";
+	const isExpired = status === "expired";
+	const requiresAction = isPastDue || isOnHold;
 
 	const [isYearly, setIsYearly] = useState(subscription?.billingPeriod === "yearly");
 	const [isLoading, setIsLoading] = useState(false);
-	const [showChangePlan, setShowChangePlan] = useState(false);
 
 	useEffect(() => {
 		if (subscription?.billingPeriod) {
@@ -39,18 +33,9 @@ const PlansPage = () => {
 		}
 	}, [subscription?.billingPeriod]);
 
-	const status = subscription?.status;
-	const isPastDue = status === "past_due";
-	const isOnHold = status === "on_hold";
-	const isExpired = status === "expired";
-	const requiresAction = isPastDue || isOnHold;
-	const hasSubscription = subscription && (isActive || isPastDue || isOnHold || isExpired);
 	const currentPlanProductId = subscription?.productId ?? null;
 	const isCurrentBillingPeriod =
 		subscription?.billingPeriod === (isYearly ? "yearly" : "monthly");
-
-	const findPlanByProductId = (productId: string) =>
-		PLANS.find((plan) => plan.id === productId) ?? null;
 
 	const planNameToSubscriptionName = (planName: string): SubscriptionName | null => {
 		const normalized = planName.toLowerCase();
@@ -60,41 +45,11 @@ const PlansPage = () => {
 		return null;
 	};
 
-	const getPlanTier = (planName: SubscriptionName) => {
-		const plan = PLANS.find((p) => planNameToSubscriptionName(p.name) === planName);
-		return plan ? PLANS.indexOf(plan) + 1 : 0;
-	};
-
 	const getButtonText = (planId: string): string => {
-		if (!isActive) {
-			return isYearly ? "Subscribe Yearly" : "Subscribe Monthly";
-		}
-
-		if (currentPlanProductId === planId && isCurrentBillingPeriod) {
+		if (isActive && currentPlanProductId === planId && isCurrentBillingPeriod) {
 			return "Current Plan";
 		}
-
-		const plan = findPlanByProductId(planId);
-		const planName = plan ? planNameToSubscriptionName(plan.name) : null;
-
-		if (!planName || !subscription?.planName) {
-			return isYearly ? "Subscribe Yearly" : "Subscribe Monthly";
-		}
-
-		const currentTier = getPlanTier(subscription.planName);
-		const planTier = getPlanTier(planName);
-
-		if (planTier > currentTier) return "Upgrade";
-		if (planTier < currentTier) return "Downgrade";
-		return isYearly ? "Switch to Yearly" : "Switch to Monthly";
-	};
-
-	const handleCheckout = (checkoutUrl: string | undefined) => {
-		if (checkoutUrl) {
-			window.location.href = checkoutUrl;
-		} else {
-			toast.error("Invalid checkout URL received");
-		}
+		return isYearly ? "Subscribe Yearly" : "Subscribe Monthly";
 	};
 
 	const handleSubscribe = async (planId: string) => {
@@ -108,7 +63,7 @@ const PlansPage = () => {
 		setIsLoading(true);
 
 		const billingPeriod: BillingPeriod = isYearly ? "yearly" : "monthly";
-		const plan = findPlanByProductId(planId);
+		const plan = PLANS.find((p) => p.id === planId);
 		const planName = plan ? planNameToSubscriptionName(plan.name) : null;
 
 		if (!plan || !planName) {
@@ -149,8 +104,10 @@ const PlansPage = () => {
 
 		if (error) {
 			toast.error("Failed to create checkout session", { description: error });
+		} else if (data?.checkout_url) {
+			window.location.href = data.checkout_url;
 		} else {
-			handleCheckout(data?.checkout_url);
+			toast.error("Invalid checkout URL received");
 		}
 
 		setIsLoading(false);
@@ -176,8 +133,10 @@ const PlansPage = () => {
 
 		if (error) {
 			toast.error("Failed to create checkout session", { description: error });
+		} else if (data?.checkout_url) {
+			window.location.href = data.checkout_url;
 		} else {
-			handleCheckout(data?.checkout_url);
+			toast.error("Invalid checkout URL received");
 		}
 		setIsLoading(false);
 	};
@@ -189,8 +148,7 @@ const PlansPage = () => {
 			minimumFractionDigits: 2,
 		}).format(price);
 
-	const getCurrentPrice = (plan: Plan) =>
-		isYearly ? plan.yearlyPrice : plan.monthlyPrice;
+	const getCurrentPrice = (plan: Plan) => (isYearly ? plan.yearlyPrice : plan.monthlyPrice);
 
 	const getSavings = (plan: Plan) => {
 		if (!isYearly) return 0;
@@ -211,69 +169,48 @@ const PlansPage = () => {
 			<PlansPageHeader />
 
 			<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
-				{hasSubscription && (
-					<>
-						<CurrentSubscriptionCard
-							subscription={subscription}
-							onManageClick={handleOpenCustomerPortal}
-							planName={getPlanDisplayName(subscription.planName)}
-						/>
+				{requiresAction && (
+					<ActionRequiredCard
+						isPastDue={isPastDue}
+						onUpdatePayment={handleOpenCustomerPortal}
+					/>
+				)}
 
-						{requiresAction && (
-							<ActionRequiredCard
-								isPastDue={isPastDue}
-								onUpdatePayment={handleOpenCustomerPortal}
-							/>
-						)}
+				{isExpired && (
+					<ExpiredSubscriptionCard
+						onRenew={handleRenewSubscription}
+						isLoading={isLoading}
+					/>
+				)}
 
-						{isExpired && (
-							<ExpiredSubscriptionCard
-								onRenew={handleRenewSubscription}
-								isLoading={isLoading}
-							/>
-						)}
+				<BillingToggle isYearly={isYearly} onChange={setIsYearly} />
 
-						{!showChangePlan && (isActive || isExpired) && (
-							<SubscriptionHistorySection
-								onChangePlanClick={() => setShowChangePlan(true)}
-								isHistoryLoading={isHistoryLoading}
-								subscriptionHistory={subscriptionHistory}
-								formatPrice={formatPrice}
-							/>
-						)}
+				<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+					{PLANS.map((plan) => {
+						const isCurrentPlan =
+							currentPlanProductId === plan.id && isCurrentBillingPeriod;
+						const buttonText = getButtonText(plan.id);
+						const isDisabled = isCurrentPlan || isLoading;
 
-						{showChangePlan && (
-							<ChangePlanSection
-								onCancel={() => setShowChangePlan(false)}
+						return (
+							<PlanCard
+								key={plan.id}
+								plan={plan}
 								isYearly={isYearly}
-								onBillingToggleChange={setIsYearly}
-								currentPlanProductId={currentPlanProductId}
-								isCurrentBillingPeriod={isCurrentBillingPeriod}
-								isLoading={isLoading}
+								isCurrentPlan={isCurrentPlan}
+								isPopular={plan.popular || false}
+								buttonText={isLoading ? "Loading..." : buttonText}
+								isDisabled={isDisabled}
 								onSubscribe={handleSubscribe}
 								formatPrice={formatPrice}
 								getCurrentPrice={getCurrentPrice}
 								getSavings={getSavings}
-								getButtonText={getButtonText}
 							/>
-						)}
-					</>
-				)}
+						);
+					})}
+				</div>
 
-				{!hasSubscription && (
-					<NewSubscriptionView
-						isYearly={isYearly}
-						onBillingToggleChange={setIsYearly}
-						currentPlanProductId={currentPlanProductId}
-						isCurrentBillingPeriod={isCurrentBillingPeriod}
-						isLoading={isLoading}
-						onSubscribe={handleSubscribe}
-						formatPrice={formatPrice}
-						getCurrentPrice={getCurrentPrice}
-						getSavings={getSavings}
-						getButtonText={getButtonText}
-					/>
-				)}
+				<TrialInfoCard />
 			</div>
 		</div>
 	);
