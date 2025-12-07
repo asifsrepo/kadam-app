@@ -33,7 +33,8 @@ export interface PlanFeature {
 	included: boolean;
 }
 export interface Plan {
-	id: string;
+	monthlyPlanId: string;
+	yearlyPlanId: string;
 	name: string;
 	description: string;
 	icon: typeof Zap;

@@ -54,14 +54,15 @@ const ChangePlanSection = ({
 
 			<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
 				{PLANS.map((plan) => {
+					const planId = isYearly ? plan.yearlyPlanId : plan.monthlyPlanId;
 					const isCurrentPlan =
-						currentPlanProductId === plan.id && isCurrentBillingPeriod;
-					const buttonText = getButtonText(plan.id);
+						currentPlanProductId === planId && isCurrentBillingPeriod;
+					const buttonText = getButtonText(planId);
 					const isDisabled = isCurrentPlan || isLoading;
 
 					return (
 						<PlanCard
-							key={plan.id}
+							key={plan.name}
 							plan={plan}
 							isYearly={isYearly}
 							isCurrentPlan={isCurrentPlan}
@@ -72,6 +73,7 @@ const ChangePlanSection = ({
 							formatPrice={formatPrice}
 							getCurrentPrice={getCurrentPrice}
 							getSavings={getSavings}
+							planId={planId}
 						/>
 					);
 				})}

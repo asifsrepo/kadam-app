@@ -23,6 +23,7 @@ interface PlanCardProps {
 	formatPrice: (price: number) => string;
 	getCurrentPrice: (plan: Plan) => number;
 	getSavings: (plan: Plan) => number;
+	planId: string;
 }
 
 const PlanCard = ({
@@ -36,6 +37,7 @@ const PlanCard = ({
 	formatPrice,
 	getCurrentPrice,
 	getSavings,
+	planId,
 }: PlanCardProps) => {
 	const Icon = plan.icon;
 	const currentPrice = getCurrentPrice(plan);
@@ -118,7 +120,7 @@ const PlanCard = ({
 
 			<CardFooter className="px-3 pt-3 pb-3 md:px-6 md:pt-4 md:pb-6">
 				<Button
-					onClick={() => onSubscribe(plan.id)}
+					onClick={() => onSubscribe(planId)}
 					variant={isCurrentPlan ? "secondary" : isPopular ? "default" : "outline"}
 					className="h-9 w-full text-xs md:h-10 md:text-sm"
 					disabled={isDisabled}

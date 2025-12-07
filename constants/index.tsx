@@ -1,4 +1,4 @@
-import { Crown, Sparkles, Zap } from "lucide-react";
+import { Sparkles, Zap } from "lucide-react";
 import { Plan } from "@/types";
 
 export const APP_NAME = "Hysabee";
@@ -6,30 +6,28 @@ export const APP_URL = "https://hysabee.com";
 
 export const PLANS: Plan[] = [
 	{
-		id: "pdt_JceCn4OiEZ625soqXm2BR",
+		monthlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
+		yearlyPlanId:"pdt_01J01010101010101010101",
 		name: "Basic",
-		description: "Perfect for small stores getting started",
+		description: "Perfect for small businesses getting started",
 		icon: Zap,
-		monthlyPrice: 9.99,
-		yearlyPrice: 99.99,
+		monthlyPrice: 0,
+		yearlyPrice: 0,
 		features: [
-			{ text: "Up to 100 customers", included: true },
-			{ text: "1 store location", included: true },
-			{ text: "Basic debt tracking", included: true },
-			{ text: "Payment history", included: true },
-			{ text: "Email support", included: true },
-			{ text: "Multiple branches", included: false },
-			{ text: "Advanced analytics", included: false },
-			{ text: "Priority support", included: false },
+			{ text: "Up to 10 customers", included: true },
+			{ text: "1 Branch", included: true },
+			{ text: "Basic credit tracking", included: true },
+			{ text: "Simple report", included: false },
 		],
 	},
 	{
-		id: "pdt_sW8b7BMWOAgX1cq0T9vVD",
+		monthlyPlanId: "pdt_aJADFFMPqBp7aLSkIoptV",
+		yearlyPlanId: "pdt_7v1F4G8bevfSGUeGOCfXE",
 		name: "Pro",
 		description: "Best for growing businesses",
 		icon: Sparkles,
-		monthlyPrice: 19.99,
-		yearlyPrice: 199.99,
+		monthlyPrice: 77.00,
+		yearlyPrice: 56.00,
 		popular: true,
 		badge: "Most Popular",
 		features: [
@@ -42,25 +40,5 @@ export const PLANS: Plan[] = [
 			{ text: "Advanced analytics", included: true },
 			{ text: "Priority support", included: true },
 		],
-	},
-	{
-		id: "enterprise",
-		name: "Enterprise",
-		description: "For large operations with multiple stores",
-		icon: Crown,
-		monthlyPrice: 49.99,
-		yearlyPrice: 499.99,
-		features: [
-			{ text: "Unlimited customers", included: true },
-			{ text: "Unlimited store locations", included: true },
-			{ text: "Advanced debt tracking", included: true },
-			{ text: "Custom reports & analytics", included: true },
-			{ text: "SMS & Email notifications", included: true },
-			{ text: "Multiple branches", included: true },
-			{ text: "Advanced analytics", included: true },
-			{ text: "Dedicated support", included: true },
-			{ text: "Custom integrations", included: true },
-			{ text: "API access", included: true },
-		],
-	},
+	}
 ];
