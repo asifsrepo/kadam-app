@@ -76,13 +76,13 @@ const PlansPage = () => {
 			return;
 		}
 
-		// Change plan if active subscription with same billing period
-		if (
-			isActive &&
+		const isActivePaidSubscription =
+			subscription?.status === "active" &&
 			subscription?.subscriptionId &&
 			subscription.billingPeriod === billingPeriod &&
-			currentPlanProductId !== planId
-		) {
+			currentPlanProductId !== planId;
+
+		if (isActivePaidSubscription) {
 			const { error } = await changePlan({
 				subscriptionId: subscription.subscriptionId,
 				productId: planId,
