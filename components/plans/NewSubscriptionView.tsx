@@ -45,7 +45,6 @@ const NewSubscriptionView = ({
 						<PlanCard
 							key={plan.name}
 							plan={plan}
-							isYearly={isYearly}
 							isCurrentPlan={isCurrentPlan}
 							isPopular={plan.popular || false}
 							buttonText={isLoading ? "Loading..." : buttonText}
