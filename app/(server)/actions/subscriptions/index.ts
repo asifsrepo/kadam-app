@@ -13,33 +13,29 @@ interface CreateCheckoutSessionParams {
 	planName: SubscriptionName;
 }
 
-const createCheckoutSession = async ({
+const client = new DodoPayments({
+	bearerToken: DODO_PAYMENTS_API_KEY,
+	environment: "test_mode",
+});
+
+export const createCheckoutSession = async ({
 	productId,
 	billingPeriod,
 	planName,
 }: CreateCheckoutSessionParams) => {
-	return await tryCatch<{ checkout_url: string }>(async () => {
+	return await tryCatch<{ checkout_url: string; }>(async () => {
 		const supabase = await createClient();
 		const {
 			data: { user },
 		} = await supabase.auth.getUser();
 		if (!user) throw new Error("User not found");
 
-		// Get user profile for name and email
 		const { data: profile } = await supabase
 			.from(Tables.UserProfiles)
 			.select("name, phone")
 			.eq("id", user.id)
 			.single();
 
-		// Initialize Dodo Payments client
-		const client = new DodoPayments({
-			bearerToken: DODO_PAYMENTS_API_KEY,
-			environment: "test_mode",
-		});
-
-		// Create checkout session using SDK
-		// Reference: https://docs.dodopayments.com/developer-resources/subscription-integration-guide
 		const session = await client.checkoutSessions.create({
 			product_cart: [
 				{
@@ -68,4 +64,24 @@ const createCheckoutSession = async ({
 	});
 };
 
-export default createCheckoutSession;
+interface ChangePlanParams {
+	subscriptionId: string;
+	productId: string;
+	prorationMode?: "prorated_immediately" | "full_immediately" | "difference_immediately";
+}
+
+export const changePlan = async ({
+	subscriptionId,
+	productId,
+	prorationMode = "prorated_immediately",
+}: ChangePlanParams) => {
+	return await tryCatch(async () => {
+		const session = await client.subscriptions.changePlan(subscriptionId, {
+			product_id: productId,
+			proration_billing_mode: prorationMode,
+			quantity: 1,
+		});
+
+		return session;
+	});
+};

@@ -1,0 +1,67 @@
+import { PLANS } from "@/constants";
+import type { Plan } from "@/types";
+import BillingToggle from "./BillingToggle";
+import PlanCard from "./PlanCard";
+import TrialInfoCard from "./TrialInfoCard";
+
+interface PlansGridProps {
+	isYearly: boolean;
+	onBillingToggleChange: (checked: boolean) => void;
+	currentPlanProductId: string | null;
+	isCurrentBillingPeriod: boolean;
+	isLoading: boolean;
+	onSubscribe: (planId: string) => void;
+	formatPrice: (price: number) => string;
+	getCurrentPrice: (plan: Plan) => number;
+	getSavings: (plan: Plan) => number;
+	getButtonText: (planId: string) => string;
+}
+
+const PlansGrid = ({
+	isYearly,
+	onBillingToggleChange,
+	currentPlanProductId,
+	isCurrentBillingPeriod,
+	isLoading,
+	onSubscribe,
+	formatPrice,
+	getCurrentPrice,
+	getSavings,
+	getButtonText,
+}: PlansGridProps) => {
+	return (
+		<>
+			<BillingToggle isYearly={isYearly} onChange={onBillingToggleChange} />
+
+			<div className="grid gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+				{PLANS.map((plan) => {
+					const isCurrentPlan =
+						currentPlanProductId === plan.id && isCurrentBillingPeriod;
+					const buttonText = getButtonText(plan.id);
+					const isDisabled = isCurrentPlan || isLoading;
+
+					return (
+						<PlanCard
+							key={plan.id}
+							plan={plan}
+							isYearly={isYearly}
+							isCurrentPlan={isCurrentPlan}
+							isPopular={plan.popular || false}
+							buttonText={isLoading ? "Loading..." : buttonText}
+							isDisabled={isDisabled}
+							onSubscribe={onSubscribe}
+							formatPrice={formatPrice}
+							getCurrentPrice={getCurrentPrice}
+							getSavings={getSavings}
+						/>
+					);
+				})}
+			</div>
+
+			<TrialInfoCard />
+		</>
+	);
+};
+
+export default PlansGrid;
+
