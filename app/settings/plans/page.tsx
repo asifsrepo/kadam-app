@@ -233,7 +233,7 @@ const PlansPage = () => {
 							/>
 						)}
 
-						{!showChangePlan && isActive && (
+						{!showChangePlan && (isActive || isExpired) && (
 							<SubscriptionHistorySection
 								onChangePlanClick={() => setShowChangePlan(true)}
 								isHistoryLoading={isHistoryLoading}
