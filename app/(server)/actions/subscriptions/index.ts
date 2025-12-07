@@ -1,7 +1,7 @@
 "use server";
 
 import DodoPayments from "dodopayments";
-import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_RETURN_URL } from "@/config";
+import { DODO_PAYMENTS_API_KEY, DODO_PAYMENTS_ENVIRONMENT, DODO_PAYMENTS_RETURN_URL } from "@/config";
 import { createClient } from "@/lib/supabase/server";
 import { tryCatch } from "@/lib/utils";
 import { Tables } from "@/types";
@@ -15,7 +15,7 @@ interface CreateCheckoutSessionParams {
 
 const client = new DodoPayments({
 	bearerToken: DODO_PAYMENTS_API_KEY,
-	environment: "test_mode",
+	environment: DODO_PAYMENTS_ENVIRONMENT,
 });
 
 export const createCheckoutSession = async ({

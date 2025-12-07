@@ -7,7 +7,7 @@ export const APP_URL = "https://hysabee.com";
 export const PLANS: Plan[] = [
 	{
 		monthlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
-		yearlyPlanId:"pdt_01J01010101010101010101",
+		yearlyPlanId: "pdt_01J01010101010101010101",
 		name: "Basic",
 		description: "Perfect for small businesses getting started",
 		icon: Zap,
@@ -27,7 +27,7 @@ export const PLANS: Plan[] = [
 		description: "Best for growing businesses",
 		icon: Sparkles,
 		monthlyPrice: 77.00,
-		yearlyPrice: 56.00,
+		yearlyPrice: 673.00,
 		popular: true,
 		badge: "Most Popular",
 		features: [
