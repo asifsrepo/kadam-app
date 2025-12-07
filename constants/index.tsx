@@ -7,7 +7,7 @@ export const APP_URL = "https://hysabee.com";
 export const PLANS: Plan[] = [
 	{
 		monthlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
-		yearlyPlanId: "pdt_01J01010101010101010101",
+		yearlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
 		name: "Basic",
 		description: "Perfect for small businesses getting started",
 		icon: Zap,
@@ -32,7 +32,7 @@ export const PLANS: Plan[] = [
 		badge: "Most Popular",
 		features: [
 			{ text: "Unlimited customers", included: true },
-			{ text: "Up to 5 store locations", included: true },
+			{ text: "Unlimited branches", included: true },
 			{ text: "Advanced debt tracking", included: true },
 			{ text: "Payment history & reports", included: true },
 			{ text: "SMS notifications", included: true },
