@@ -14,10 +14,10 @@ export const PLANS: Plan[] = [
 		monthlyPrice: 0,
 		yearlyPrice: 0,
 		features: [
-			{ text: "Up to 10 customers", included: true },
-			{ text: "1 Branch", included: true },
-			{ text: "Basic credit tracking", included: true },
-			{ text: "Simple report", included: false },
+			"Up to 10 customers",
+			"1 Branch",
+			"Basic credit tracking",
+			"Simple report",
 		],
 	},
 	{
@@ -31,14 +31,12 @@ export const PLANS: Plan[] = [
 		popular: true,
 		badge: "Most Popular",
 		features: [
-			{ text: "Unlimited customers", included: true },
-			{ text: "Unlimited branches", included: true },
-			{ text: "Advanced debt tracking", included: true },
-			{ text: "Payment history & reports", included: true },
-			{ text: "SMS notifications", included: true },
-			{ text: "Multiple branches", included: true },
-			{ text: "Advanced analytics", included: true },
-			{ text: "Priority support", included: true },
+			"Unlimited customers",
+			"Multiple branches",
+			"Advanced debt tracking",
+			"Payment history & reports",
+			"Advanced analytics",
+			"Priority support",
 		],
 	}
 ];

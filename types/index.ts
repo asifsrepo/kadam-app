@@ -28,10 +28,6 @@ export const QueryKeys = {
 	SubscriptionHistory: "subscriptionHistory",
 };
 
-export interface PlanFeature {
-	text: string;
-	included: boolean;
-}
 export interface Plan {
 	monthlyPlanId: string;
 	yearlyPlanId: string;
@@ -40,7 +36,7 @@ export interface Plan {
 	icon: typeof Zap;
 	monthlyPrice: number;
 	yearlyPrice: number;
-	features: PlanFeature[];
+	features: string[];
 	popular?: boolean;
 	badge?: string;
 }

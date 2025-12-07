@@ -42,7 +42,6 @@ const PlanCard = ({
 	const Icon = plan.icon;
 	const currentPrice = getCurrentPrice(plan);
 	const savings = getSavings(plan);
-	const includedFeatures = plan.features.filter((f) => f.included);
 
 	return (
 		<Card
@@ -105,13 +104,13 @@ const PlanCard = ({
 				<Separator />
 
 				<div className="space-y-2 md:space-y-2.5">
-					{includedFeatures.map((feature, index) => (
+					{plan.features.map((feature, index) => (
 						<div key={index} className="flex items-start gap-2 md:gap-2.5">
 							<div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/10 md:h-5 md:w-5">
 								<Check className="h-2.5 w-2.5 text-primary md:h-3 md:w-3" />
 							</div>
 							<span className="text-foreground text-xs leading-relaxed md:text-sm">
-								{feature.text}
+								{feature}
 							</span>
 						</div>
 					))}
