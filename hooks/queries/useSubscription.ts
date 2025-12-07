@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "@/config";
-import { isSubscriptionActive } from "@/lib/utils/subscriptions";
+import {
+	isCancellingAtPeriodEnd,
+	isSubscriptionActive,
+} from "@/lib/utils/subscriptions";
 import { QueryKeys } from "@/types";
 
 export const useSubscription = () => {
@@ -24,11 +27,14 @@ export const useSubscription = () => {
 		},
 	});
 
+	const subscriptionData = subscription || null;
+
 	return {
-		subscription: subscription || null,
+		subscription: subscriptionData,
 		isLoading,
 		error,
-		isActive: isSubscriptionActive(subscription || null),
+		isActive: isSubscriptionActive(subscriptionData),
+		isCancellingAtPeriodEnd: isCancellingAtPeriodEnd(subscriptionData),
 		refetch,
 	};
 };

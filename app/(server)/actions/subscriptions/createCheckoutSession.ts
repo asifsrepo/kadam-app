@@ -47,10 +47,6 @@ const createCheckoutSession = async ({
 					quantity: 1,
 				},
 			],
-			// Optional: configure trials for subscription products
-			subscription_data: {
-				// trial_period_days: 14, // Uncomment if you want to add trial period
-			},
 			customer: {
 				email: user.email || "",
 				name: profile?.name || user.user_metadata?.name || "",
@@ -61,6 +57,7 @@ const createCheckoutSession = async ({
 				plan_name: planName,
 				billing_period: billingPeriod,
 			},
+
 		});
 
 		if (!session.checkout_url) {

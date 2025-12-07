@@ -18,9 +18,20 @@ import type { BillingPeriod, SubscriptionName } from "@/types/subscription";
 import BackButton from "~/BackButton";
 
 const PlansPage = () => {
-	const { subscription, isLoading: subscriptionLoading, isActive } = useSubscription();
+	const {
+		subscription,
+		isLoading: subscriptionLoading,
+		isActive,
+	} = useSubscription();
+
+	const status = subscription?.status;
+	const isPastDue = status === "past_due";
+	const isOnHold = status === "on_hold";
+	const isExpired = status === "expired";
+	const requiresAction = isPastDue || isOnHold;
+	const isInTrouble = isPastDue || isOnHold || isExpired;
 	const { subscriptionHistory, isLoading: isHistoryLoading } = useSubscriptionHistory(
-		isActive && !!subscription,
+		!!subscription,
 	);
 	const [isYearly, setIsYearly] = useState(subscription?.billingPeriod === "yearly");
 	const [isLoading, setIsLoading] = useState(false);
@@ -145,6 +156,37 @@ const PlansPage = () => {
 		window.location.href = portalUrl;
 	};
 
+	const handleRenewSubscription = async () => {
+		if (isLoading || !subscription) return;
+
+		setIsLoading(true);
+		try {
+			const { data, error } = await createCheckoutSession({
+				productId: subscription.productId,
+				billingPeriod: subscription.billingPeriod,
+				planName: subscription.planName,
+			});
+
+			if (error) {
+				toast.error("Failed to create checkout session", {
+					description: error,
+				});
+				return;
+			}
+
+			if (data?.checkout_url) {
+				window.location.href = data.checkout_url;
+			} else {
+				toast.error("Invalid checkout URL received");
+			}
+		} catch (error) {
+			console.error("Error creating checkout session:", error);
+			toast.error("Failed to create checkout session");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	const formatPrice = (price: number) => {
 		return new Intl.NumberFormat("en-US", {
 			style: "currency",
@@ -205,7 +247,7 @@ const PlansPage = () => {
 			</div>
 
 			<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
-				{subscription && isActive && (
+				{subscription && (isActive || isInTrouble) && (
 					<>
 						<CurrentSubscriptionCard
 							subscription={subscription}
@@ -213,7 +255,50 @@ const PlansPage = () => {
 							planName={getPlanDisplayName(subscription.planName)}
 						/>
 
-						{!showChangePlan && (
+						{requiresAction && (
+							<div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-3 md:p-4">
+								<div className="min-w-0 flex-1">
+									<h3 className="font-semibold text-destructive text-sm md:text-base">
+										Action Required
+									</h3>
+									<p className="text-destructive/80 text-xs md:text-sm">
+										{isPastDue
+											? "Your payment failed. Update your payment method to restore service."
+											: "Your subscription is on hold. Please update your payment method or contact support."}
+									</p>
+								</div>
+								<Button
+									onClick={handleOpenCustomerPortal}
+									variant="default"
+									className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+								>
+									Update Payment
+								</Button>
+							</div>
+						)}
+
+						{isExpired && (
+							<div className="flex items-center justify-between gap-3 rounded-lg border border-muted bg-muted/30 p-3 md:p-4">
+								<div className="min-w-0 flex-1">
+									<h3 className="font-semibold text-foreground text-sm md:text-base">
+										Subscription Expired
+									</h3>
+									<p className="text-muted-foreground text-xs md:text-sm">
+										Your subscription has expired. Please renew to continue using the service.
+									</p>
+								</div>
+								<Button
+									onClick={handleRenewSubscription}
+									variant="default"
+									disabled={isLoading}
+									className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+								>
+									{isLoading ? "Loading..." : "Renew Now"}
+								</Button>
+							</div>
+						)}
+
+						{!showChangePlan && isActive && (
 							<>
 								<div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 md:p-4">
 									<div className="min-w-0 flex-1">

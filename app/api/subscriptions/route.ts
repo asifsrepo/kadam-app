@@ -29,15 +29,20 @@ const getUserSubscription = async () => {
 			throw error;
 		}
 
-		return data as ISubscription;
+		return data as ISubscription; 
 	});
 };
 
 export const GET = async () => {
 	const result = await getUserSubscription();
 
+	// MOCK: Temporarily return expired subscription for testing
 	if (result.success && result.data) {
-		return NextResponse.json(result.data);
+		const mockExpiredSubscription: ISubscription = {
+			...result.data,
+			status: "expired",
+		};
+		return NextResponse.json(mockExpiredSubscription);
 	}
 
 	if (result.success && !result.data) {

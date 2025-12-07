@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { AlertTriangle, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { formatSubscriptionStatus } from "@/lib/utils/subscriptions";
 import type { ISubscription } from "@/types/subscription";
 
@@ -23,8 +24,43 @@ const CurrentSubscriptionCard = ({
 	onManageClick,
 	planName,
 }: CurrentSubscriptionCardProps) => {
+	const status = subscription.status;
+	const isPastDue = status === "past_due";
+	const isOnHold = status === "on_hold";
+	const isExpired = status === "expired";
+	const isTrouble = isPastDue || isOnHold || isExpired;
+
+	const getStatusBadgeVariant = () => {
+		if (isPastDue || isOnHold) return "destructive";
+		if (isExpired) return "secondary";
+		return "default";
+	};
+
+	const getCardStyling = () => {
+		if (isPastDue || isOnHold) {
+			return "border-destructive/20 bg-destructive/5";
+		}
+		if (isExpired) {
+			return "border-muted bg-muted/30";
+		}
+		return "border-primary/20 bg-primary/5";
+	};
+
+	const getWarningMessage = () => {
+		if (isPastDue) {
+			return "Your payment failed. Please update your payment method to continue service.";
+		}
+		if (isOnHold) {
+			return "Your subscription is on hold. Please contact support or update your payment method.";
+		}
+		if (isExpired) {
+			return "Your subscription has expired. Please renew to continue using the service.";
+		}
+		return null;
+	};
+
 	return (
-		<Card className="border-primary/20 bg-primary/5">
+		<Card className={cn("border-primary/20 bg-primary/5", getCardStyling())}>
 			<CardHeader className="px-3 pt-3 pb-2 md:px-6 md:pt-6 md:pb-4">
 				<CardTitle className="text-base md:text-lg">Current Subscription</CardTitle>
 				<CardDescription className="text-xs md:text-sm">
@@ -32,9 +68,17 @@ const CurrentSubscriptionCard = ({
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-2 px-3 md:space-y-2.5 md:px-6">
+				{isTrouble && getWarningMessage() && (
+					<div className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-2.5 md:p-3">
+						<AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive md:h-5 md:w-5" />
+						<p className="text-destructive text-xs leading-relaxed md:text-sm">
+							{getWarningMessage()}
+						</p>
+					</div>
+				)}
 				<div className="flex items-center justify-between">
 					<span className="text-muted-foreground text-xs md:text-sm">Status</span>
-					<Badge variant="default" className="text-xs">
+					<Badge variant={getStatusBadgeVariant()} className="text-xs">
 						{formatSubscriptionStatus(subscription.status)}
 					</Badge>
 				</div>

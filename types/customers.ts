@@ -13,6 +13,7 @@ export interface ICustomer {
 	createdBy: IUser["id"];
 	limit: number;
 	branchId: IBranch["id"];
+	customerId: string; // Dodo Payments customer ID
 }
 
 export type CustomerWithBalance = ICustomer & { balance: number };
