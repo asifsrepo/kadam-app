@@ -7,7 +7,12 @@ import { Toaster } from "../ui/sonner";
 
 const Providers = ({ children }: WrapperProps) => {
 	return (
-		<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+		<ThemeProvider
+			attribute="class"
+			defaultTheme="light"
+			enableSystem
+			disableTransitionOnChange
+		>
 			<QueryProvider>
 				<Toaster richColors position="top-right" closeButton />
 				<NuqsAdapter>{children}</NuqsAdapter>
