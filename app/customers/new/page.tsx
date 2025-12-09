@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useCustomerCount } from "@/hooks/queries/useCustomerCount";
+import { useSubscription } from "@/hooks/queries/useSubscription";
 import { useAuth } from "@/hooks/store/useAuth";
 import useStores from "@/hooks/store/useStores";
 import type { CustomerFormData } from "@/lib/schema/customer";
@@ -31,6 +33,8 @@ const NewCustomerPage = () => {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const { activeBranch, debtLimit } = useStores();
+	const { data: customerCount = 0 } = useCustomerCount();
+	const { canCreateCustomer, planLimits } = useSubscription();
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (data: CustomerFormData) => {
@@ -52,12 +56,11 @@ const NewCustomerPage = () => {
 		},
 		onSuccess: async () => {
 			toast.success("Customer created successfully!");
+			// Invalidate both customer list and count queries
+			await queryClient.invalidateQueries({
+				queryKey: [QueryKeys.CustomersList],
+			});
 			router.back();
-			setTimeout(async () => {
-				await queryClient.invalidateQueries({
-					queryKey: [QueryKeys.CustomersList],
-				});
-			}, 100);
 		},
 		onError: () => {
 			toast.error("Failed to create customer. Please try again.");
@@ -85,12 +88,20 @@ const NewCustomerPage = () => {
 	}, [debtLimit, setValue]);
 
 	const onSubmit = async (data: CustomerFormData) => {
+		// Check if user can create a customer based on plan limits
+		if (!canCreateCustomer(customerCount)) {
+			toast.error(
+				`You've reached the customer limit (${planLimits.maxCustomers}) for your plan. Upgrade to Pro for unlimited customers.`,
+			);
+			return;
+		}
+
 		mutate(data);
 	};
 
 	return (
 		<div className="min-h-screen bg-background">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
 				<div className="flex items-center gap-4 px-4 py-3 md:px-6">
 					<Button
 						variant="ghost"
@@ -107,6 +118,45 @@ const NewCustomerPage = () => {
 
 			<form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-2xl p-4 md:p-6">
 				<div className="space-y-6">
+					{/* Plan Limit Info */}
+					{planLimits.maxCustomers !== null && (
+						<div
+							className={`rounded-lg border p-4 ${
+								customerCount >= planLimits.maxCustomers
+									? "border-destructive bg-destructive/10"
+									: customerCount >= planLimits.maxCustomers * 0.8
+										? "border-accent bg-accent/10"
+										: "border-border bg-muted/50"
+							}`}
+						>
+							<div className="flex items-center justify-between">
+								<div>
+									<p className="font-medium text-sm">
+										Customer Limit:{" "}
+										{customerCount >= planLimits.maxCustomers
+											? "Limit Reached"
+											: customerCount >= planLimits.maxCustomers * 0.8
+												? "Almost Full"
+												: "Available"}
+									</p>
+									<p className="text-muted-foreground text-xs">
+										{customerCount} of {planLimits.maxCustomers} customers used
+									</p>
+								</div>
+								{customerCount >= planLimits.maxCustomers * 0.8 && (
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={() => router.push("/settings/plans")}
+									>
+										Upgrade
+									</Button>
+								)}
+							</div>
+						</div>
+					)}
+
 					<div className="space-y-4">
 						<CustomInput
 							label="Full Name"

@@ -1,7 +1,14 @@
 import { useEffect } from "react";
 import { create } from "zustand";
 import { BASE_URL } from "@/config";
-import { isCancellingAtPeriodEnd, isSubscriptionActive } from "@/lib/utils/subscriptions";
+import {
+    canCreateBranch,
+    canCreateCustomer,
+    getEffectivePlanName,
+    getPlanLimits,
+    isCancellingAtPeriodEnd,
+    isSubscriptionActive,
+} from "@/lib/utils/subscriptions";
 import type { ISubscription } from "@/types/subscription";
 
 interface SubscriptionState {
@@ -74,6 +81,8 @@ export const useSubscription = () => {
 	}, [store.fetchSubscription]);
 
 	const subscriptionData = store.subscription || null;
+	const effectivePlanName = getEffectivePlanName(subscriptionData);
+	const planLimits = getPlanLimits(subscriptionData);
 
 	return {
 		subscription: subscriptionData,
@@ -81,6 +90,11 @@ export const useSubscription = () => {
 		error: store.error,
 		isActive: isSubscriptionActive(subscriptionData),
 		isCancellingAtPeriodEnd: isCancellingAtPeriodEnd(subscriptionData),
+		effectivePlanName,
+		planLimits,
+		canCreateCustomer: (currentCount: number) =>
+			canCreateCustomer(subscriptionData, currentCount),
+		canCreateBranch: (currentCount: number) => canCreateBranch(subscriptionData, currentCount),
 		refetch: store.refetch,
 	};
 };

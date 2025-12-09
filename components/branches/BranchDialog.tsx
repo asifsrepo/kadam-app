@@ -1,23 +1,29 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { Edit, Plus } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
+import { useSubscription } from "@/hooks/queries/useSubscription";
+import { useAuth } from "@/hooks/store/useAuth";
+import { createClient } from "@/lib/supabase/client";
+import { QueryKeys, Tables } from "@/types";
 import type { IBranch } from "@/types/store";
 import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 
 interface BranchDialogProps {
-	branch?: IBranch | null;
-	mode: "create" | "edit";
+    branch?: IBranch | null;
+    mode: "create" | "edit";
 }
 
 const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
@@ -31,6 +37,29 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 	});
 
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const { user } = useAuth();
+	const supabase = createClient();
+	const { canCreateBranch, planLimits } = useSubscription();
+
+	// Query branch count for the user
+	const { data: branchesData } = useQuery({
+		queryKey: [QueryKeys.Branches, user?.id],
+		queryFn: async () => {
+			const { data: branches, error: branchesError } = await supabase
+				.from(Tables.Branches)
+				.select("*")
+				.eq("ownerId", user?.id);
+
+			if (branchesError) throw branchesError;
+
+			return {
+				branches: branches || [],
+			};
+		},
+		enabled: !!user?.id && isOpen && mode === "create",
+	});
+
+	const branchCount = branchesData?.branches?.length || 0;
 
 	const handleInputChange = (field: string, value: string | boolean) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
@@ -68,6 +97,14 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 		e.preventDefault();
 
 		if (!validateForm()) {
+			return;
+		}
+
+		// Check branch limit only for create mode
+		if (mode === "create" && !canCreateBranch(branchCount)) {
+			toast.error(
+				`You've reached the branch limit (${planLimits.maxBranches}) for your plan. Upgrade to Pro for multiple branches.`,
+			);
 			return;
 		}
 
@@ -140,6 +177,34 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 					</DialogHeader>
 
 					<form onSubmit={handleSubmit} className="space-y-4">
+						{/* Plan Limit Info - Only show in create mode */}
+						{mode === "create" &&
+							planLimits.maxBranches !== null &&
+							planLimits.maxBranches !== 0 && (
+								<div
+									className={`rounded-lg border p-3 ${
+										branchCount >= planLimits.maxBranches
+											? "border-destructive bg-destructive/10"
+											: "border-border bg-muted/50"
+									}`}
+								>
+									<p className="font-medium text-sm">
+										Branch Limit:{" "}
+										{branchCount >= planLimits.maxBranches
+											? "Limit Reached"
+											: "Available"}
+									</p>
+									<p className="text-muted-foreground text-xs">
+										{branchCount} of {planLimits.maxBranches} branches used
+									</p>
+									{branchCount >= planLimits.maxBranches && (
+										<p className="mt-1 text-destructive text-xs">
+											Upgrade to Pro for unlimited branches
+										</p>
+									)}
+								</div>
+							)}
+
 						<div className="space-y-4">
 							<CustomInput
 								label="Branch Name"

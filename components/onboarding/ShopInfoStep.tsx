@@ -81,6 +81,16 @@ const ShopInfoStep = ({
 	};
 
 	const createBranch = () => {
+		// Basic plan (free tier) allows only 1 branch during onboarding
+		const BASIC_PLAN_BRANCH_LIMIT = 1;
+
+		if (fields.length >= BASIC_PLAN_BRANCH_LIMIT) {
+			toast.error(
+				`You can only create ${BASIC_PLAN_BRANCH_LIMIT} branch on the Basic plan. Upgrade to Pro for unlimited branches.`,
+			);
+			return;
+		}
+
 		append({ name: "", location: "", isMain: false, debtLimit: 0 });
 	};
 
@@ -110,13 +120,18 @@ const ShopInfoStep = ({
 					/>
 					<div className="space-y-3">
 						<div className="flex items-center justify-between">
-							<h3 className="font-medium text-sm">Store Branches</h3>
+							<div>
+								<h3 className="font-medium text-sm">Store Branches</h3>
+								<p className="text-muted-foreground text-xs">
+									Basic plan: 1 branch (Upgrade to Pro for unlimited)
+								</p>
+							</div>
 							<Button
 								type="button"
 								variant="outline"
 								size="sm"
 								onClick={createBranch}
-								disabled={isSubmitting}
+								disabled={isSubmitting || fields.length >= 1}
 								className="h-8 px-3 text-xs"
 							>
 								<Plus className="mr-1 h-3 w-3" />

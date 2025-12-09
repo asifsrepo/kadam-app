@@ -44,3 +44,80 @@ export const isCancellingAtPeriodEnd = (subscription: ISubscription | null): boo
 	if (!subscription) return false;
 	return subscription.cancelAtPeriodEnd && subscription.status === "active";
 };
+
+/**
+ * Plan limits interface
+ */
+export interface PlanLimits {
+	maxCustomers: number | null; // null means unlimited
+	maxBranches: number | null; // null means unlimited
+}
+
+/**
+ * Gets the effective plan name for a user
+ * Returns "basic" if no active subscription, otherwise returns the subscription plan name
+ */
+export const getEffectivePlanName = (subscription: ISubscription | null): SubscriptionName => {
+	if (!subscription || !isSubscriptionActive(subscription)) {
+		return "basic";
+	}
+	return subscription.planName;
+};
+
+/**
+ * Gets plan limits based on the subscription
+ */
+export const getPlanLimits = (subscription: ISubscription | null): PlanLimits => {
+	const effectivePlan = getEffectivePlanName(subscription);
+
+	const limits: Record<SubscriptionName, PlanLimits> = {
+		basic: {
+			maxCustomers: 10,
+			maxBranches: 1,
+		},
+		pro: {
+			maxCustomers: null, // unlimited
+			maxBranches: null, // unlimited
+		},
+		enterprise: {
+			maxCustomers: null, // unlimited
+			maxBranches: null, // unlimited
+		},
+	};
+
+	return limits[effectivePlan];
+};
+
+/**
+ * Checks if user can create a new customer based on their plan limits
+ */
+export const canCreateCustomer = (
+	subscription: ISubscription | null,
+	currentCustomerCount: number,
+): boolean => {
+	const limits = getPlanLimits(subscription);
+
+	// If maxCustomers is null, it's unlimited
+	if (limits.maxCustomers === null) {
+		return true;
+	}
+
+	return currentCustomerCount < limits.maxCustomers;
+};
+
+/**
+ * Checks if user can create a new branch based on their plan limits
+ */
+export const canCreateBranch = (
+	subscription: ISubscription | null,
+	currentBranchCount: number,
+): boolean => {
+	const limits = getPlanLimits(subscription);
+
+	// If maxBranches is null, it's unlimited
+	if (limits.maxBranches === null) {
+		return true;
+	}
+
+	return currentBranchCount < limits.maxBranches;
+};
