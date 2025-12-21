@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { changePlan, createCheckoutSession } from "@/app/(server)/actions/subscriptions";
 import ActionRequiredCard from "@/components/plans/ActionRequiredCard";
 import BillingToggle from "@/components/plans/BillingToggle";
+import CurrentPlanSection from "@/components/plans/CurrentPlanSection";
 import ExpiredSubscriptionCard from "@/components/plans/ExpiredSubscriptionCard";
 import PlanCard from "@/components/plans/PlanCard";
 import PlansPageHeader from "@/components/plans/PlansPageHeader";
@@ -185,6 +186,10 @@ const PlansPage = () => {
 						onRenew={handleRenewSubscription}
 						isLoading={isLoading}
 					/>
+				)}
+
+				{isActive && subscription && (
+					<CurrentPlanSection subscription={subscription} />
 				)}
 
 				<BillingToggle isYearly={isYearly} onChange={setIsYearly} />
