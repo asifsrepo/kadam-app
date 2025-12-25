@@ -47,6 +47,7 @@ export const isPublicRoute = (pathname: string): boolean => {
 		"/browserconfig.xml",
 		"/robots.txt",
 		"/sitemap.xml",
+		"/sw.js",
 		"/favicon/",
 		"/assets/",
 	];
