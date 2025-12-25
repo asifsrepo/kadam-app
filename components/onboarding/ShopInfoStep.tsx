@@ -67,7 +67,7 @@ const ShopInfoStep = ({
 			const { success, error, data: branchData } = await submitShopInfo(data);
 
 			if (!success) throw new Error(error);
-			toast.success("Welcome to Kadam! Your account is ready.");
+			toast.success("Welcome to Hysabee! Your account is ready.");
 
 			await queryClient.invalidateQueries();
 			onComplete(3);

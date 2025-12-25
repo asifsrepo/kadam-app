@@ -76,7 +76,7 @@ const OnboardingPage = () => {
 				<div className="mx-auto max-w-md">
 					<div className="mb-8 text-center">
 						<h1 className="mb-2 font-bold text-2xl text-foreground">
-							Welcome to Kadam
+							Welcome to Hysabee
 						</h1>
 						<p className="text-muted-foreground text-sm">
 							Let's set up your account in just a few steps
