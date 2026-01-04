@@ -106,7 +106,7 @@ const Dashboard = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
 				<div className="px-3 py-3 md:px-6 md:py-4">
 					<div className="flex items-center justify-between">
 						<div>
