@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Providers from "@/components/layout/Providers";
-// import { PWARegister } from "@/components/pwa/PWARegister";
 import { fontMap, getAllFontVariables } from "@/lib/fonts";
 import { getSelectedColorScheme, getSelectedFont } from "@/lib/server/settings-helpers";
 import { WrapperProps } from "@/types";
@@ -13,7 +12,6 @@ const RootLayout = async ({ children }: WrapperProps) => {
 	const selectedColorScheme = await getSelectedColorScheme();
 	const selectedFontConfig = fontMap[selectedFont];
 	const allFontVariables = getAllFontVariables();
-
 	return (
 		<html
 			lang="en"
@@ -22,7 +20,6 @@ const RootLayout = async ({ children }: WrapperProps) => {
 		>
 			<body className={`antialiased ${selectedFontConfig.className}`}>
 				<Providers>
-					{/* <PWARegister /> */}
 					<DashboardLayout>{children}</DashboardLayout>
 				</Providers>
 			</body>
