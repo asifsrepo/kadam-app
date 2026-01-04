@@ -8,7 +8,7 @@ export const PLANS: Plan[] = [
 	{
 		monthlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
 		yearlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
-		name: "Basic",
+		name: "Free",
 		description: "Perfect for small businesses getting started",
 		icon: Zap,
 		monthlyPrice: 0,

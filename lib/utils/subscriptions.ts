@@ -5,9 +5,8 @@ import type { ISubscription, SubscriptionName, SubscriptionStatus } from "@/type
  */
 export const getPlanDisplayName = (planName: SubscriptionName): string => {
 	const planNames: Record<SubscriptionName, string> = {
-		basic: "Basic",
+		free: "Free",
 		pro: "Pro",
-		enterprise: "Enterprise",
 	};
 	return planNames[planName] || planName;
 };
@@ -55,11 +54,11 @@ export interface PlanLimits {
 
 /**
  * Gets the effective plan name for a user
- * Returns "basic" if no active subscription, otherwise returns the subscription plan name
+ * Returns "free" if no active subscription, otherwise returns the subscription plan name
  */
 export const getEffectivePlanName = (subscription: ISubscription | null): SubscriptionName => {
 	if (!subscription || !isSubscriptionActive(subscription)) {
-		return "basic";
+		return "free";
 	}
 	return subscription.planName;
 };
@@ -71,15 +70,11 @@ export const getPlanLimits = (subscription: ISubscription | null): PlanLimits =>
 	const effectivePlan = getEffectivePlanName(subscription);
 
 	const limits: Record<SubscriptionName, PlanLimits> = {
-		basic: {
+		free: {
 			maxCustomers: 10,
 			maxBranches: 1,
 		},
 		pro: {
-			maxCustomers: null, // unlimited
-			maxBranches: null, // unlimited
-		},
-		enterprise: {
 			maxCustomers: null, // unlimited
 			maxBranches: null, // unlimited
 		},

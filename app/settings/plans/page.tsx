@@ -44,7 +44,7 @@ const PlansPage = () => {
 
 	const planNameToSubscriptionName = (planName: string): SubscriptionName | null => {
 		const normalized = planName.toLowerCase();
-		if (["basic", "pro", "enterprise"].includes(normalized)) {
+		if (["free", "pro"].includes(normalized)) {
 			return normalized as SubscriptionName;
 		}
 		return null;

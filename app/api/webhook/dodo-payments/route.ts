@@ -60,12 +60,12 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 
 	const productId = eventData.product_id;
 
-	// Validate planName - should be "basic", "pro", or "enterprise"
-	const validPlanNames = ["basic", "pro", "enterprise"];
+	// Validate planName - should be "free" or "pro"
+	const validPlanNames = ["free", "pro"];
 	const planName =
 		planNameFromMetadata && validPlanNames.includes(planNameFromMetadata)
 			? planNameFromMetadata
-			: "basic";
+			: "free";
 
 	const billingPeriod = billingPeriodFromMetadata || "monthly";
 
@@ -106,11 +106,10 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 			.neq("subscriptionId", subscriptionId);
 
 		if (existingActiveSubscriptions && existingActiveSubscriptions.length > 0) {
-			// Plan tier mapping: basic = 1, pro = 2, enterprise = 3
+			// Plan tier mapping: free = 1, pro = 2
 			const planTierMap: Record<string, number> = {
-				basic: 1,
+				free: 1,
 				pro: 2,
-				enterprise: 3,
 			};
 
 			const newPlanTier = planTierMap[planName] || 0;

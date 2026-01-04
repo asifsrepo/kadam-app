@@ -9,7 +9,7 @@ export const subscriptionStatusSchema = z.enum([
 	"trialing",
 ]);
 
-export const subscriptionPlanSchema = z.enum(["basic", "pro", "enterprise"]);
+export const subscriptionPlanSchema = z.enum(["free", "pro"]);
 
 export const billingPeriodSchema = z.enum(["monthly", "yearly"]);
 

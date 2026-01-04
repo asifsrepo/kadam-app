@@ -10,7 +10,7 @@ export type SubscriptionStatus =
 	| "upgraded"
 	| "downgraded";
 
-export type SubscriptionName = "basic" | "pro" | "enterprise";
+export type SubscriptionName = "free" | "pro";
 
 export type BillingPeriod = "monthly" | "yearly";
 
