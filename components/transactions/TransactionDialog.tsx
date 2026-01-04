@@ -83,11 +83,19 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 	const watchedAmount = watch("amount");
 	const watchedType = watch("type");
 
+	// Always sync selectedCustomer with defaultCustomer when it changes
 	useEffect(() => {
 		if (defaultCustomer) {
 			setSelectedCustomer(defaultCustomer);
 		}
 	}, [defaultCustomer]);
+
+	// When dialog opens, ensure we have the latest customer data
+	useEffect(() => {
+		if (open && defaultCustomer) {
+			setSelectedCustomer(defaultCustomer);
+		}
+	}, [open, defaultCustomer]);
 
 	useEffect(() => {
 		if (!selectedCustomer?.limit || watchedType !== "credit") return;

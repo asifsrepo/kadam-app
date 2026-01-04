@@ -1,9 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Pencil, Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import EditCustomerDialog from "@/components/customers/EditCustomerDialog";
 import TransactionDialog from "@/components/transactions/TransactionDialog";
 import TransactionListing from "@/components/transactions/TransactionListing";
 import TransactionsSkeleton from "@/components/transactions/TransactionsSkeleton";
@@ -61,7 +62,7 @@ const CustomerDetailsPage = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-20">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
 				<div className="flex items-center justify-between gap-3 px-4 py-3">
 					<div className="flex items-center gap-3">
 						<Button
@@ -129,16 +130,27 @@ const CustomerDetailsPage = () => {
 								${customer.limit?.toFixed(2) || "0.00"}
 							</span>
 						</div>
-						<div className="border-border border-t pt-2">
-							<span className="mb-1 block text-muted-foreground text-xs">
-								Address
-							</span>
-							<p className="text-foreground text-xs">{customer.address}</p>
-						</div>
-					</CardContent>
-				</Card>
+					<div className="border-border border-t pt-2">
+						<span className="mb-1 block text-muted-foreground text-xs">
+							Address
+						</span>
+						<p className="text-foreground text-xs">{customer.address}</p>
+					</div>
+					<div className="border-border border-t pt-3">
+						<EditCustomerDialog
+							customer={customer}
+							trigger={
+								<Button variant="outline" size="sm" className="w-full gap-2">
+									<Pencil className="h-4 w-4" />
+									Edit Customer Details
+								</Button>
+							}
+						/>
+					</div>
+				</CardContent>
+			</Card>
 
-				<TransactionListing customerId={customer.id} />
+			<TransactionListing customerId={customer.id} />
 			</div>
 		</div>
 	);
