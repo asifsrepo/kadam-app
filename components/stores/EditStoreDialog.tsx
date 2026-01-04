@@ -13,7 +13,14 @@ import { EditStoreFormData, QueryKeys, Tables } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+    Sheet,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "../ui/sheet";
 
 interface EditStoreDialogProps {
 	storeName?: string;
@@ -88,8 +95,8 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={handleOpenChange}>
-			<DialogTrigger asChild>
+		<Sheet open={open} onOpenChange={handleOpenChange}>
+			<SheetTrigger asChild>
 				<Button
 					variant="outline"
 					size="icon"
@@ -98,43 +105,52 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 					<Edit className="h-4 w-4" />
 					<span className="sr-only">Edit store</span>
 				</Button>
-			</DialogTrigger>
-			<DialogContent className="mx-4 w-[calc(100vw-2rem)] max-w-sm sm:mx-auto sm:w-full">
-				<DialogHeader className="pb-3">
-					<DialogTitle className="text-lg">Edit Store</DialogTitle>
-				</DialogHeader>
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-					<CustomInput
-						label="Store Name"
-						placeholder="Enter store name"
-						className="text-sm"
-						{...register("name")}
-						error={errors.name?.message}
-					/>
-					<CustomInput
-						label="Phone Number"
-						type="tel"
-						placeholder="Enter phone number"
-						className="text-sm"
-						{...register("phone")}
-						error={errors.phone?.message}
-					/>
-					<div className="flex gap-2 pt-2">
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() => setOpen(false)}
-							className="h-9 flex-1 text-sm"
+			</SheetTrigger>
+			<SheetContent side="bottom" className="h-[90vh] rounded-t-xl p-0">
+				<div className="flex h-full flex-col">
+					<SheetHeader className="border-border border-b px-4 py-4">
+						<SheetTitle className="text-lg">Edit Store</SheetTitle>
+					</SheetHeader>
+					<div className="flex-1 overflow-y-auto px-4 py-4">
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex h-full flex-col"
 						>
-							Cancel
-						</Button>
-						<SubmitButton isLoading={isPending} className="h-9 flex-1 text-sm">
-							Save
-						</SubmitButton>
+							<div className="flex-1 space-y-3">
+								<CustomInput
+									label="Store Name"
+									placeholder="Enter store name"
+									className="text-sm"
+									{...register("name")}
+									error={errors.name?.message}
+								/>
+								<CustomInput
+									label="Phone Number"
+									type="tel"
+									placeholder="Enter phone number"
+									className="text-sm"
+									{...register("phone")}
+									error={errors.phone?.message}
+								/>
+							</div>
+							<SheetFooter className="border-border border-t gap-2 px-4 py-4 sm:flex-row sm:justify-end">
+								<Button
+									type="button"
+									variant="outline"
+									onClick={() => setOpen(false)}
+									className="h-9 w-full flex-1 text-sm sm:w-auto"
+								>
+									Cancel
+								</Button>
+								<SubmitButton isLoading={isPending} className="h-9 w-full flex-1 text-sm sm:w-auto">
+									Save
+								</SubmitButton>
+							</SheetFooter>
+						</form>
 					</div>
-				</form>
-			</DialogContent>
-		</Dialog>
+				</div>
+			</SheetContent>
+		</Sheet>
 	);
 };
 
