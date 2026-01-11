@@ -171,7 +171,7 @@ const CustomersPage = () => {
 							onSearch={handleSearchChange}
 							className="relative flex-1"
 						/>
-						<div className="flex-shrink-0">
+						<div className="shrink-0">
 							<CustomerFilters
 								filters={filters}
 								onFiltersChange={handleFiltersChange}
