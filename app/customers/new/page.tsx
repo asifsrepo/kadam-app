@@ -56,7 +56,7 @@ const NewCustomerPage = () => {
 		},
 		onSuccess: async () => {
 			toast.success("Customer created successfully!");
-			// Invalidate both customer list and count queries
+			// Invalidate customer queries so they refetch when dashboard mounts
 			await queryClient.invalidateQueries({
 				queryKey: [QueryKeys.CustomersList],
 			});

@@ -7,18 +7,13 @@ interface StatsProps {
 	isLoading?: boolean;
 }
 
-const Stats = ({
-	currentMonthCredit,
-	previousMonthCredit,
-	isLoading = false,
-}: StatsProps) => {
+const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: StatsProps) => {
 	// Calculate percentage change
 	let percentageChange = 0;
 	let hasValidComparison = false;
 
 	if (previousMonthCredit > 0) {
-		percentageChange =
-			((currentMonthCredit - previousMonthCredit) / previousMonthCredit) * 100;
+		percentageChange = ((currentMonthCredit - previousMonthCredit) / previousMonthCredit) * 100;
 		hasValidComparison = true;
 	}
 
@@ -42,7 +37,7 @@ const Stats = ({
 					</div>
 
 					<div>
-						<p className="font-bold text-card-foreground text-3xl md:text-4xl">
+						<p className="font-bold text-3xl text-card-foreground md:text-4xl">
 							{isLoading ? "..." : `AED ${currentMonthCredit.toLocaleString()}`}
 						</p>
 					</div>
@@ -50,17 +45,13 @@ const Stats = ({
 					{!isLoading && hasValidComparison && (
 						<div className="flex items-center gap-2 text-xs">
 							{isIncrease ? (
-
 								<span className="font-medium text-destructive">
 									↑ {displayPercentage.toFixed(0)}%
 								</span>
-
 							) : isDecrease ? (
-
 								<span className="font-medium text-primary">
 									↓ {displayPercentage.toFixed(0)}%
 								</span>
-
 							) : (
 								<span className="font-medium text-muted-foreground">→ 0%</span>
 							)}

@@ -6,13 +6,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
 } from "@/components/ui/sheet";
 import { useSubscription } from "@/hooks/queries/useSubscription";
 import { useAuth } from "@/hooks/store/useAuth";
@@ -23,8 +23,8 @@ import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 
 interface BranchDialogProps {
-    branch?: IBranch | null;
-    mode: "create" | "edit";
+	branch?: IBranch | null;
+	mode: "create" | "edit";
 }
 
 const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
@@ -200,7 +200,8 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 													: "Available"}
 											</p>
 											<p className="text-muted-foreground text-xs">
-												{branchCount} of {planLimits.maxBranches} branches used
+												{branchCount} of {planLimits.maxBranches} branches
+												used
 											</p>
 											{branchCount >= planLimits.maxBranches && (
 												<p className="mt-1 text-destructive text-xs">
@@ -252,7 +253,7 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 								</div>
 							</div>
 
-							<SheetFooter className="border-border border-t gap-2 px-4 py-4 sm:flex-row sm:justify-end">
+							<SheetFooter className="gap-2 border-border border-t px-4 py-4 sm:flex-row sm:justify-end">
 								<button
 									type="button"
 									onClick={() => handleOpenChange(false)}

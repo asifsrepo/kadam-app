@@ -26,4 +26,3 @@ const CurrentPlanSection = ({ subscription }: CurrentPlanSectionProps) => {
 };
 
 export default CurrentPlanSection;
-

@@ -188,9 +188,7 @@ const PlansPage = () => {
 					/>
 				)}
 
-				{isActive && subscription && (
-					<CurrentPlanSection subscription={subscription} />
-				)}
+				{isActive && subscription && <CurrentPlanSection subscription={subscription} />}
 
 				<BillingToggle isYearly={isYearly} onChange={setIsYearly} />
 

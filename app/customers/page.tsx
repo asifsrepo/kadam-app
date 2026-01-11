@@ -120,6 +120,7 @@ const CustomersPage = () => {
 			return allPages.length * batchSize;
 		},
 		enabled: !!activeBranch?.id,
+		refetchOnMount: true,
 	});
 
 	const customers = data?.pages.flat() ?? [];

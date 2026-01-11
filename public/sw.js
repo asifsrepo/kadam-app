@@ -1,22 +1,19 @@
 // Service Worker for PWA
-const CACHE_NAME = 'hysabee-v1';
-const urlsToCache = [
-	'/',
-	'/manifest.json',
-];
+const CACHE_NAME = "hysabee-v1";
+const urlsToCache = ["/", "/manifest.json"];
 
 // Install event - cache resources
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
 	event.waitUntil(
 		caches.open(CACHE_NAME).then((cache) => {
 			return cache.addAll(urlsToCache);
-		})
+		}),
 	);
 	self.skipWaiting();
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
 	event.waitUntil(
 		caches.keys().then((cacheNames) => {
 			return Promise.all(
@@ -25,19 +22,18 @@ self.addEventListener('activate', (event) => {
 						return caches.delete(cacheName);
 					}
 					return null;
-				})
+				}),
 			);
-		})
+		}),
 	);
 	self.clients.claim();
 });
 
 // Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", (event) => {
 	event.respondWith(
 		caches.match(event.request).then((response) => {
 			return response || fetch(event.request);
-		})
+		}),
 	);
 });
-

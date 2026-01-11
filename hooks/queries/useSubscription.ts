@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { create } from "zustand";
 import { BASE_URL } from "@/config";
 import {
-    canCreateBranch,
-    canCreateCustomer,
-    getEffectivePlanName,
-    getPlanLimits,
-    isCancellingAtPeriodEnd,
-    isSubscriptionActive,
+	canCreateBranch,
+	canCreateCustomer,
+	getEffectivePlanName,
+	getPlanLimits,
+	isCancellingAtPeriodEnd,
+	isSubscriptionActive,
 } from "@/lib/utils/subscriptions";
 import type { ISubscription } from "@/types/subscription";
 

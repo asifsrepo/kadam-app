@@ -14,12 +14,12 @@ import CustomInput from "~/form-elements/CustomInput";
 import SubmitButton from "~/form-elements/SubmitButton";
 import { Button } from "../ui/button";
 import {
-    Sheet,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+	Sheet,
+	SheetContent,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
 } from "../ui/sheet";
 
 interface EditStoreDialogProps {
@@ -112,10 +112,7 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 						<SheetTitle className="text-lg">Edit Store</SheetTitle>
 					</SheetHeader>
 					<div className="flex-1 overflow-y-auto px-4 py-4">
-						<form
-							onSubmit={handleSubmit(onSubmit)}
-							className="flex h-full flex-col"
-						>
+						<form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col">
 							<div className="flex-1 space-y-3">
 								<CustomInput
 									label="Store Name"
@@ -133,7 +130,7 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 									error={errors.phone?.message}
 								/>
 							</div>
-							<SheetFooter className="border-border border-t gap-2 px-4 py-4 sm:flex-row sm:justify-end">
+							<SheetFooter className="gap-2 border-border border-t px-4 py-4 sm:flex-row sm:justify-end">
 								<Button
 									type="button"
 									variant="outline"
@@ -142,7 +139,10 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 								>
 									Cancel
 								</Button>
-								<SubmitButton isLoading={isPending} className="h-9 w-full flex-1 text-sm sm:w-auto">
+								<SubmitButton
+									isLoading={isPending}
+									className="h-9 w-full flex-1 text-sm sm:w-auto"
+								>
 									Save
 								</SubmitButton>
 							</SheetFooter>

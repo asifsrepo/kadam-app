@@ -53,13 +53,13 @@ const Dashboard = () => {
 			return customersWithBalance as CustomerWithBalance[];
 		},
 		enabled: !!activeBranch?.id,
+		refetchOnMount: true,
 	});
 
 	const { data: monthlyStats, isLoading: statsLoading } = useQuery({
 		queryKey: [QueryKeys.CustomersList, activeBranch?.id, "monthly-stats"],
 		queryFn: async () => {
-			if (!activeBranch?.id)
-				return { currentMonthCredit: 0, previousMonthCredit: 0 };
+			if (!activeBranch?.id) return { currentMonthCredit: 0, previousMonthCredit: 0 };
 
 			// Get current date info
 			const now = new Date();
@@ -102,6 +102,7 @@ const Dashboard = () => {
 			return { currentMonthCredit, previousMonthCredit };
 		},
 		enabled: !!activeBranch?.id,
+		refetchOnMount: true,
 	});
 
 	return (

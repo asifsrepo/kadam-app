@@ -133,121 +133,121 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 				branchId: activeBranch?.id,
 			} as ITransaction;
 
-		const { error, data: insertedData } = await supabase
-			.from(Tables.Transactions)
-			.insert(newTransaction)
-			.select()
-			.single();
+			const { error, data: insertedData } = await supabase
+				.from(Tables.Transactions)
+				.insert(newTransaction)
+				.select()
+				.single();
 
-		if (error) throw error;
+			if (error) throw error;
 
-		const balanceChange = data.type === "credit" ? data.amount : -data.amount;
+			const balanceChange = data.type === "credit" ? data.amount : -data.amount;
 
-		// 1. Update dashboard "recent" customers cache
-		queryClient.setQueryData<CustomerWithBalance[]>(
-			[QueryKeys.CustomersList, activeBranch?.id, "recent"],
-			(oldData) => {
-				if (!oldData) return oldData;
+			// 1. Update dashboard "recent" customers cache
+			queryClient.setQueryData<CustomerWithBalance[]>(
+				[QueryKeys.CustomersList, activeBranch?.id, "recent"],
+				(oldData) => {
+					if (!oldData) return oldData;
 
-				return oldData.map((customer) => {
-					if (customer.id !== selectedCustomer.id) return customer;
-
-					return {
-						...customer,
-						balance: customer.balance + balanceChange,
-					};
-				});
-			},
-		);
-
-		// 2. Update dashboard "stats" cache
-		queryClient.setQueryData<{
-			totalCustomers: number;
-			totalDebt: number;
-			totalCredit: number;
-			netBalance: number;
-		}>([QueryKeys.CustomersList, activeBranch?.id, "stats"], (oldStats) => {
-			if (!oldStats) return oldStats;
-
-			if (data.type === "credit") {
-				return {
-					...oldStats,
-					totalDebt: oldStats.totalDebt + data.amount,
-					netBalance: oldStats.netBalance + data.amount,
-				};
-			}
-			return {
-				...oldStats,
-				totalCredit: oldStats.totalCredit + data.amount,
-				netBalance: oldStats.netBalance - data.amount,
-			};
-		});
-
-		// 3. Update all CustomersList infinite queries (customers page with filters)
-		// Get all customer list queries and update only the infinite ones
-		const customerListQueries = queryClient.getQueriesData<
-			InfiniteData<CustomerWithBalance[]>
-		>({
-			queryKey: [QueryKeys.CustomersList, activeBranch?.id],
-		});
-
-		customerListQueries.forEach(([queryKey, oldData]) => {
-			// Skip if not an infinite query (check if it has pages property)
-			if (!oldData || !oldData.pages || !Array.isArray(oldData.pages)) return;
-
-			// Skip the "recent" and "stats" queries
-			if (queryKey.includes("recent") || queryKey.includes("stats")) return;
-
-			queryClient.setQueryData<InfiniteData<CustomerWithBalance[]>>(queryKey, {
-				...oldData,
-				pages: oldData.pages.map((page) =>
-					page.map((customer) => {
+					return oldData.map((customer) => {
 						if (customer.id !== selectedCustomer.id) return customer;
 
 						return {
 							...customer,
 							balance: customer.balance + balanceChange,
 						};
-					}),
-				),
-			});
-		});
+					});
+				},
+			);
 
-		// 4. Update dashboard TransactionsList infinite query
-		queryClient.setQueryData<InfiniteData<ITransactionWithCustomer[]>>(
-			[QueryKeys.TransactionsList, activeBranch?.id],
-			(oldData) => {
-				if (!oldData || !oldData.pages.length) return oldData;
+			// 2. Update dashboard "stats" cache
+			queryClient.setQueryData<{
+				totalCustomers: number;
+				totalDebt: number;
+				totalCredit: number;
+				netBalance: number;
+			}>([QueryKeys.CustomersList, activeBranch?.id, "stats"], (oldStats) => {
+				if (!oldStats) return oldStats;
 
-				const newTransactionWithCustomer: ITransactionWithCustomer = {
-					...insertedData,
-					customer: {
-						id: selectedCustomer.id,
-						name: selectedCustomer.name,
-						phone: selectedCustomer.phone,
-						email: selectedCustomer.email,
-					},
-				} as ITransactionWithCustomer;
-
+				if (data.type === "credit") {
+					return {
+						...oldStats,
+						totalDebt: oldStats.totalDebt + data.amount,
+						netBalance: oldStats.netBalance + data.amount,
+					};
+				}
 				return {
-					...oldData,
-					pages: [
-						[newTransactionWithCustomer, ...oldData.pages[0]],
-						...oldData.pages.slice(1),
-					],
+					...oldStats,
+					totalCredit: oldStats.totalCredit + data.amount,
+					netBalance: oldStats.netBalance - data.amount,
 				};
-			},
-		);
+			});
 
-		// 5. Update customer details TransactionsList query
-		queryClient.setQueryData<ITransaction[]>(
-			[QueryKeys.TransactionsList, selectedCustomer.id],
-			(oldData) => {
-				if (!oldData) return [insertedData as ITransaction];
+			// 3. Update all CustomersList infinite queries (customers page with filters)
+			// Get all customer list queries and update only the infinite ones
+			const customerListQueries = queryClient.getQueriesData<
+				InfiniteData<CustomerWithBalance[]>
+			>({
+				queryKey: [QueryKeys.CustomersList, activeBranch?.id],
+			});
 
-				return [insertedData as ITransaction, ...oldData];
-			},
-		);
+			customerListQueries.forEach(([queryKey, oldData]) => {
+				// Skip if not an infinite query (check if it has pages property)
+				if (!oldData || !oldData.pages || !Array.isArray(oldData.pages)) return;
+
+				// Skip the "recent" and "stats" queries
+				if (queryKey.includes("recent") || queryKey.includes("stats")) return;
+
+				queryClient.setQueryData<InfiniteData<CustomerWithBalance[]>>(queryKey, {
+					...oldData,
+					pages: oldData.pages.map((page) =>
+						page.map((customer) => {
+							if (customer.id !== selectedCustomer.id) return customer;
+
+							return {
+								...customer,
+								balance: customer.balance + balanceChange,
+							};
+						}),
+					),
+				});
+			});
+
+			// 4. Update dashboard TransactionsList infinite query
+			queryClient.setQueryData<InfiniteData<ITransactionWithCustomer[]>>(
+				[QueryKeys.TransactionsList, activeBranch?.id],
+				(oldData) => {
+					if (!oldData || !oldData.pages.length) return oldData;
+
+					const newTransactionWithCustomer: ITransactionWithCustomer = {
+						...insertedData,
+						customer: {
+							id: selectedCustomer.id,
+							name: selectedCustomer.name,
+							phone: selectedCustomer.phone,
+							email: selectedCustomer.email,
+						},
+					} as ITransactionWithCustomer;
+
+					return {
+						...oldData,
+						pages: [
+							[newTransactionWithCustomer, ...oldData.pages[0]],
+							...oldData.pages.slice(1),
+						],
+					};
+				},
+			);
+
+			// 5. Update customer details TransactionsList query
+			queryClient.setQueryData<ITransaction[]>(
+				[QueryKeys.TransactionsList, selectedCustomer.id],
+				(oldData) => {
+					if (!oldData) return [insertedData as ITransaction];
+
+					return [insertedData as ITransaction, ...oldData];
+				},
+			);
 
 			toast.success("Transaction created successfully");
 			setOpen(false);

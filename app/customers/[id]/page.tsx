@@ -130,27 +130,27 @@ const CustomerDetailsPage = () => {
 								${customer.limit?.toFixed(2) || "0.00"}
 							</span>
 						</div>
-					<div className="border-border border-t pt-2">
-						<span className="mb-1 block text-muted-foreground text-xs">
-							Address
-						</span>
-						<p className="text-foreground text-xs">{customer.address}</p>
-					</div>
-					<div className="border-border border-t pt-3">
-						<EditCustomerDialog
-							customer={customer}
-							trigger={
-								<Button variant="outline" size="sm" className="w-full gap-2">
-									<Pencil className="h-4 w-4" />
-									Edit Customer Details
-								</Button>
-							}
-						/>
-					</div>
-				</CardContent>
-			</Card>
+						<div className="border-border border-t pt-2">
+							<span className="mb-1 block text-muted-foreground text-xs">
+								Address
+							</span>
+							<p className="text-foreground text-xs">{customer.address}</p>
+						</div>
+						<div className="border-border border-t pt-3">
+							<EditCustomerDialog
+								customer={customer}
+								trigger={
+									<Button variant="outline" size="sm" className="w-full gap-2">
+										<Pencil className="h-4 w-4" />
+										Edit Customer Details
+									</Button>
+								}
+							/>
+						</div>
+					</CardContent>
+				</Card>
 
-			<TransactionListing customerId={customer.id} />
+				<TransactionListing customerId={customer.id} />
 			</div>
 		</div>
 	);

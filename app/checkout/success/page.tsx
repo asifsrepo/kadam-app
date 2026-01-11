@@ -154,7 +154,9 @@ const CheckoutSuccessPage = () => {
 														Status
 													</span>
 													<Badge
-														variant={isFailed ? "destructive" : "default"}
+														variant={
+															isFailed ? "destructive" : "default"
+														}
 														className="text-xs capitalize"
 													>
 														{status}
