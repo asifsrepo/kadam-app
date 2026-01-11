@@ -55,51 +55,51 @@ const Dashboard = () => {
 		enabled: !!activeBranch?.id,
 	});
 
-	const { data: allCustomersStats, isLoading: statsLoading } = useQuery({
-		queryKey: [QueryKeys.CustomersList, activeBranch?.id, "stats"],
+	const { data: monthlyStats, isLoading: statsLoading } = useQuery({
+		queryKey: [QueryKeys.CustomersList, activeBranch?.id, "monthly-stats"],
 		queryFn: async () => {
 			if (!activeBranch?.id)
-				return { totalCustomers: 0, totalDebt: 0, totalCredit: 0, netBalance: 0 };
+				return { currentMonthCredit: 0, previousMonthCredit: 0 };
 
-			const { data: customersData, error: customersError } = await supabase
-				.from(Tables.Customers)
-				.select(`
-					*,
-					transactions:transactions(*)
-				`)
-				.eq("branchId", activeBranch.id);
+			// Get current date info
+			const now = new Date();
+			const currentYear = now.getFullYear();
+			const currentMonth = now.getMonth();
 
-			if (customersError) throw customersError;
+			// Calculate date ranges
+			const currentMonthStart = new Date(currentYear, currentMonth, 1);
+			const currentMonthEnd = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+			const previousMonthStart = new Date(currentYear, currentMonth - 1, 1);
+			const previousMonthEnd = new Date(currentYear, currentMonth, 0, 23, 59, 59);
 
-			const customersWithBalance = (customersData ?? []).map((customer) => {
-				const transactions = customer.transactions ?? [];
+			// Fetch all transactions for the branch
+			const { data: transactionsData, error: transactionsError } = await supabase
+				.from(Tables.Transactions)
+				.select("*")
+				.eq("branchId", activeBranch.id)
+				.eq("type", "credit")
+				.gte("createdAt", previousMonthStart.toISOString())
+				.lte("createdAt", currentMonthEnd.toISOString());
 
-				const totalCredit = transactions
-					.filter((t: { type: string }) => t.type === "credit")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+			if (transactionsError) throw transactionsError;
 
-				const totalPaid = transactions
-					.filter((t: { type: string }) => t.type === "payment")
-					.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
+			// Calculate current month credit
+			const currentMonthCredit = (transactionsData ?? [])
+				.filter((t: { createdAt: string }) => {
+					const date = new Date(t.createdAt);
+					return date >= currentMonthStart && date <= currentMonthEnd;
+				})
+				.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
-				return {
-					...customer,
-					balance: totalCredit - totalPaid,
-				};
-			});
+			// Calculate previous month credit
+			const previousMonthCredit = (transactionsData ?? [])
+				.filter((t: { createdAt: string }) => {
+					const date = new Date(t.createdAt);
+					return date >= previousMonthStart && date <= previousMonthEnd;
+				})
+				.reduce((sum: number, t: { amount: number }) => sum + t.amount, 0);
 
-			const totalCustomers = customersWithBalance.length;
-			const totalDebt = customersWithBalance.reduce(
-				(sum, customer) => sum + Math.max(0, customer.balance),
-				0,
-			);
-			const totalCredit = customersWithBalance.reduce(
-				(sum, customer) => sum + Math.max(0, -customer.balance),
-				0,
-			);
-			const netBalance = totalDebt - totalCredit;
-
-			return { totalCustomers, totalDebt, totalCredit, netBalance };
+			return { currentMonthCredit, previousMonthCredit };
 		},
 		enabled: !!activeBranch?.id,
 	});
@@ -118,7 +118,7 @@ const Dashboard = () => {
 						<TransactionDialog
 							trigger={
 								<Button
-									variant="outline"
+									variant="default"
 									size="icon"
 									className="h-10 w-10 md:h-8 md:w-8"
 									aria-label="Add credit transaction"
@@ -134,10 +134,8 @@ const Dashboard = () => {
 
 			<div className="p-3 md:p-6">
 				<Stats
-					totalCustomers={allCustomersStats?.totalCustomers || 0}
-					totalDebt={allCustomersStats?.totalDebt || 0}
-					totalCredit={allCustomersStats?.totalCredit || 0}
-					netBalance={allCustomersStats?.netBalance || 0}
+					currentMonthCredit={monthlyStats?.currentMonthCredit || 0}
+					previousMonthCredit={monthlyStats?.previousMonthCredit || 0}
 					isLoading={statsLoading}
 				/>
 

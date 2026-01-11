@@ -1,95 +1,74 @@
-import { DollarSign, TrendingDown, TrendingUp, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
 interface StatsProps {
-	totalCustomers: number;
-	totalDebt: number;
-	totalCredit: number;
-	netBalance: number;
+	currentMonthCredit: number;
+	previousMonthCredit: number;
 	isLoading?: boolean;
 }
 
 const Stats = ({
-	totalCustomers,
-	totalDebt,
-	totalCredit,
-	netBalance,
+	currentMonthCredit,
+	previousMonthCredit,
 	isLoading = false,
 }: StatsProps) => {
+	// Calculate percentage change
+	let percentageChange = 0;
+	let hasValidComparison = false;
+
+	if (previousMonthCredit > 0) {
+		percentageChange =
+			((currentMonthCredit - previousMonthCredit) / previousMonthCredit) * 100;
+		hasValidComparison = true;
+	}
+
+	// Cap percentage at 999% for display purposes
+	const displayPercentage = Math.min(Math.abs(percentageChange), 999);
+
+	const isIncrease = percentageChange > 0;
+	const isDecrease = percentageChange < 0;
+
 	return (
-		<div className="mb-6 space-y-3">
-			<div className="grid grid-cols-2 gap-3">
-				<Card className="p-3">
+		<div className="mb-6">
+			<Card className="overflow-hidden border-border bg-card p-4">
+				<div className="space-y-3">
 					<div className="flex items-center justify-between">
-						<div className="flex-1">
-							<p className="font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-								Customers
-							</p>
-							<p className="font-bold text-foreground text-lg">
-								{isLoading ? "..." : totalCustomers}
-							</p>
-						</div>
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-							<Users className="h-4 w-4 text-primary" />
-						</div>
+						<h3 className="font-semibold text-card-foreground text-sm">
+							Outstanding Credit
+						</h3>
+						<Badge variant="secondary" className="text-[10px]">
+							This month
+						</Badge>
 					</div>
-				</Card>
 
-				<Card className="p-3">
-					<div className="flex items-center justify-between">
-						<div className="flex-1">
-							<p className="font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-								Net Balance
-							</p>
-							<p
-								className={`font-bold text-lg ${
-									netBalance > 0 ? "text-destructive" : "text-primary"
-								}`}
-							>
-								{isLoading ? "..." : `$${netBalance.toFixed(2)}`}
-							</p>
-						</div>
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-							<DollarSign className="h-4 w-4 text-muted-foreground" />
-						</div>
+					<div>
+						<p className="font-bold text-card-foreground text-3xl md:text-4xl">
+							{isLoading ? "..." : `AED ${currentMonthCredit.toLocaleString()}`}
+						</p>
 					</div>
-				</Card>
-			</div>
 
-			{/* Second Row - 2 cards on mobile */}
-			<div className="grid grid-cols-2 gap-3">
-				<Card className="p-3">
-					<div className="flex items-center justify-between">
-						<div className="flex-1">
-							<p className="font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-								Total Debt
-							</p>
-							<p className="font-bold text-destructive text-lg">
-								{isLoading ? "..." : `$${totalDebt.toFixed(2)}`}
-							</p>
-						</div>
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10">
-							<TrendingUp className="h-4 w-4 text-destructive" />
-						</div>
-					</div>
-				</Card>
+					{!isLoading && hasValidComparison && (
+						<div className="flex items-center gap-2 text-xs">
+							{isIncrease ? (
 
-				<Card className="p-3">
-					<div className="flex items-center justify-between">
-						<div className="flex-1">
-							<p className="font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
-								Total Credit
-							</p>
-							<p className="font-bold text-lg text-primary">
-								{isLoading ? "..." : `$${totalCredit.toFixed(2)}`}
-							</p>
+								<span className="font-medium text-destructive">
+									↑ {displayPercentage.toFixed(0)}%
+								</span>
+
+							) : isDecrease ? (
+
+								<span className="font-medium text-primary">
+									↓ {displayPercentage.toFixed(0)}%
+								</span>
+
+							) : (
+								<span className="font-medium text-muted-foreground">→ 0%</span>
+							)}
+							<span className="text-muted-foreground">vs last month</span>
 						</div>
-						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-							<TrendingDown className="h-4 w-4 text-primary" />
-						</div>
-					</div>
-				</Card>
-			</div>
+					)}
+				</div>
+			</Card>
 		</div>
 	);
 };
