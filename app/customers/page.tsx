@@ -163,7 +163,7 @@ const CustomersPage = () => {
 							<span className="sr-only">Go back</span>
 						</Button>
 						<h1 className="font-semibold text-lg md:text-2xl">Customers</h1>
-					</div>
+					</div> 
 					<div className="flex gap-3">
 						<CustomSearchInput
 							placeholder="Search customers..."
@@ -186,7 +186,7 @@ const CustomersPage = () => {
 			<div className="p-3 md:p-6">
 				<CustomerList
 					customers={customers}
-					isLoading={isLoading}
+					isLoading={isLoading || !activeBranch}
 					fetchNextPage={fetchNextPage}
 					hasNextPage={!!hasNextPage}
 					isFetchingNextPage={isFetchingNextPage}

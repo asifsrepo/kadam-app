@@ -137,10 +137,10 @@ const Dashboard = () => {
 				<Stats
 					currentMonthCredit={monthlyStats?.currentMonthCredit || 0}
 					previousMonthCredit={monthlyStats?.previousMonthCredit || 0}
-					isLoading={statsLoading}
+					isLoading={statsLoading || !activeBranch}
 				/>
 
-				<Customers customers={customers} isLoading={customersLoading} />
+				<Customers customers={customers} isLoading={customersLoading || !activeBranch} />
 
 				<Transactions />
 			</div>

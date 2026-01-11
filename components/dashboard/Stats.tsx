@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface StatsProps {
 	currentMonthCredit: number;
@@ -37,26 +38,36 @@ const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: S
 					</div>
 
 					<div>
-						<p className="font-bold text-3xl text-card-foreground md:text-4xl">
-							{isLoading ? "..." : `AED ${currentMonthCredit.toLocaleString()}`}
-						</p>
+						<div className="font-bold text-3xl text-card-foreground md:text-4xl">
+							{isLoading ? (
+								<Skeleton className="h-9 w-32" />
+							) : (
+								`AED ${currentMonthCredit.toLocaleString()}`
+							)}
+						</div>
 					</div>
 
-					{!isLoading && hasValidComparison && (
-						<div className="flex items-center gap-2 text-xs">
-							{isIncrease ? (
-								<span className="font-medium text-destructive">
-									↑ {displayPercentage.toFixed(0)}%
-								</span>
-							) : isDecrease ? (
-								<span className="font-medium text-primary">
-									↓ {displayPercentage.toFixed(0)}%
-								</span>
-							) : (
-								<span className="font-medium text-muted-foreground">→ 0%</span>
-							)}
-							<span className="text-muted-foreground">vs last month</span>
+					{isLoading ? (
+						<div className="flex items-center gap-2">
+							<Skeleton className="h-4 w-24" />
 						</div>
+					) : (
+						hasValidComparison && (
+							<div className="flex items-center gap-2 text-xs">
+								{isIncrease ? (
+									<span className="font-medium text-destructive">
+										↑ {displayPercentage.toFixed(0)}%
+									</span>
+								) : isDecrease ? (
+									<span className="font-medium text-primary">
+										↓ {displayPercentage.toFixed(0)}%
+									</span>
+								) : (
+									<span className="font-medium text-muted-foreground">→ 0%</span>
+								)}
+								<span className="text-muted-foreground">vs last month</span>
+							</div>
+						)
 					)}
 				</div>
 			</Card>

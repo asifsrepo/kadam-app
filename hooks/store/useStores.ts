@@ -120,12 +120,15 @@ const useStores = () => {
 	const store = useStoresStore();
 	const { user } = useAuth();
 
+	// Derived loading state to prevent flash of content before initialization
+	const isLoading = store.isLoading || (!store.isInitialized && !!user?.id);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: to avoid maximum call stack exceeding
 	useEffect(() => {
 		if (user?.id) store.loadStores(user.id);
 	}, [user?.id]);
 
-	return store;
+	return { ...store, isLoading };
 };
 
 export default useStores;
