@@ -17,11 +17,11 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/store/useAuth";
+import useCurrency from "@/hooks/store/useCurrency";
 import useStores from "@/hooks/store/useStores";
 import type { TransactionFormData } from "@/lib/schema/transaction";
 import { transactionSchema } from "@/lib/schema/transaction";
 import { createClient } from "@/lib/supabase/client";
-import { formatCurrency } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
 import type { CustomerWithBalance, ICustomer } from "@/types/customers";
 import type { ITransaction, ITransactionWithCustomer } from "@/types/transaction";
@@ -46,6 +46,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 	const supabase = createClient();
 	const { user } = useAuth();
 	const { activeBranch } = useStores();
+	const { formatAmountWithSymbol } = useCurrency();
 	const queryClient = useQueryClient();
 
 	const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
@@ -335,7 +336,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 													Credit Limit
 												</span>
 												<span className="font-medium text-foreground text-xs">
-													{formatCurrency(selectedCustomer.limit)}
+													{formatAmountWithSymbol(selectedCustomer.limit)}
 												</span>
 											</div>
 										</div>

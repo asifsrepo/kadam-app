@@ -37,25 +37,6 @@ export const tryCatch = async <T>(
 	}
 };
 
-/**
- * Formats a number as currency with commas and decimal places.
- *
- * @param {number} amount - The number to format
- * @param {number} decimals - Number of decimal places (default: 2)
- * @returns {string} - Formatted currency string
- *
- * @example
- * formatCurrency(1234.56) // "1,234.56"
- * formatCurrency(1000) // "1,000.00"
- * formatCurrency(1234.56, 0) // "1,235"
- */
-export const formatCurrency = (amount: number = 0, decimals: number = 2): string => {
-	return new Intl.NumberFormat("en-US", {
-		minimumFractionDigits: decimals,
-		maximumFractionDigits: decimals,
-	}).format(amount);
-};
-
 export const getDateLabel = (dateString: string): string => {
 	const date = new Date(dateString);
 

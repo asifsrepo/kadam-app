@@ -1,6 +1,6 @@
 import { Check, CreditCard, MapPin } from "lucide-react";
+import useCurrency from "@/hooks/store/useCurrency";
 import useStores from "@/hooks/store/useStores";
-import { formatCurrency } from "@/lib/utils";
 import { IBranch } from "@/types/store";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
@@ -8,6 +8,7 @@ import BranchDialog from "./BranchDialog";
 
 const BranchCard = ({ branch }: { branch: IBranch }) => {
 	const { activeBranch, setActiveBranch } = useStores();
+	const { formatAmountWithSymbol } = useCurrency();
 	const isActive = activeBranch?.id === branch.id;
 
 	const handleCardClick = (e: React.MouseEvent) => {
@@ -63,7 +64,7 @@ const BranchCard = ({ branch }: { branch: IBranch }) => {
 						<div className="flex items-center gap-1.5 text-xs sm:gap-2 sm:text-sm">
 							<CreditCard className="h-3 w-3 shrink-0 text-muted-foreground sm:h-3.5 sm:w-3.5" />
 							<span className="text-muted-foreground">
-								Limit: {formatCurrency(branch.debtLimit || 0)}
+								Limit: {formatAmountWithSymbol(branch.debtLimit || 0)}
 							</span>
 						</div>
 					</div>

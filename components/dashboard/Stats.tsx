@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import useCurrency from "@/hooks/store/useCurrency";
 
 interface StatsProps {
 	currentMonthCredit: number;
@@ -9,6 +10,7 @@ interface StatsProps {
 }
 
 const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: StatsProps) => {
+	const { formatAmountWithSymbol } = useCurrency();
 	// Calculate percentage change
 	let percentageChange = 0;
 	let hasValidComparison = false;
@@ -42,7 +44,7 @@ const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: S
 							{isLoading ? (
 								<Skeleton className="h-9 w-32" />
 							) : (
-								`AED ${currentMonthCredit.toLocaleString()}`
+								formatAmountWithSymbol(currentMonthCredit, 0)
 							)}
 						</div>
 					</div>
