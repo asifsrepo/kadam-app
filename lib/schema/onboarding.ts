@@ -25,6 +25,7 @@ export const shopInfoSchema = z.object({
 export const editStoreSchema = z.object({
 	name: z.string().min(2, "Store name must be at least 2 characters"),
 	phone: z.string().min(10, "Please enter a valid phone number"),
+	currency: z.string().min(2, "Please select a currency"),
 });
 
 export const passwordSchema = z

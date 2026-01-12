@@ -20,3 +20,4 @@ export const getSelectedColorScheme = async (): Promise<string> => {
 
 	return DEFAULT_COLOR_SCHEME ?? "Default";
 };
+

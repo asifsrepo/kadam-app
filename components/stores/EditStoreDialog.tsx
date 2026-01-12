@@ -7,10 +7,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/store/useAuth";
+import { CURRENCIES } from "@/lib/currencies";
 import { editStoreSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/client";
 import { EditStoreFormData, QueryKeys, Tables } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
+import CustomSelect from "~/form-elements/CustomSelect";
 import SubmitButton from "~/form-elements/SubmitButton";
 import { Button } from "../ui/button";
 import {
@@ -25,10 +27,21 @@ import {
 interface EditStoreDialogProps {
 	storeName?: string;
 	storePhone?: string;
+	storeCurrency?: string;
 	storeId?: string;
 }
 
-const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStoreDialogProps) => {
+const currencyOptions = Object.values(CURRENCIES).map((c) => ({
+	value: c.code,
+	label: `${c.symbol} ${c.name}`,
+}));
+
+const EditStoreDialog = ({
+	storeName = "",
+	storePhone = "",
+	storeCurrency = "AED",
+	storeId,
+}: EditStoreDialogProps) => {
 	const [open, setOpen] = useState(false);
 
 	const { user } = useAuth();
@@ -40,13 +53,18 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 		register,
 		formState: { errors },
 		reset,
+		setValue,
+		watch,
 	} = useForm<EditStoreFormData>({
 		resolver: zodResolver(editStoreSchema),
 		defaultValues: {
 			name: storeName,
 			phone: storePhone,
+			currency: storeCurrency,
 		},
 	});
+
+	const selectedCurrency = watch("currency");
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (data: EditStoreFormData) => {
@@ -59,6 +77,7 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 				.update({
 					name: data.name.trim(),
 					phone: data.phone.trim(),
+					currency: data.currency,
 				})
 				.eq("id", storeId)
 				.eq("ownerId", user.id);
@@ -90,6 +109,7 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 			reset({
 				name: storeName,
 				phone: storePhone,
+				currency: storeCurrency,
 			});
 		}
 	};
@@ -128,6 +148,15 @@ const EditStoreDialog = ({ storeName = "", storePhone = "", storeId }: EditStore
 									className="text-sm"
 									{...register("phone")}
 									error={errors.phone?.message}
+								/>
+								<CustomSelect
+									label="Default Currency"
+									placeholder="Select currency"
+									options={currencyOptions}
+									value={selectedCurrency}
+									className="w-full"
+									onValueChange={(value) => setValue("currency", value)}
+									error={errors.currency?.message}
 								/>
 							</div>
 							<SheetFooter className="gap-2 border-border border-t px-4 py-4 sm:flex-row sm:justify-end">

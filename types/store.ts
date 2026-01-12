@@ -6,6 +6,7 @@ export interface IStore {
 	name: string;
 	phone: string;
 	ownerId: IUser["id"];
+	currency: string;
 }
 
 export interface IBranch {

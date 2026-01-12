@@ -28,3 +28,4 @@ const RootLayout = async ({ children }: WrapperProps) => {
 };
 
 export default RootLayout;
+

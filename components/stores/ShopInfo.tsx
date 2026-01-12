@@ -5,6 +5,7 @@ import { Phone } from "lucide-react";
 import EditStoreDialog from "@/components/stores/EditStoreDialog";
 import { CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
+import { getCurrencyByCode } from "@/lib/currencies";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { QueryKeys, Tables } from "@/types";
@@ -42,7 +43,7 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 					"rounded-lg border p-3.5 md:p-4",
 					isSettings
 						? "border-border bg-card"
-						: "border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10",
+						: "border-primary/20 bg-linear-to-r from-primary/5 to-primary/10",
 				)}
 			>
 				<div className="flex items-start justify-between gap-3">
@@ -107,12 +108,28 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 							/>
 							<span className="truncate text-muted-foreground">{store.phone}</span>
 						</div>
+						{store.currency && (
+							<div className="flex items-center gap-1.5 text-xs md:text-sm">
+								<span
+									className={cn(
+										"flex h-3.5 w-3.5 shrink-0 items-center justify-center font-medium text-[10px]",
+										isSettings ? "text-muted-foreground" : "text-primary/70",
+									)}
+								>
+									{getCurrencyByCode(store.currency).symbol}
+								</span>
+								<span className="truncate text-muted-foreground">
+									{getCurrencyByCode(store.currency).name}
+								</span>
+							</div>
+						)}
 					</div>
 				</div>
 				<div className="shrink-0">
 					<EditStoreDialog
 						storeName={store.name}
 						storePhone={store.phone}
+						storeCurrency={store.currency}
 						storeId={store.id}
 					/>
 				</div>
