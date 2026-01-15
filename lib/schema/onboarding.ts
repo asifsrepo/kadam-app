@@ -19,6 +19,7 @@ export const branchSchema = z.object({
 export const shopInfoSchema = z.object({
 	name: z.string().min(2, "Shop name must be at least 2 characters"),
 	phone: z.string().min(10, "Please enter a valid phone number").optional(),
+	currency: z.string().min(2, "Please select a currency"),
 	branches: z.array(branchSchema).min(1, "At least one branch is required"),
 });
 

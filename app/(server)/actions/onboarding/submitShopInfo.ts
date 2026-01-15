@@ -22,7 +22,7 @@ const submitShopInfo = async (shopData: ShopInfoFormData) => {
 				name: shopData.name,
 				phone: shopData.phone,
 				ownerId: user.id,
-				currency: "AED",
+				currency: shopData.currency,
 			})
 			.select("id");
 

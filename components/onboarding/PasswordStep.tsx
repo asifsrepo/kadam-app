@@ -68,7 +68,7 @@ const PasswordStep = ({
 
 	return (
 		<Card>
-			<CardHeader className="pb-3">
+			<CardHeader>
 				<CardTitle className="flex items-center gap-2 text-base">
 					<Lock className="h-4 w-4" />
 					Create Password

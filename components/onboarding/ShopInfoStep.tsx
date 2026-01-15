@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/store/useAuth";
 import useStores from "@/hooks/store/useStores";
+import { CURRENCIES, DEFAULT_CURRENCY } from "@/lib/currencies";
 import { shopInfoSchema } from "@/lib/schema/onboarding";
 import { ShopInfoFormData } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
+import CustomSelect from "~/form-elements/CustomSelect";
 import SubmitButton from "~/form-elements/SubmitButton";
 
 interface ShopInfoStepProps {
@@ -30,16 +32,24 @@ const ShopInfoStep = ({
 	const queryClient = useQueryClient();
 	const { setActiveBranch } = useStores();
 
+	const currencyOptions = Object.values(CURRENCIES).map((c) => ({
+		value: c.code,
+		label: `${c.symbol} ${c.name}`,
+	}));
+
 	const {
 		handleSubmit,
 		formState: { errors },
 		register,
 		control,
+		setValue,
+		watch,
 	} = useForm<ShopInfoFormData>({
 		resolver: zodResolver(shopInfoSchema),
 		defaultValues: {
 			name: "",
 			phone: "",
+			currency: DEFAULT_CURRENCY,
 			branches: [
 				{
 					name: "",
@@ -82,7 +92,7 @@ const ShopInfoStep = ({
 
 	return (
 		<Card>
-			<CardHeader className="pb-2">
+			<CardHeader>
 				<CardTitle className="flex items-center gap-2 text-base">
 					<Building2 className="h-4 w-4" />
 					Shop Information
@@ -103,6 +113,16 @@ const ShopInfoStep = ({
 						required
 						error={errors.phone?.message}
 						{...register("phone")}
+					/>
+					<CustomSelect
+						label="Default Currency"
+						placeholder="Select currency"
+						options={currencyOptions}
+						value={watch("currency")}
+						className="w-full"
+						onValueChange={(value) => setValue("currency", value)}
+						error={errors.currency?.message}
+						required
 					/>
 					<div className="space-y-2 pt-1">
 						<h3 className="font-medium text-sm">Store Branch</h3>
