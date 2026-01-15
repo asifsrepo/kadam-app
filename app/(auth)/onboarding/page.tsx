@@ -12,6 +12,7 @@ const OnboardingPage = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const totalSteps = 3;
+	// Progress shows current step progress: step 1 = 33%, step 2 = 66%, step 3 = 100%
 	const progress = (step / totalSteps) * 100;
 
 	const handleNext = () => {

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Building2, Check, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Building2, Check, Trash2 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import submitShopInfo from "@/actions/onboarding/submitShopInfo";
@@ -51,7 +51,7 @@ const ShopInfoStep = ({
 		},
 	});
 
-	const { fields, append, remove } = useFieldArray({
+	const { fields, remove } = useFieldArray({
 		control: control,
 		name: "branches",
 	});
@@ -80,30 +80,16 @@ const ShopInfoStep = ({
 		}
 	};
 
-	const createBranch = () => {
-		// Free plan allows only 1 branch during onboarding
-		const FREE_PLAN_BRANCH_LIMIT = 1;
-
-		if (fields.length >= FREE_PLAN_BRANCH_LIMIT) {
-			toast.error(
-				`You can only create ${FREE_PLAN_BRANCH_LIMIT} branch on the Free plan. Upgrade to Pro for unlimited branches.`,
-			);
-			return;
-		}
-
-		append({ name: "", location: "", isMain: false, debtLimit: 0 });
-	};
-
 	return (
 		<Card>
-			<CardHeader className="pb-3">
+			<CardHeader className="pb-2">
 				<CardTitle className="flex items-center gap-2 text-base">
 					<Building2 className="h-4 w-4" />
 					Shop Information
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-3">
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+			<CardContent className="space-y-2">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
 					<CustomInput
 						label="Business Name"
 						placeholder="Enter your business name"
@@ -118,89 +104,69 @@ const ShopInfoStep = ({
 						error={errors.phone?.message}
 						{...register("phone")}
 					/>
-					<div className="space-y-3">
-						<div className="flex items-center justify-between">
-							<div>
-								<h3 className="font-medium text-sm">Store Branches</h3>
-								<p className="text-muted-foreground text-xs">
-									Free plan: 1 branch (Upgrade to Pro for unlimited)
-								</p>
-							</div>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								onClick={createBranch}
-								disabled={isSubmitting || fields.length >= 1}
-								className="h-8 px-3 text-xs"
-							>
-								<Plus className="mr-1 h-3 w-3" />
-								Add Branch
-							</Button>
-						</div>
+					<div className="space-y-2 pt-1">
+						<h3 className="font-medium text-sm">Store Branch</h3>
 						<div className="space-y-2">
 							{fields.map((field, index) => (
-								<Card key={field.id} className="p-3">
-									<div className="space-y-3">
+								<div key={field.id} className="space-y-2 rounded-lg border border-border bg-card p-2.5">
+									{fields.length > 1 && (
 										<div className="flex items-center justify-between">
-											<div className="flex items-center gap-2">
-												<h4 className="font-medium text-sm">
-													Branch {index + 1}
-												</h4>
-												{index === 0 && (
-													<span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
-														Main
-													</span>
-												)}
-											</div>
-											{fields.length > 1 && (
-												<Button
-													type="button"
-													variant="ghost"
-													size="sm"
-													onClick={() => remove(index)}
-													disabled={isSubmitting}
-													className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
-												>
-													<Trash2 className="h-3 w-3" />
-												</Button>
-											)}
+											<h4 className="font-medium text-sm">
+												Branch {index + 1}
+											</h4>
+											<Button
+												type="button"
+												variant="ghost"
+												size="sm"
+												onClick={() => remove(index)}
+												disabled={isSubmitting}
+												className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
+											>
+												<Trash2 className="h-3 w-3" />
+											</Button>
 										</div>
-										<div className="space-y-2">
-											<CustomInput
-												label="Branch Name"
-												placeholder="Enter branch name"
-												required
-												error={errors.branches?.[index]?.name?.message}
-												{...register(`branches.${index}.name`)}
-											/>
-											<CustomInput
-												label="Branch Debt Limit"
-												placeholder="Enter branch debt limit"
-												required
-												type="number"
-												error={errors.branches?.[index]?.debtLimit?.message}
-												{...register(`branches.${index}.debtLimit`, {
-													valueAsNumber: true,
-												})}
-											/>
-											<CustomInput
-												label="Branch Location"
-												placeholder="Enter branch address"
-												required
-												error={errors.branches?.[index]?.location?.message}
-												{...register(`branches.${index}.location`)}
-											/>
+									)}
+									{index === 0 && fields.length === 1 && (
+										<div className="flex items-center gap-2">
+											<span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+												Main Branch
+											</span>
 										</div>
+									)}
+									<div className="space-y-2">
+										<CustomInput
+											label="Branch Name"
+											placeholder="Enter branch name"
+											required
+											error={errors.branches?.[index]?.name?.message}
+											{...register(`branches.${index}.name`)}
+										/>
+										<CustomInput
+											label="Branch Debt Limit"
+											placeholder="Enter branch debt limit"
+											required
+											type="number"
+											error={errors.branches?.[index]?.debtLimit?.message}
+											{...register(`branches.${index}.debtLimit`, {
+												valueAsNumber: true,
+											})}
+										/>
+										<CustomInput
+											label="Branch Location"
+											placeholder="Enter branch address"
+											required
+											error={errors.branches?.[index]?.location?.message}
+											{...register(`branches.${index}.location`)}
+										/>
 									</div>
-								</Card>
+								</div>
 							))}
 						</div>
 						{errors.branches && (
 							<p className="text-destructive text-xs">{errors.branches.message}</p>
 						)}
 					</div>
-					<div className="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-between">
+					<div className="flex flex-col gap-2 pt-1 sm:flex-row sm:justify-between">
 						<Button
 							type="button"
 							variant="outline"

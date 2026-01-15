@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Check, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import submitPassword from "@/actions/onboarding/submitPassword";
+import { useAuth } from "@/hooks/store/useAuth";
 import { passwordSchema } from "@/lib/schema/onboarding";
 import { PasswordFormData } from "@/types";
 import CustomInput from "~/form-elements/CustomInput";
@@ -11,7 +12,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface PasswordStepProps {
-	onComplete: (step: number) => void;
+	onComplete: () => void;
 	onPrevious: () => void;
 	isSubmitting: boolean;
 	setIsSubmitting: (loading: boolean) => void;
@@ -23,6 +24,7 @@ const PasswordStep = ({
 	isSubmitting,
 	setIsSubmitting,
 }: PasswordStepProps) => {
+	const { loadUser } = useAuth();
 	const {
 		handleSubmit,
 		register,
@@ -38,12 +40,26 @@ const PasswordStep = ({
 	const onSubmit = async (data: PasswordFormData) => {
 		setIsSubmitting(true);
 		try {
-			const { success, error } = await submitPassword(data);
+			const { success, error, data: result } = await submitPassword(data);
 			if (!success) throw new Error(error);
-			toast.success("Password created successfully!");
-			onComplete(2);
+			await loadUser();
+
+			// Check if password was already set
+			if (result?.passwordAlreadySet) {
+				toast.info("Password is already set. You can continue with the setup.", {
+					description: "If you want to change your password, you can do so later in settings.",
+				});
+			} else {
+				toast.success("Password created successfully!");
+			}
+
+			onComplete();
 		} catch (error) {
-			toast.error("Failed to create password. Please try again.");
+			const errorMessage =
+				error instanceof Error ? error.message : "Failed to create password. Please try again.";
+			toast.error("Failed to create password", {
+				description: errorMessage,
+			});
 			console.error("Error creating password:", error);
 		} finally {
 			setIsSubmitting(false);
@@ -92,8 +108,8 @@ const PasswordStep = ({
 							disabled={isSubmitting}
 							className="order-1 h-9 text-sm sm:order-2"
 						>
-							Complete Setup
-							<Check className="ml-2 h-3 w-3" />
+							Continue
+							<ArrowRight className="ml-2 h-3 w-3" />
 						</SubmitButton>
 					</div>
 				</form>
