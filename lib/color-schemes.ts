@@ -128,7 +128,7 @@ export const colorSchemes: Record<string, ColorScheme> = {
 			secondary: "oklch(0.8326 0.1125 74.5039)",
 			accent: "oklch(0.9336 0.0407 84.5781)",
 		},
-		defaultFont: "Nunito Sans",
+		defaultFont: "Fira Code",
 	},
 	"mocha-mouse": {
 		name: "Mocha Mouse",

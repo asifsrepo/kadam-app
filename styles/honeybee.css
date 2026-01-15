@@ -31,7 +31,7 @@
 	--sidebar-accent-foreground: oklch(0.2775 0.0221 66.7042);
 	--sidebar-border: oklch(0.8833 0.0582 84.4931);
 	--sidebar-ring: oklch(0.8031 0.1638 84.9841);
-	--font-sans: "Nunito Sans", sans-serif;
+	--font-sans: "Fira Code", monospace;
 	--font-serif: "Playfair Display", serif;
 	--font-mono: "Fira Code", monospace;
 	--radius: 0.85rem;
@@ -86,7 +86,7 @@
 	--sidebar-accent-foreground: oklch(0.9697 0.0413 91.7166);
 	--sidebar-border: oklch(0.3789 0.0246 66.9671);
 	--sidebar-ring: oklch(0.7272 0.1481 85.2015);
-	--font-sans: "Nunito Sans", sans-serif;
+	--font-sans: "Fira Code", monospace;
 	--font-serif: "Playfair Display", serif;
 	--font-mono: "Fira Code", monospace;
 	--radius: 0.85rem;
