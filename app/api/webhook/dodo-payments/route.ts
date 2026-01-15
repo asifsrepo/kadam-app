@@ -6,7 +6,7 @@ import { Tables } from "@/types";
 type WebhookPayload = any;
 
 const updateSubscriptionInDB = async (payload: WebhookPayload) => {
-	console.log("Payload received:", payload);
+	console.log("Webhook payload received:", JSON.stringify(payload, null, 2));
 
 	const supabase = await createClient();
 
@@ -17,11 +17,28 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 
 	const customerId = eventData.customer?.customer_id;
 
-	let userId = eventData.metadata?.user_id ?? eventData.metadata?.user_id ?? undefined;
+	// Fix: Remove redundant check and try multiple metadata paths
+	let userId =
+		eventData.metadata?.user_id ??
+		eventData.metadata?.userId ??
+		payload.metadata?.user_id ??
+		undefined;
 
+	// Fix: Add proper error logging when subscriptionId is missing
 	if (!subscriptionId) {
+		console.error("❌ Webhook Error: Missing subscription_id in payload", {
+			eventType,
+			eventData: JSON.stringify(eventData, null, 2),
+		});
 		return;
 	}
+
+	console.log("Processing subscription:", {
+		subscriptionId,
+		customerId,
+		userId,
+		eventType,
+	});
 
 	const statusMap: Record<string, string> = {
 		active: "active",
@@ -45,14 +62,29 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		status = statusMap[eventData.status] || "active";
 	}
 
+	// Fix: Check for existing subscription to get userId if not in metadata
 	if (!userId) {
-		const { data: existingSubscription } = await supabase
+		const { data: existingSubscription, error: fetchError } = await supabase
 			.from(Tables.Subscriptions)
 			.select("userId")
 			.eq("subscriptionId", subscriptionId)
 			.single();
 
+		if (fetchError && fetchError.code !== "PGRST116") {
+			console.error("Error fetching existing subscription:", fetchError);
+		}
+
 		userId = existingSubscription?.userId;
+
+		if (!userId) {
+			console.warn(
+				"⚠️ UserId not found in metadata or existing subscription. This may cause issues for new subscriptions.",
+				{
+					subscriptionId,
+					customerEmail: eventData.customer?.email,
+				},
+			);
+		}
 	}
 
 	const planNameFromMetadata = eventData.metadata?.plan_name;
@@ -70,13 +102,28 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 	const billingPeriod = billingPeriodFromMetadata || "monthly";
 
 	// Check if this subscription already exists to determine if it's new
-	const { data: existingSubscription } = await supabase
+	const { data: existingSubscription, error: existingError } = await supabase
 		.from(Tables.Subscriptions)
-		.select("id, status, price")
+		.select("id, status, price, createdAt")
 		.eq("subscriptionId", subscriptionId)
 		.single();
 
+	if (existingError && existingError.code !== "PGRST116") {
+		console.error("Error checking existing subscription:", existingError);
+	}
+
 	const isNewSubscription = !existingSubscription;
+
+	// Fix: For new subscriptions, userId is required - log error if missing
+	if (!userId && isNewSubscription) {
+		console.error("❌ Critical Error: Cannot create subscription without userId", {
+			subscriptionId,
+			customerId,
+			eventType,
+			metadata: eventData.metadata,
+		});
+		// Still try to upsert, but log the error
+	}
 
 	// Extract price from webhook payload
 	// For subscription events: use recurring_pre_tax_amount (in cents)
@@ -186,6 +233,12 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 				? priceFromWebhook
 				: 0;
 
+	// Fix: Add createdAt field - use existing or current date
+	const now = new Date();
+	const createdAt = existingSubscription?.createdAt
+		? new Date(existingSubscription.createdAt)
+		: now;
+
 	const subscriptionRecord: any = {
 		subscriptionId: subscriptionId,
 		customerId: customerId || undefined,
@@ -198,52 +251,112 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		currentPeriodEnd,
 		cancelAtPeriodEnd: eventData.cancel_at_next_billing_date ?? false,
 		cancelledAt,
-		updatedAt: new Date(),
+		createdAt, // Fix: Add createdAt field
+		updatedAt: now,
 	};
 
+	// Fix: userId is required for new subscriptions
 	if (userId) {
 		subscriptionRecord.userId = userId;
+	} else if (isNewSubscription) {
+		console.error(
+			"❌ Cannot create subscription without userId. Subscription record will be incomplete.",
+		);
 	}
 
-	const { error } = await supabase.from(Tables.Subscriptions).upsert(subscriptionRecord, {
-		onConflict: "subscriptionId",
+	console.log("Upserting subscription:", {
+		subscriptionId,
+		userId,
+		status,
+		planName,
+		billingPeriod,
+		isNewSubscription,
 	});
 
+	const { error, data } = await supabase
+		.from(Tables.Subscriptions)
+		.upsert(subscriptionRecord, {
+			onConflict: "subscriptionId",
+		})
+		.select();
+
 	if (error) {
-		console.error("Error updating subscription in database:", error);
-		console.error("Subscription record:", subscriptionRecord);
+		console.error("❌ Error updating subscription in database:", error);
+		console.error("Subscription record:", JSON.stringify(subscriptionRecord, null, 2));
 		throw error;
 	}
+
+	console.log("✅ Subscription successfully updated:", {
+		subscriptionId,
+		userId,
+		status,
+		id: data?.[0]?.id,
+	});
 };
 
 export const POST = Webhooks({
 	webhookKey: DODO_PAYMENTS_WEBHOOK_SECRET,
 	onPayload: async (payload: WebhookPayload) => {
-		console.log("Webhook payload received");
-		await updateSubscriptionInDB(payload);
+		console.log("📥 Webhook payload received (onPayload)");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onPayload handler:", error);
+			throw error;
+		}
 	},
 	onPaymentSucceeded: async (payload: WebhookPayload) => {
-		console.log("Payment succeeded");
-		await updateSubscriptionInDB(payload);
+		console.log("💳 Payment succeeded webhook");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onPaymentSucceeded handler:", error);
+			throw error;
+		}
 	},
 	onPaymentFailed: async (payload: WebhookPayload) => {
-		console.log("Payment failed");
-		await updateSubscriptionInDB(payload);
+		console.log("❌ Payment failed webhook");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onPaymentFailed handler:", error);
+			throw error;
+		}
 	},
 	onSubscriptionActive: async (payload: WebhookPayload) => {
-		console.log("Subscription active");
-		await updateSubscriptionInDB(payload);
+		console.log("✅ Subscription active webhook");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onSubscriptionActive handler:", error);
+			throw error;
+		}
 	},
 	onSubscriptionCancelled: async (payload: WebhookPayload) => {
-		console.log("Subscription cancelled");
-		await updateSubscriptionInDB(payload);
+		console.log("🚫 Subscription cancelled webhook");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onSubscriptionCancelled handler:", error);
+			throw error;
+		}
 	},
 	onSubscriptionRenewed: async (payload: WebhookPayload) => {
-		console.log("Subscription renewed");
-		await updateSubscriptionInDB(payload);
+		console.log("🔄 Subscription renewed webhook");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onSubscriptionRenewed handler:", error);
+			throw error;
+		}
 	},
 	onSubscriptionExpired: async (payload: WebhookPayload) => {
-		console.log("Subscription expired");
-		await updateSubscriptionInDB(payload);
+		console.log("⏰ Subscription expired webhook");
+		try {
+			await updateSubscriptionInDB(payload);
+		} catch (error) {
+			console.error("❌ Error in onSubscriptionExpired handler:", error);
+			throw error;
+		}
 	},
 });
