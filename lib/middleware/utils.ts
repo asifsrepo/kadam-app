@@ -50,6 +50,7 @@ export const isPublicRoute = (pathname: string): boolean => {
 		"/sw.js",
 		"/favicon/",
 		"/assets/",
+		"/api/webhook"
 	];
 
 	// Check if pathname starts with any public path

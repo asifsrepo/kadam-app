@@ -6,8 +6,8 @@ export const APP_URL = "https://hysabee.com";
 
 export const PLANS: Plan[] = [
 	{
-		monthlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
-		yearlyPlanId: "pdt_4QFHoFHTe9GhL5XIYg0lB",
+		monthlyPlanId: "pdt_0NVmCRJhqwEHJKhcFUJMS",
+		yearlyPlanId: "pdt_0NVmCRJhqwEHJKhcFUJMS",
 		name: "Free",
 		description: "Perfect for small businesses getting started",
 		icon: Zap,
@@ -16,8 +16,8 @@ export const PLANS: Plan[] = [
 		features: ["Up to 10 customers", "1 Branch", "Basic credit tracking", "Simple report"],
 	},
 	{
-		monthlyPlanId: "pdt_aJADFFMPqBp7aLSkIoptV",
-		yearlyPlanId: "pdt_7v1F4G8bevfSGUeGOCfXE",
+		monthlyPlanId: "pdt_0NVmD0xRh36Ahmy3Yvivi",
+		yearlyPlanId: "pdt_0NVmD6NExSgqq7QpWY1gj",
 		name: "Pro",
 		description: "Best for growing businesses",
 		icon: Sparkles,
