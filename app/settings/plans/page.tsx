@@ -92,11 +92,14 @@ const PlansPage = () => {
 
 			if (error) {
 				toast.error("Failed to change plan", { description: error });
+				setIsLoading(false);
 			} else {
 				toast.success("Plan changed successfully");
-				await refetchSubscription();
+				// Hard refresh after 1 second to ensure UI is in sync
+				setTimeout(() => {
+					window.location.reload();
+				}, 1000);
 			}
-			setIsLoading(false);
 			return;
 		}
 
@@ -109,13 +112,13 @@ const PlansPage = () => {
 
 		if (error) {
 			toast.error("Failed to create checkout session", { description: error });
+			setIsLoading(false);
 		} else if (data?.checkout_url) {
 			window.location.href = data.checkout_url;
 		} else {
 			toast.error("Invalid checkout URL received");
+			setIsLoading(false);
 		}
-
-		setIsLoading(false);
 	};
 
 	const handleOpenCustomerPortal = () => {
