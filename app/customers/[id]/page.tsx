@@ -121,19 +121,19 @@ const CustomerDetailsPage = () => {
 						<div className="flex justify-between border-border border-t pt-2">
 							<span className="text-muted-foreground text-xs">Phone</span>
 							<span className="font-medium text-foreground text-xs">
-								{customer.phone}
+								{customer.phone || "N/A"}
 							</span>
 						</div>
 						<div className="flex justify-between border-border border-t pt-2">
 							<span className="text-muted-foreground text-xs">Email</span>
 							<span className="truncate pl-2 font-medium text-foreground text-xs">
-								{customer.email}
+								{customer.email || "N/A"}
 							</span>
 						</div>
 						<div className="flex justify-between border-border border-t pt-2">
 							<span className="text-muted-foreground text-xs">ID Number</span>
 							<span className="font-medium text-foreground text-xs">
-								{customer.idNumber}
+								{customer.idNumber || "N/A"}
 							</span>
 						</div>
 						<div className="flex justify-between border-border border-t pt-2">
@@ -146,7 +146,7 @@ const CustomerDetailsPage = () => {
 							<span className="mb-1 block text-muted-foreground text-xs">
 								Address
 							</span>
-							<p className="text-foreground text-xs">{customer.address}</p>
+							<p className="text-foreground text-xs">{customer.address || "N/A"}</p>
 						</div>
 						<div className="border-border border-t pt-3">
 							<RemindCustomerButton customer={customer} balance={balance} />

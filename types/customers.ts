@@ -14,6 +14,7 @@ export interface ICustomer {
 	limit: number;
 	branchId: IBranch["id"];
 	customerId: string; // Dodo Payments customer ID
+	lastRemindedAt?: string;
 }
 
 export type CustomerWithBalance = ICustomer & { balance: number };
