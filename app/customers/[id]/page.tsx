@@ -5,6 +5,7 @@ import { ArrowLeft, Pencil, Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import EditCustomerDialog from "@/components/customers/EditCustomerDialog";
+import RemindCustomerButton from "@/components/customers/RemindCustomerButton";
 import TransactionDialog from "@/components/transactions/TransactionDialog";
 import TransactionListing from "@/components/transactions/TransactionListing";
 import TransactionsSkeleton from "@/components/transactions/TransactionsSkeleton";
@@ -12,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCustomerTransactions } from "@/hooks/useTransactions";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
 import type { ICustomer } from "@/types/customers";
@@ -40,6 +42,16 @@ const CustomerDetailsPage = () => {
 		},
 		enabled: !!customerId,
 	});
+
+	const { data: transactions } = useCustomerTransactions(customerId);
+
+	const totalDebt =
+		transactions?.filter((t) => t.type === "credit").reduce((sum, t) => sum + t.amount, 0) ||
+		0;
+	const totalPaid =
+		transactions?.filter((t) => t.type === "payment").reduce((sum, t) => sum + t.amount, 0) ||
+		0;
+	const balance = totalDebt - totalPaid;
 
 	if (error) {
 		toast.error("Failed to load customer details");
@@ -137,6 +149,9 @@ const CustomerDetailsPage = () => {
 							<p className="text-foreground text-xs">{customer.address}</p>
 						</div>
 						<div className="border-border border-t pt-3">
+							<RemindCustomerButton customer={customer} balance={balance} />
+						</div>
+						<div className="pt-2">
 							<EditCustomerDialog
 								customer={customer}
 								trigger={

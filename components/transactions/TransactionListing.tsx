@@ -1,13 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import BalanceSummary from "@/components/transactions/BalanceSummary";
 import TransactionItem from "@/components/transactions/TransactionItem";
 import { Card, CardContent } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase/client";
-import { QueryKeys, Tables } from "@/types";
-import type { ITransaction } from "@/types/transaction";
+import { useCustomerTransactions } from "@/hooks/useTransactions";
 import TransactionsSkeleton from "./TransactionsSkeleton";
 
 interface TransactionListingProps {
@@ -15,26 +12,11 @@ interface TransactionListingProps {
 }
 
 const TransactionListing = ({ customerId }: TransactionListingProps) => {
-	const supabase = createClient();
-
 	const {
 		data: transactions,
 		isLoading,
 		error,
-	} = useQuery({
-		queryKey: [QueryKeys.TransactionsList, customerId],
-		queryFn: async () => {
-			const { data, error } = await supabase
-				.from(Tables.Transactions)
-				.select("*")
-				.eq("customerId", customerId)
-				.order("createdAt", { ascending: false });
-
-			if (error) throw error;
-			return data as ITransaction[];
-		},
-		enabled: !!customerId,
-	});
+	} = useCustomerTransactions(customerId);
 
 	if (error) {
 		toast.error("Failed to load transactions");
