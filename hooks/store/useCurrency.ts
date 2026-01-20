@@ -28,11 +28,20 @@ const useCurrency = () => {
 		return `${currencyInfo.symbol} ${formatted}`;
 	};
 
+	const formatAmountWithCode = (amount: number, decimals: number = 2): string => {
+		const formatted = new Intl.NumberFormat("en-US", {
+			minimumFractionDigits: decimals,
+			maximumFractionDigits: decimals,
+		}).format(amount);
+		return `${currencyInfo.code} ${formatted}`;
+	};
+
 	return {
 		currency,
 		currencyInfo,
 		formatAmount,
 		formatAmountWithSymbol,
+		formatAmountWithCode,
 		currencyOptions: Object.values(CURRENCIES) as Currency[],
 	};
 };

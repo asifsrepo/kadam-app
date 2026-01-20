@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/store/useAuth";
+import useStores from "@/hooks/store/useStores";
 import { CURRENCIES } from "@/lib/currencies";
 import { editStoreSchema } from "@/lib/schema/onboarding";
 import { createClient } from "@/lib/supabase/client";
@@ -45,6 +46,7 @@ const EditStoreDialog = ({
 	const [open, setOpen] = useState(false);
 
 	const { user } = useAuth();
+	const { loadStores } = useStores();
 	const supabase = createClient();
 	const queryClient = useQueryClient();
 
@@ -90,6 +92,10 @@ const EditStoreDialog = ({
 			await queryClient.invalidateQueries({
 				queryKey: [QueryKeys.StoreWithBranches, user?.id],
 			});
+			// Force reload stores to update currency in zustand store
+			if (user?.id) {
+				await loadStores(user.id, true);
+			}
 			toast.success("Store updated successfully");
 			setOpen(false);
 		},

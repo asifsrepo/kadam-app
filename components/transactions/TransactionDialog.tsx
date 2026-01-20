@@ -46,7 +46,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 	const supabase = createClient();
 	const { user } = useAuth();
 	const { activeBranch } = useStores();
-	const { formatAmountWithSymbol } = useCurrency();
+	const { formatAmountWithCode } = useCurrency();
 	const queryClient = useQueryClient();
 
 	const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
@@ -336,7 +336,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 													Credit Limit
 												</span>
 												<span className="font-medium text-foreground text-xs">
-													{formatAmountWithSymbol(selectedCustomer.limit)}
+													{formatAmountWithCode(selectedCustomer.limit)}
 												</span>
 											</div>
 										</div>

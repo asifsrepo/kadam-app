@@ -10,7 +10,7 @@ interface StatsProps {
 }
 
 const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: StatsProps) => {
-	const { formatAmountWithSymbol } = useCurrency();
+	const { formatAmountWithCode } = useCurrency();
 	// Calculate percentage change
 	let percentageChange = 0;
 	let hasValidComparison = false;
@@ -44,7 +44,7 @@ const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: S
 							{isLoading ? (
 								<Skeleton className="h-9 w-32" />
 							) : (
-								formatAmountWithSymbol(currentMonthCredit, 0)
+								formatAmountWithCode(currentMonthCredit, 0)
 							)}
 						</div>
 					</div>

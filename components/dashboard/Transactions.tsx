@@ -3,6 +3,7 @@ import { CreditCard, Phone } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import useCurrency from "@/hooks/store/useCurrency";
 import useStores from "@/hooks/store/useStores";
 import { createClient } from "@/lib/supabase/client";
 import { getDateLabel } from "@/lib/utils";
@@ -13,6 +14,7 @@ const PAGE_SIZE = 10;
 
 const Transactions = () => {
 	const { activeBranch } = useStores();
+	const { formatAmountWithCode } = useCurrency();
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
@@ -156,7 +158,7 @@ const Transactions = () => {
 													<p
 														className={`font-bold text-sm ${transaction.type === "credit" ? "text-destructive" : "text-primary"}`}
 													>
-														{transaction.amount.toFixed(2)}
+														{formatAmountWithCode(transaction.amount)}
 													</p>
 												</div>
 											</div>

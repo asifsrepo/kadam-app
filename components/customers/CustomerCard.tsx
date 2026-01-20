@@ -2,6 +2,7 @@ import { CreditCard, Phone, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import useCurrency from "@/hooks/store/useCurrency";
 import type { CustomerWithBalance } from "@/types/customers";
 import TransactionDialog from "../transactions/TransactionDialog";
 
@@ -11,6 +12,7 @@ interface CustomerCardProps {
 
 const CustomerCard = ({ customer }: CustomerCardProps) => {
 	const router = useRouter();
+	const { formatAmountWithCode } = useCurrency();
 	const onCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		const target = e.target as HTMLElement;
 		const isButtonClick = target.closest("button") || target.closest("a");
@@ -75,10 +77,10 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 							}`}
 						>
 							{customer.balance > 0
-								? `${customer.balance.toFixed(2)}`
+								? formatAmountWithCode(customer.balance)
 								: customer.balance < 0
-									? `${Math.abs(customer.balance).toFixed(2)}`
-									: "0.00"}
+									? formatAmountWithCode(Math.abs(customer.balance))
+									: formatAmountWithCode(0)}
 						</p>
 					</div>
 				</div>

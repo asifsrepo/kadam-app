@@ -8,7 +8,7 @@ import BranchDialog from "./BranchDialog";
 
 const BranchCard = ({ branch }: { branch: IBranch }) => {
 	const { activeBranch, setActiveBranch } = useStores();
-	const { formatAmountWithSymbol } = useCurrency();
+	const { formatAmountWithCode } = useCurrency();
 	const isActive = activeBranch?.id === branch.id;
 
 	const handleCardClick = (e: React.MouseEvent) => {
@@ -36,7 +36,7 @@ const BranchCard = ({ branch }: { branch: IBranch }) => {
 								{branch.name}
 							</h3>
 						</div>
-						<div className="flex flex-shrink-0 items-center gap-1">
+						<div className="flex shrink-0 items-center gap-1">
 							{!isActive && (
 								<Button
 									size="sm"
@@ -64,7 +64,7 @@ const BranchCard = ({ branch }: { branch: IBranch }) => {
 						<div className="flex items-center gap-1.5 text-xs sm:gap-2 sm:text-sm">
 							<CreditCard className="h-3 w-3 shrink-0 text-muted-foreground sm:h-3.5 sm:w-3.5" />
 							<span className="text-muted-foreground">
-								Limit: {formatAmountWithSymbol(branch.debtLimit || 0)}
+								Limit: {formatAmountWithCode(branch.debtLimit || 0)}
 							</span>
 						</div>
 					</div>

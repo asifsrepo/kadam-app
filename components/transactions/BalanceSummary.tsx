@@ -1,4 +1,5 @@
 import { Wallet } from "lucide-react";
+import useCurrency from "@/hooks/store/useCurrency";
 import type { ITransaction } from "@/types/transaction";
 
 interface BalanceSummaryProps {
@@ -6,6 +7,7 @@ interface BalanceSummaryProps {
 }
 
 const BalanceSummary = ({ transactions }: BalanceSummaryProps) => {
+	const { formatAmountWithCode } = useCurrency();
 	const totalDebt =
 		transactions?.filter((t) => t.type === "credit").reduce((sum, t) => sum + t.amount, 0) || 0;
 
@@ -30,7 +32,7 @@ const BalanceSummary = ({ transactions }: BalanceSummaryProps) => {
 				</span>
 			</div>
 			<p className={`font-bold text-lg ${balance > 0 ? "text-destructive" : "text-primary"}`}>
-				{Math.abs(balance).toFixed(2)}
+				{formatAmountWithCode(Math.abs(balance))}
 			</p>
 		</div>
 	);

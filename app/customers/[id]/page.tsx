@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import useCurrency from "@/hooks/store/useCurrency";
 import { useCustomerTransactions } from "@/hooks/useTransactions";
 import { createClient } from "@/lib/supabase/client";
 import { QueryKeys, Tables } from "@/types";
@@ -23,6 +24,7 @@ const CustomerDetailsPage = () => {
 	const params = useParams();
 	const customerId = params.id as string;
 	const supabase = createClient();
+	const { formatAmountWithCode } = useCurrency();
 
 	const {
 		data: customer,
@@ -139,7 +141,7 @@ const CustomerDetailsPage = () => {
 						<div className="flex justify-between border-border border-t pt-2">
 							<span className="text-muted-foreground text-xs">Credit Limit</span>
 							<span className="font-medium text-foreground text-xs">
-								${customer.limit?.toFixed(2) || "0.00"}
+								{formatAmountWithCode(customer.limit || 0)}
 							</span>
 						</div>
 						<div className="border-border border-t pt-2">

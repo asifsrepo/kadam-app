@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ArrowDownLeft, ArrowUpRight, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import useCurrency from "@/hooks/store/useCurrency";
 import { createClient } from "@/lib/supabase/client";
 import { Tables } from "@/types";
 import type { ITransaction } from "@/types/transaction";
@@ -14,6 +15,7 @@ interface TransactionItemProps {
 
 const TransactionItem = ({ transaction }: TransactionItemProps) => {
 	const supabase = createClient();
+	const { formatAmountWithCode } = useCurrency();
 
 	const { data: creatorProfile, isLoading: isLoadingCreator } = useQuery({
 		queryKey: [Tables.UserProfiles, transaction?.createdBy],
@@ -73,7 +75,7 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
 							}`}
 						>
 							{isCredit ? "+" : "-"}
-							{transaction.amount.toFixed(2)}
+							{formatAmountWithCode(transaction.amount)}
 						</p>
 					</div>
 				</div>
