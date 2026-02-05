@@ -150,26 +150,29 @@ const CustomersPage = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-				<div className="px-3 py-3 md:px-6 md:py-4">
-					<div className="mb-2 flex items-center gap-3 md:mb-3">
+			<div className="sticky top-0 z-10 border-border/60 border-b bg-background/90 backdrop-blur">
+				<div className="px-4 py-4 md:px-6">
+					<div className="mb-3 flex items-center gap-3">
 						<Button
 							variant="ghost"
 							size="icon"
 							onClick={() => router.back()}
-							className="h-8 w-8 md:h-9 md:w-9"
+							className="h-10 w-10"
 						>
-							<ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
+							<ArrowLeft className="h-4 w-4" />
 							<span className="sr-only">Go back</span>
 						</Button>
-						<h1 className="font-semibold text-lg md:text-2xl">Customers</h1>
-					</div> 
-					<div className="flex gap-3">
+						<div>
+							<p className="text-muted-foreground text-xs">All Customers</p>
+							<h1 className="font-semibold text-xl">Customers</h1>
+						</div>
+					</div>
+					<div className="flex items-center gap-2">
 						<CustomSearchInput
 							placeholder="Search customers..."
 							value={searchQuery}
 							onSearch={handleSearchChange}
-							className="relative flex-1"
+							className="flex-1"
 						/>
 						<div className="shrink-0">
 							<CustomerFilters
@@ -183,7 +186,7 @@ const CustomersPage = () => {
 				</div>
 			</div>
 
-			<div className="p-3 md:p-6">
+			<div className="px-4 py-5 md:px-6">
 				<CustomerList
 					customers={customers}
 					isLoading={isLoading || !activeBranch}

@@ -11,7 +11,7 @@ interface SubscriptionHistoryProps {
 const SubscriptionHistory = ({ subscriptions, formatPrice }: SubscriptionHistoryProps) => {
 	if (subscriptions.length === 0) {
 		return (
-			<Card className="border-border">
+			<Card className="border-border/60">
 				<CardContent className="px-3 py-6 md:px-6 md:py-8">
 					<p className="text-center text-muted-foreground text-xs md:text-sm">
 						No subscription history found.
@@ -24,7 +24,7 @@ const SubscriptionHistory = ({ subscriptions, formatPrice }: SubscriptionHistory
 	return (
 		<div className="space-y-3 md:space-y-4">
 			{subscriptions.map((sub) => (
-				<Card key={sub.id} className="border-border">
+				<Card key={sub.id} className="border-border/60">
 					<CardHeader className="px-3 pt-3 pb-2 md:px-6 md:pt-6 md:pb-4">
 						<div className="flex items-start justify-between">
 							<div className="min-w-0 flex-1">

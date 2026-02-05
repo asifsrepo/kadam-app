@@ -132,12 +132,12 @@ const EditStoreDialog = ({
 					<span className="sr-only">Edit store</span>
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="bottom" className="h-[90vh] rounded-t-xl p-0">
+			<SheetContent side="bottom" className="h-[90vh] rounded-t-3xl p-0">
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-border border-b px-4 py-4">
+					<SheetHeader className="border-border/60 border-b px-5 py-4">
 						<SheetTitle className="text-lg">Edit Store</SheetTitle>
 					</SheetHeader>
-					<div className="flex-1 overflow-y-auto px-4 py-4">
+					<div className="flex-1 overflow-y-auto px-5 py-4">
 						<form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col">
 							<div className="flex-1 space-y-3">
 								<CustomInput
@@ -165,18 +165,18 @@ const EditStoreDialog = ({
 									error={errors.currency?.message}
 								/>
 							</div>
-							<SheetFooter className="gap-2 border-border border-t px-4 py-4 sm:flex-row sm:justify-end">
+							<SheetFooter className="gap-2 border-border/60 border-t px-5 py-4 sm:flex-row sm:justify-end">
 								<Button
 									type="button"
 									variant="outline"
 									onClick={() => setOpen(false)}
-									className="h-9 w-full flex-1 text-sm sm:w-auto"
+									className="h-11 w-full flex-1 text-sm sm:w-auto"
 								>
 									Cancel
 								</Button>
 								<SubmitButton
 									isLoading={isPending}
-									className="h-9 w-full flex-1 text-sm sm:w-auto"
+									className="h-11 w-full flex-1 text-sm sm:w-auto"
 								>
 									Save
 								</SubmitButton>

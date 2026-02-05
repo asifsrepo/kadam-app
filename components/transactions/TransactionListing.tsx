@@ -28,8 +28,8 @@ const TransactionListing = ({ customerId }: TransactionListingProps) => {
 
 	if (!transactions || transactions.length === 0) {
 		return (
-			<Card>
-				<CardContent className="space-y-3 p-3">
+			<Card className="border-border/60">
+				<CardContent className="space-y-3 p-4">
 					<h3 className="font-medium text-foreground text-sm">Transactions</h3>
 
 					<BalanceSummary transactions={[]} />
@@ -45,8 +45,8 @@ const TransactionListing = ({ customerId }: TransactionListingProps) => {
 	}
 
 	return (
-		<Card>
-			<CardContent className="space-y-3 p-3">
+		<Card className="border-border/60">
+			<CardContent className="space-y-3 p-4">
 				<h3 className="font-medium text-foreground text-sm">Transactions</h3>
 
 				<BalanceSummary transactions={transactions} />

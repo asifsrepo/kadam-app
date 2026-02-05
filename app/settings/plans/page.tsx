@@ -176,7 +176,7 @@ const PlansPage = () => {
 		<div className="min-h-screen bg-background pb-24">
 			<PlansPageHeader />
 
-			<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
+			<div className="flex flex-col gap-3 px-4 py-5 md:gap-4 md:px-6">
 				{requiresAction && (
 					<ActionRequiredCard
 						isPastDue={isPastDue}

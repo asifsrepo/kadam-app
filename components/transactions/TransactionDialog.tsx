@@ -286,11 +286,11 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 			{trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
 			<SheetContent
 				side="bottom"
-				className="h-[90vh] rounded-t-xl p-0"
+				className="h-[90vh] rounded-t-3xl p-0"
 				onClick={onSheetContentClick}
 			>
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-border border-b px-4 py-4 text-left">
+					<SheetHeader className="border-border/60 border-b px-5 py-4 text-left">
 						<SheetTitle>New Transaction</SheetTitle>
 						<SheetDescription>Create a new transaction for a customer</SheetDescription>
 					</SheetHeader>
@@ -301,7 +301,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 							className="flex h-full flex-col"
 							id={formId}
 						>
-							<div className="flex-1 space-y-4 p-4">
+							<div className="flex-1 space-y-4 p-5">
 								{!defaultCustomer && (
 									<CustomSelect
 										className="w-full"
@@ -324,14 +324,14 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 								)}
 
 								{selectedCustomer && (
-									<div className="rounded-lg border border-border bg-muted/30 p-4">
+									<div className="rounded-2xl border border-border/60 bg-muted/30 p-4">
 										<div className="space-y-3">
 											<div className="flex items-center justify-between">
 												<h3 className="font-medium text-foreground text-sm">
 													{selectedCustomer.name}
 												</h3>
 											</div>
-											<div className="flex items-center justify-between border-border border-t pt-2">
+											<div className="flex items-center justify-between border-border/60 border-t pt-2">
 												<span className="text-muted-foreground text-xs">
 													Credit Limit
 												</span>
@@ -378,7 +378,7 @@ const TransactionDialog = ({ defaultCustomer, trigger }: TransactionDialogProps)
 							</div>
 
 							{/* Bottom Action Buttons */}
-							<div className="border-border border-t bg-background p-4">
+							<div className="border-border/60 border-t bg-background p-4">
 								<div className="flex gap-2">
 									<Button
 										type="button"

@@ -7,7 +7,7 @@ interface ExpiredSubscriptionCardProps {
 
 const ExpiredSubscriptionCard = ({ onRenew, isLoading }: ExpiredSubscriptionCardProps) => {
 	return (
-		<div className="flex items-center justify-between gap-3 rounded-lg border border-muted bg-muted/30 p-3 md:p-4">
+		<div className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-muted/30 p-3 md:p-4">
 			<div className="min-w-0 flex-1">
 				<h3 className="font-semibold text-foreground text-sm md:text-base">
 					Subscription Expired
@@ -20,7 +20,7 @@ const ExpiredSubscriptionCard = ({ onRenew, isLoading }: ExpiredSubscriptionCard
 				onClick={onRenew}
 				variant="default"
 				disabled={isLoading}
-				className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+				className="h-11 shrink-0 text-xs md:h-11 md:text-sm"
 			>
 				{isLoading ? "Loading..." : "Renew Now"}
 			</Button>

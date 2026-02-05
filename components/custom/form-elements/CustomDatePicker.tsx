@@ -81,7 +81,7 @@ const Dropdown = (props: DropdownProps) => {
 					handleCalendarChange(value, props.onChange);
 				}
 			}}
-			className="h-7 max-h-7 w-28 text-bxs"
+			className="h-9 max-h-9 w-28 text-xs"
 		/>
 	);
 };
@@ -241,7 +241,7 @@ const CustomDatePicker = ({
 								mode="single"
 								selected={selectedDate}
 								onSelect={handleDateSelect}
-								className="rounded-md border-0 p-2"
+								className="rounded-2xl border-0 p-3"
 								captionLayout="dropdown"
 								defaultMonth={selectedDate || new Date()}
 								startMonth={startMonth}
@@ -275,7 +275,7 @@ const CustomDatePicker = ({
 													getCurrentMinute() ? +getCurrentMinute() : 0,
 												);
 											}}
-											className="h-7 max-h-7 w-16 text-xs"
+											className="h-9 max-h-9 w-16 text-xs"
 										/>
 
 										<span className="text-muted-foreground">:</span>
@@ -288,7 +288,7 @@ const CustomDatePicker = ({
 												const hour = selectedDate.getHours();
 												handleTimeChange(hour, minute);
 											}}
-											className="h-7 max-h-7 w-16 text-xs"
+											className="h-9 max-h-9 w-16 text-xs"
 										/>
 
 										{/* AM/PM selector */}
@@ -310,7 +310,7 @@ const CustomDatePicker = ({
 													hour -= 12;
 												handleTimeChange(hour, +getCurrentMinute());
 											}}
-											className="h-7 max-h-7 w-16 text-xs"
+											className="h-9 max-h-9 w-16 text-xs"
 										/>
 									</div>
 								</div>

@@ -52,7 +52,7 @@ const CustomerList = ({
 
 	return (
 		<>
-			<div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+			<div className="mb-6 flex flex-col gap-3">
 				{customers.map((customer) => (
 					<CustomerCard key={customer.id} customer={customer} />
 				))}

@@ -36,11 +36,12 @@ const CheckoutSuccessPage = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-				<div className="px-3 py-2.5 md:px-6 md:py-4">
-					<div className="flex items-center gap-2 md:gap-3">
+			<div className="sticky top-0 z-10 border-border/60 border-b bg-background/90 backdrop-blur">
+				<div className="px-4 py-4 md:px-6">
+					<div className="flex items-center gap-3">
 						<BackButton />
 						<div className="min-w-0 flex-1">
+							<p className="text-muted-foreground text-xs">Checkout</p>
 							<h1 className="font-semibold text-base md:text-2xl">
 								{isFailed
 									? "Checkout Failed"
@@ -60,8 +61,8 @@ const CheckoutSuccessPage = () => {
 				</div>
 			</div>
 
-			<div className="flex flex-col gap-3 p-3 md:gap-4 md:p-6">
-				<Card className="border-border">
+			<div className="flex flex-col gap-3 px-4 py-5 md:gap-4 md:px-6">
+				<Card className="border-border/60">
 					<CardHeader className="px-3 pt-3 pb-2 md:px-6 md:pt-6 md:pb-4">
 						<div className="mb-2 flex items-center justify-center md:mb-3">
 							{isFailed ? (
@@ -97,10 +98,10 @@ const CheckoutSuccessPage = () => {
 					<CardContent className="space-y-3 px-3 md:space-y-4 md:px-6">
 						{(subscriptionId || status) && (
 							<div
-								className={`space-y-2.5 rounded-lg border p-3 md:space-y-3 md:p-4 ${
+								className={`space-y-2.5 rounded-2xl border border-border/60 p-3 md:space-y-3 md:p-4 ${
 									isFailed
 										? "border-destructive/20 bg-destructive/5"
-										: "border-border bg-card"
+										: "border-border/60 bg-card"
 								}`}
 							>
 								<h3 className="font-semibold text-sm md:text-base">
@@ -180,7 +181,7 @@ const CheckoutSuccessPage = () => {
 						)}
 
 						{isFailed && (
-							<div className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-3 md:gap-2.5 md:p-4">
+							<div className="flex items-start gap-2 rounded-2xl border border-destructive/20 bg-destructive/5 p-3 md:gap-2.5 md:p-4">
 								<AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive md:h-5 md:w-5" />
 								<div className="space-y-1">
 									<p className="font-medium text-destructive text-xs md:text-sm">
@@ -196,7 +197,7 @@ const CheckoutSuccessPage = () => {
 						)}
 
 						{isSuccess && (
-							<div className="rounded-lg border border-primary/20 bg-primary/5 p-3 md:p-4">
+							<div className="rounded-2xl border border-primary/20 bg-primary/5 p-3 md:p-4">
 								<p className="text-center text-primary text-xs leading-relaxed md:text-sm">
 									Thank you for subscribing! Your subscription is now active and
 									you have access to all premium features.
@@ -210,7 +211,7 @@ const CheckoutSuccessPage = () => {
 							<Button
 								onClick={handleGoToPlans}
 								variant="default"
-								className="h-9 w-full text-xs md:h-10 md:text-sm"
+								className="h-11 w-full text-xs md:h-11 md:text-sm"
 							>
 								Try Again
 							</Button>
@@ -218,7 +219,7 @@ const CheckoutSuccessPage = () => {
 						<Button
 							onClick={handleGoToHome}
 							variant={isFailed ? "outline" : "default"}
-							className="h-9 w-full text-xs md:h-10 md:text-sm"
+							className="h-11 w-full text-xs md:h-11 md:text-sm"
 						>
 							Go to Home
 						</Button>

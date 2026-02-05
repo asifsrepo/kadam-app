@@ -98,19 +98,14 @@ const CustomSearchInput = ({
 	const showRightButton = (isDebounced && internalValue) || isSubmit;
 
 	return (
-		<div
-			className={cn(
-				"relative [--ring:var(--color-indigo-300)] in-[.dark]:[--ring:var(--color-indigo-900)]",
-				className,
-			)}
-		>
+		<div className={cn("relative", className)}>
 			<Input
 				ref={inputRef}
 				type="search"
 				value={internalValue}
 				onChange={handleInputChange}
 				className={cn(
-					"pl-10", // Always space for search icon
+					"rounded-full pl-10", // Always space for search icon
 					showRightButton && "pr-10", // Space for right button when needed
 					// Hide browser's default search styling
 					"[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden",
@@ -121,7 +116,7 @@ const CustomSearchInput = ({
 
 			{/* Search Icon - Left side */}
 			<SearchIcon
-				size={16}
+				size={18}
 				className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-3 transform text-muted-foreground"
 				aria-hidden="true"
 			/>
@@ -131,11 +126,11 @@ const CustomSearchInput = ({
 				<button
 					type="button"
 					onClick={handleClear}
-					className="-translate-y-1/2 absolute top-1/2 right-3 transform cursor-pointer rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+					className="-translate-y-1/2 absolute top-1/2 right-3 transform cursor-pointer rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
 					aria-label="Clear search"
 					tabIndex={-1}
 				>
-					<CircleXIcon size={16} aria-hidden="true" />
+					<CircleXIcon size={18} aria-hidden="true" />
 				</button>
 			)}
 
@@ -144,11 +139,11 @@ const CustomSearchInput = ({
 				<button
 					type="submit"
 					onClick={handleSubmit}
-					className="-translate-y-1/2 absolute top-1/2 right-3 transform cursor-pointer rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+					className="-translate-y-1/2 absolute top-1/2 right-3 transform cursor-pointer rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
 					aria-label="Submit search"
 					tabIndex={-1}
 				>
-					<ArrowRightIcon size={16} aria-hidden="true" />
+					<ArrowRightIcon size={18} aria-hidden="true" />
 				</button>
 			)}
 		</div>

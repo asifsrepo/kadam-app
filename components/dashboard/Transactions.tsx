@@ -86,8 +86,8 @@ const Transactions = () => {
 	}, [handleObserver]);
 
 	return (
-		<div className="mb-6">
-			<div className="mb-4 flex items-center justify-between">
+		<div className="space-y-3">
+			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-foreground text-lg">Transactions</h2>
 			</div>
 
@@ -112,7 +112,7 @@ const Transactions = () => {
 					))}
 				</div>
 			) : transactions.length === 0 ? (
-				<Card>
+				<Card className="border-border/60">
 					<CardContent className="flex flex-col items-center justify-center py-8">
 						<CreditCard className="mb-2 h-8 w-8 text-muted-foreground" />
 						<h3 className="mb-1 font-medium text-foreground">No Transactions</h3>
@@ -124,46 +124,46 @@ const Transactions = () => {
 			) : (
 				<div className="space-y-4">
 					{Object.entries(groupedTransactions).map(([date, dayTransactions]) => (
-						<div key={date}>
-							<h3 className="mb-2 font-medium text-muted-foreground text-sm">
-								{date}
-							</h3>
+						<div key={date} className="space-y-2">
+							<h3 className="text-muted-foreground text-xs">{date}</h3>
 							<div className="space-y-2">
 								{dayTransactions.map((transaction) => (
-									<Card
-										className="transition-shadow hover:shadow-md"
+									<div
 										key={transaction.id}
+										className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3"
 									>
-										<CardContent className="p-3">
-											<div className="flex items-center gap-3">
-												<div
-													className={`h-2 w-2 shrink-0 rounded-full ${transaction.type === "credit" ? "bg-destructive" : "bg-primary"}`}
-												/>
-												<div className="min-w-0 flex-1">
-													<Link
-														href={`/customers/${transaction.customer.id}`}
-													>
-														<h4 className="truncate font-medium text-foreground text-sm">
-															{transaction.customer.name}
-														</h4>
-														<div className="flex items-center gap-1 text-muted-foreground text-xs">
-															<Phone className="h-3 w-3" />
-															<span className="truncate">
-																{transaction.customer.phone}
-															</span>
-														</div>
-													</Link>
+										<div
+											className={`h-2 w-2 shrink-0 rounded-full ${
+												transaction.type === "credit"
+													? "bg-destructive"
+													: "bg-primary"
+											}`}
+										/>
+										<div className="min-w-0 flex-1">
+											<Link href={`/customers/${transaction.customer.id}`}>
+												<h4 className="truncate font-medium text-foreground text-sm">
+													{transaction.customer.name}
+												</h4>
+												<div className="flex items-center gap-1 text-muted-foreground text-xs">
+													<Phone className="h-3 w-3" />
+													<span className="truncate">
+														{transaction.customer.phone}
+													</span>
 												</div>
-												<div className="shrink-0 text-right">
-													<p
-														className={`font-bold text-sm ${transaction.type === "credit" ? "text-destructive" : "text-primary"}`}
-													>
-														{formatAmountWithCode(transaction.amount)}
-													</p>
-												</div>
-											</div>
-										</CardContent>
-									</Card>
+											</Link>
+										</div>
+										<div className="shrink-0 text-right">
+											<p
+												className={`font-semibold text-sm ${
+													transaction.type === "credit"
+														? "text-destructive"
+														: "text-primary"
+												}`}
+											>
+												{formatAmountWithCode(transaction.amount)}
+											</p>
+										</div>
+									</div>
 								))}
 							</div>
 						</div>
