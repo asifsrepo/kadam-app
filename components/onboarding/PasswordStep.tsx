@@ -67,14 +67,14 @@ const PasswordStep = ({
 	};
 
 	return (
-		<Card>
-			<CardHeader>
+		<Card className="border-border/60">
+			<CardHeader className="px-4 pt-5 pb-3">
 				<CardTitle className="flex items-center gap-2 text-base">
-					<Lock className="h-4 w-4" />
+					<Lock className="h-4 w-4 text-primary" />
 					Create Password
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-3">
+			<CardContent className="space-y-3 px-4 pb-5">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 					<CustomInput
 						label="Password"
@@ -98,7 +98,7 @@ const PasswordStep = ({
 							variant="outline"
 							onClick={onPrevious}
 							disabled={isSubmitting}
-							className="order-2 h-9 text-sm sm:order-1"
+							className="order-2 h-11 text-sm sm:order-1"
 						>
 							<ArrowLeft className="mr-2 h-3 w-3" />
 							Previous
@@ -106,7 +106,7 @@ const PasswordStep = ({
 						<SubmitButton
 							isLoading={isSubmitting}
 							disabled={isSubmitting}
-							className="order-1 h-9 text-sm sm:order-2"
+							className="order-1 h-11 text-sm sm:order-2"
 						>
 							Continue
 							<ArrowRight className="ml-2 h-3 w-3" />

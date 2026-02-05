@@ -52,12 +52,10 @@ const PlanCard = ({
 
 	return (
 		<Card
-			className={`relative flex flex-col transition-all ${
-				isCurrentPlan
-					? "border-primary shadow-lg ring-2 ring-primary/20"
-					: isPopular
-						? "border-primary shadow-lg md:scale-105"
-						: "border-border hover:border-primary/50"
+			className={`relative flex flex-col border-border/60 transition-colors ${
+				isCurrentPlan || isPopular
+					? "border-primary shadow-sm"
+					: "hover:border-primary/30"
 			}`}
 		>
 			{(isPopular || isCurrentPlan) && (
@@ -71,10 +69,10 @@ const PlanCard = ({
 				</div>
 			)}
 
-			<CardHeader className="px-3 pt-3 pb-2 md:px-6 md:pt-6 md:pb-4">
+			<CardHeader className="px-4 pt-4 pb-2 md:px-6 md:pt-6 md:pb-4">
 				<div className="mb-2 flex items-center gap-2 md:mb-3 md:gap-3">
 					<div
-						className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg md:h-10 md:w-10 ${
+						className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl md:h-10 md:w-10 ${
 							isPopular || isCurrentPlan
 								? "bg-primary text-primary-foreground"
 								: "bg-primary/10 text-primary"
@@ -91,10 +89,10 @@ const PlanCard = ({
 				</CardDescription>
 			</CardHeader>
 
-			<CardContent className="flex-1 space-y-3 px-3 md:space-y-4 md:px-6">
+			<CardContent className="flex-1 space-y-3 px-4 md:space-y-4 md:px-6">
 				<div className="space-y-0.5 md:space-y-1">
 					<div className="flex items-baseline gap-1.5 md:gap-2">
-						<span className="font-bold text-2xl md:text-3xl">
+						<span className="font-semibold text-2xl md:text-3xl">
 							{formatPrice(currentPrice)}
 						</span>
 						<span className="text-muted-foreground text-xs md:text-sm">/month</span>
@@ -122,11 +120,11 @@ const PlanCard = ({
 				</div>
 			</CardContent>
 
-			<CardFooter className="px-3 pt-3 pb-3 md:px-6 md:pt-4 md:pb-6">
+			<CardFooter className="px-4 pt-3 pb-4 md:px-6 md:pt-4 md:pb-6">
 				<Button
 					onClick={() => onSubscribe(planId)}
 					variant={isCurrentPlan ? "secondary" : isPopular ? "default" : "outline"}
-					className="h-9 w-full text-xs md:h-10 md:text-sm"
+					className="h-11 w-full text-xs md:h-11 md:text-sm"
 					disabled={isDisabled}
 				>
 					{buttonText}

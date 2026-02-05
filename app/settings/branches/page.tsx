@@ -49,7 +49,7 @@ const BranchManagement = () => {
 	if (isLoading) {
 		return (
 			<div className="min-h-screen bg-background pb-24">
-				<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+				<div className="sticky top-0 z-10 border-border/60 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 					<div className="px-3 py-3 md:px-6 md:py-4">
 						<div className="mb-2 flex items-center gap-3 md:mb-3">
 							<div className="h-8 w-8 animate-pulse rounded bg-muted md:h-9 md:w-9" />
@@ -72,19 +72,22 @@ const BranchManagement = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-				<div className="px-3 py-3 md:px-6 md:py-4">
-					<div className="mb-2 flex items-center gap-3 md:mb-3">
+			<div className="sticky top-0 z-10 border-border/60 border-b bg-background/90 backdrop-blur">
+				<div className="px-4 py-4 md:px-6">
+					<div className="mb-3 flex items-center gap-3">
 						<Button
 							variant="ghost"
 							size="icon"
 							onClick={() => router.back()}
-							className="h-8 w-8 md:h-9 md:w-9"
+							className="h-10 w-10"
 						>
-							<ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
+							<ArrowLeft className="h-4 w-4" />
 							<span className="sr-only">Go back</span>
 						</Button>
-						<h1 className="font-semibold text-lg md:text-2xl">Store Branches</h1>
+						<div>
+							<p className="text-muted-foreground text-xs">Manage locations</p>
+							<h1 className="font-semibold text-lg md:text-2xl">Store Branches</h1>
+						</div>
 					</div>
 					<div className="flex w-full items-center gap-2">
 						<CustomSearchInput
@@ -100,7 +103,7 @@ const BranchManagement = () => {
 				</div>
 			</div>
 
-			<div className="space-y-3 p-3 md:p-6">
+			<div className="space-y-3 px-4 py-5 md:px-6">
 				<div className="space-y-3">
 					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{filteredBranches.map((branch: IBranch) => (

@@ -25,7 +25,7 @@ const FormFieldWrapper = ({
 	return (
 		<div
 			className={cn(
-				"space-y-2 [--ring:var(--color-indigo-300)] in-[.dark]:[--ring:var(--color-indigo-900)]",
+				"space-y-2",
 				wrapperClass,
 			)}
 		>
@@ -33,7 +33,7 @@ const FormFieldWrapper = ({
 				<Label
 					htmlFor={id}
 					className={cn(
-						"font-medium text-sm leading-none",
+						"font-medium text-sm leading-none text-foreground",
 						hasError && "text-destructive",
 						required && "after:ml-1 after:text-destructive after:content-['*']",
 					)}
@@ -43,7 +43,7 @@ const FormFieldWrapper = ({
 			)}
 
 			{description && (
-				<p className={cn("text-muted-foreground text-xs", disabled && "opacity-50")}>
+				<p className={cn("text-muted-foreground text-[11px]", disabled && "opacity-50")}>
 					{description}
 				</p>
 			)}
@@ -53,7 +53,7 @@ const FormFieldWrapper = ({
 			{error && (
 				<p
 					id={`${id}-error`}
-					className="text-destructive text-xs"
+					className="text-destructive text-[11px]"
 					role="alert"
 					aria-live="polite"
 				>
@@ -62,7 +62,10 @@ const FormFieldWrapper = ({
 			)}
 
 			{hint && showHint && !error && (
-				<p id={`${id}-hint`} className={cn("text-muted-foreground text-xs", hintclass)}>
+				<p
+					id={`${id}-hint`}
+					className={cn("text-muted-foreground text-[11px]", hintclass)}
+				>
 					{hint}
 				</p>
 			)}

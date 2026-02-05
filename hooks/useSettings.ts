@@ -12,7 +12,7 @@ interface UseSettingsProps {
 
 const useSettings = ({
 	initialFont = "Inter",
-	initialColorScheme = "default",
+	initialColorScheme = "ocean",
 }: UseSettingsProps = {}) => {
 	const [selectedFont, setSelectedFont] = useState<string>(initialFont);
 	const [selectedColorScheme, setSelectedColorScheme] = useState<string>(initialColorScheme);

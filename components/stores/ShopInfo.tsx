@@ -40,9 +40,9 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 		return (
 			<div
 				className={cn(
-					"rounded-lg border p-3.5 md:p-4",
+					"rounded-2xl border border-border/60 p-3.5 md:p-4",
 					isSettings
-						? "border-border bg-card"
+						? "border-border/60 bg-card"
 						: "border-primary/20 bg-linear-to-r from-primary/5 to-primary/10",
 				)}
 			>
@@ -72,9 +72,9 @@ const ShopInfo = ({ variant = "default" }: ShopInfoProps) => {
 	return (
 		<div
 			className={cn(
-				"rounded-lg border p-3.5 md:p-4",
+				"rounded-2xl border border-border/60 p-3.5 md:p-4",
 				isSettings
-					? "border-border bg-card"
+					? "border-border/60 bg-card"
 					: "border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10",
 			)}
 		>

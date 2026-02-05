@@ -101,32 +101,38 @@ const NewCustomerPage = () => {
 
 	return (
 		<div className="min-h-screen bg-background">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-				<div className="flex items-center gap-4 px-4 py-3 md:px-6">
+			<div className="sticky top-0 z-10 border-border/60 border-b bg-background/90 backdrop-blur">
+				<div className="flex items-center gap-4 px-4 py-4 md:px-6">
 					<Button
 						variant="ghost"
 						size="icon"
 						onClick={() => router.back()}
-						className="h-9 w-9"
+						className="h-10 w-10"
 					>
-						<ArrowLeft className="h-5 w-5" />
+						<ArrowLeft className="h-4 w-4" />
 						<span className="sr-only">Go back</span>
 					</Button>
-					<h1 className="font-semibold text-lg">New Customer</h1>
+					<div>
+						<p className="text-muted-foreground text-xs">Add new</p>
+						<h1 className="font-semibold text-lg">New Customer</h1>
+					</div>
 				</div>
 			</div>
 
-			<form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-2xl p-4 md:p-6">
+			<form
+				onSubmit={handleSubmit(onSubmit)}
+				className="mx-auto max-w-2xl px-4 py-5 md:px-6"
+			>
 				<div className="space-y-6">
 					{/* Plan Limit Info */}
 					{planLimits.maxCustomers !== null && (
 						<div
-							className={`rounded-lg border p-4 ${
+							className={`rounded-2xl border border-border/60 p-4 ${
 								customerCount >= planLimits.maxCustomers
 									? "border-destructive bg-destructive/10"
 									: customerCount >= planLimits.maxCustomers * 0.8
 										? "border-accent bg-accent/10"
-										: "border-border bg-muted/50"
+										: "border-border/60 bg-muted/50"
 							}`}
 						>
 							<div className="flex items-center justify-between">

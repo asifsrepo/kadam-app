@@ -5,7 +5,7 @@ import { colorSchemeOptions } from "../color-schemes";
 export const getSelectedFont = async (): Promise<string> => {
 	const cookieStore = await cookies();
 	const fontCookie = cookieStore.get(FONT_COOKIE_NAME);
-	return (fontCookie?.value as string) || "Fira Code";
+	return (fontCookie?.value as string) || "Inter";
 };
 
 export const getSelectedColorScheme = async (): Promise<string> => {
@@ -18,6 +18,5 @@ export const getSelectedColorScheme = async (): Promise<string> => {
 		return selectedColorScheme;
 	}
 
-	return DEFAULT_COLOR_SCHEME ?? "Default";
+	return DEFAULT_COLOR_SCHEME ?? "ocean";
 };
-

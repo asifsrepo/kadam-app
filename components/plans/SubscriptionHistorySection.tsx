@@ -18,7 +18,7 @@ const SubscriptionHistorySection = ({
 }: SubscriptionHistorySectionProps) => {
 	return (
 		<>
-			<div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-3 md:p-4">
+			<div className="flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card p-3 md:p-4">
 				<div className="min-w-0 flex-1">
 					<h3 className="font-semibold text-sm md:text-base">Subscription History</h3>
 					<p className="text-muted-foreground text-xs md:text-sm">
@@ -28,14 +28,15 @@ const SubscriptionHistorySection = ({
 				<Button
 					onClick={onChangePlanClick}
 					variant="outline"
-					className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+					size="sm"
+					className="shrink-0"
 				>
 					Change Plan
 				</Button>
 			</div>
 
 			{isHistoryLoading ? (
-				<Card className="border-border">
+				<Card className="border-border/60">
 					<CardContent className="px-3 py-6 md:px-6 md:py-8">
 						<p className="text-center text-muted-foreground text-xs md:text-sm">
 							Loading subscription history...

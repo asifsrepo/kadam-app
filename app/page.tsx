@@ -107,24 +107,22 @@ const Dashboard = () => {
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
-			<div className="sticky top-0 z-10 border-border border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-				<div className="px-3 py-3 md:px-6 md:py-4">
+			<div className="sticky top-0 z-10 border-border/60 border-b bg-background/90 backdrop-blur">
+				<div className="px-4 py-4 md:px-6">
 					<div className="flex items-center justify-between">
 						<div>
-							<h1 className="font-semibold text-lg md:text-2xl">Dashboard</h1>
-							<p className="text-muted-foreground text-xs md:text-sm">
-								Overview of your business
-							</p>
+							<p className="text-muted-foreground text-xs">Dashboard</p>
+							<h1 className="font-semibold text-2xl">Hysabee</h1>
 						</div>
 						<TransactionDialog
 							trigger={
 								<Button
 									variant="default"
 									size="icon"
-									className="h-10 w-10 md:h-8 md:w-8"
+									className="h-11 w-11"
 									aria-label="Add credit transaction"
 								>
-									<Plus className="h-5 w-5 md:h-4 md:w-4" />
+									<Plus className="h-5 w-5" />
 									<span className="sr-only">Add credit transaction</span>
 								</Button>
 							}
@@ -133,7 +131,7 @@ const Dashboard = () => {
 				</div>
 			</div>
 
-			<div className="p-3 md:p-6">
+			<div className="space-y-6 px-4 py-5 md:px-6">
 				<Stats
 					currentMonthCredit={monthlyStats?.currentMonthCredit || 0}
 					previousMonthCredit={monthlyStats?.previousMonthCredit || 0}
