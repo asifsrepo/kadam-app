@@ -18,7 +18,7 @@ const RootLayout = async ({ children }: WrapperProps) => {
 			suppressHydrationWarning
 			className={`${allFontVariables} ${selectedColorScheme}`}
 		>
-			<body className={`antialiased ${selectedFontConfig.className}`}>
+			<body className={`antialiased ${selectedFontConfig?.className}`}>
 				<Providers>
 					<DashboardLayout>{children}</DashboardLayout>
 				</Providers>
