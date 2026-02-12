@@ -4,11 +4,11 @@ import { APP_NAME, APP_URL } from "@/constants";
 export const metadata: Metadata = {
 	metadataBase: new URL(APP_URL),
 	title: {
-		default: `${APP_NAME} - Debt Management for Retail Stores`,
+		default: `${APP_NAME} - Credit Management for Retail Stores`,
 		template: `%s - ${APP_NAME}`,
 	},
 	description:
-		"Hysabee is a comprehensive debt management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
+		"Hysabee is a comprehensive credit management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
 	icons: {
 		icon: [
 			{ url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -58,19 +58,19 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: "website",
 		url: APP_URL,
-		title: `${APP_NAME} - Debt Management for Retail Stores`,
+		title: `${APP_NAME} - Credit Management for Retail Stores`,
 		description:
-			"Hysabee is a comprehensive debt management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
+			"Hysabee is a comprehensive credit management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
 		// images: [`${APP_URL}/og/logo.png`],
 	},
 	twitter: {
-		title: `${APP_NAME} - Debt Management for Retail Stores`,
+		title: `${APP_NAME} - Credit Management for Retail Stores`,
 		site: "@Hysabee",
 		card: "summary_large_image",
 	},
 	appleWebApp: {
 		capable: true,
-		title: `${APP_NAME} - Debt Management for Retail Stores`,
+		title: `${APP_NAME} - Credit Management for Retail Stores`,
 		statusBarStyle: "black-translucent",
 	},
 	authors: [

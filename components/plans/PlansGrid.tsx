@@ -2,7 +2,6 @@ import { PLANS } from "@/constants";
 import type { Plan } from "@/types";
 import BillingToggle from "./BillingToggle";
 import PlanCard from "./PlanCard";
-import TrialInfoCard from "./TrialInfoCard";
 
 interface PlansGridProps {
 	isYearly: boolean;
@@ -58,7 +57,6 @@ const PlansGrid = ({
 				})}
 			</div>
 
-			<TrialInfoCard />
 		</>
 	);
 };

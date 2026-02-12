@@ -1,7 +1,7 @@
 {
 	"name": "Hysabee",
 	"short_name": "Hysabee",
-	"description": "Hysabee is a comprehensive debt management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
+	"description": "Hysabee is a comprehensive credit management application designed for local retail stores to track and manage customer credit transactions, payments, and outstanding balances with ease.",
 	"start_url": "/",
 	"scope": "/",
 	"display": "standalone",

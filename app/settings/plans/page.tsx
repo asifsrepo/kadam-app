@@ -9,7 +9,6 @@ import CurrentPlanSection from "@/components/plans/CurrentPlanSection";
 import ExpiredSubscriptionCard from "@/components/plans/ExpiredSubscriptionCard";
 import PlanCard from "@/components/plans/PlanCard";
 import PlansPageHeader from "@/components/plans/PlansPageHeader";
-import TrialInfoCard from "@/components/plans/TrialInfoCard";
 import { PLANS } from "@/constants";
 import { useSubscription } from "@/hooks/queries/useSubscription";
 import type { Plan } from "@/types";
@@ -221,7 +220,6 @@ const PlansPage = () => {
 					})}
 				</div>
 
-				<TrialInfoCard />
 			</div>
 		</div>
 	);

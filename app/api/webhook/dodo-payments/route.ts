@@ -50,16 +50,17 @@ const updateSubscriptionInDB = async (payload: WebhookPayload) => {
 		upgraded: "upgraded",
 		downgraded: "downgraded",
 		failed: "cancelled",
-		pending: "active",
+		pending: "on_hold",
+		requires_customer_action: "past_due",
 	};
 
-	let status = "active";
+	const mappedStatus = statusMap[eventData.status] || "past_due";
+
+	let status = mappedStatus;
 	if (eventType?.includes("subscription")) {
-		status = statusMap[eventData.status] || "active";
+		status = mappedStatus;
 	} else if (eventType === "payment.succeeded" && eventData.subscription_id) {
 		status = "active";
-	} else {
-		status = statusMap[eventData.status] || "active";
 	}
 
 	// Fix: Check for existing subscription to get userId if not in metadata

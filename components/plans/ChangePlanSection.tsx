@@ -3,7 +3,6 @@ import { PLANS } from "@/constants";
 import type { Plan } from "@/types";
 import BillingToggle from "./BillingToggle";
 import PlanCard from "./PlanCard";
-import TrialInfoCard from "./TrialInfoCard";
 
 interface ChangePlanSectionProps {
 	onCancel: () => void;
@@ -77,7 +76,6 @@ const ChangePlanSection = ({
 				})}
 			</div>
 
-			<TrialInfoCard />
 		</div>
 	);
 };

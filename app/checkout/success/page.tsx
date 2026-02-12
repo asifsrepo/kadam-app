@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle, Loader2, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, Loader2, XCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,13 @@ import {
 import { useSubscription } from "@/hooks/queries/useSubscription";
 import BackButton from "~/BackButton";
 
+type ViewState =
+	| "success"
+	| "action_required"
+	| "pending"
+	| "failed"
+	| "unknown";
+
 const CheckoutSuccessPage = () => {
 	const searchParams = useSearchParams();
 	const router = useRouter();
@@ -22,6 +29,24 @@ const CheckoutSuccessPage = () => {
 
 	const subscriptionId = searchParams.get("subscription_id");
 	const status = searchParams.get("status");
+
+	const subscriptionStatus = subscription?.status;
+
+	const viewState: ViewState = (() => {
+		const normalizedParam = status?.toLowerCase();
+		const normalizedSub = subscriptionStatus?.toLowerCase();
+
+		if (["failed", "cancelled"].includes(normalizedParam || "")) return "failed";
+		if (["requires_customer_action", "past_due", "on_hold"].includes(normalizedParam || ""))
+			return "action_required";
+		if (normalizedParam === "pending") return "pending";
+
+		if (["failed", "cancelled"].includes(normalizedSub || "")) return "failed";
+		if (["past_due", "on_hold"].includes(normalizedSub || "")) return "action_required";
+		if (["active", "trialing"].includes(normalizedSub || "")) return "success";
+
+		return "unknown";
+	})();
 
 	const handleGoToHome = () => {
 		router.push("/");
@@ -31,8 +56,18 @@ const CheckoutSuccessPage = () => {
 		router.push("/settings/plans");
 	};
 
-	const isFailed = status === "failed";
-	const isSuccess = !!subscriptionId && !isFailed;
+	const handleCompletePayment = () => {
+		if (subscription?.customerId) {
+			router.push(`/customer-portal?customer_id=${subscription.customerId}`);
+			return;
+		}
+		handleGoToPlans();
+	};
+
+	const isFailed = viewState === "failed";
+	const isActionRequired = viewState === "action_required";
+	const isPending = viewState === "pending" || viewState === "unknown";
+	const isSuccess = viewState === "success";
 
 	return (
 		<div className="min-h-screen bg-background pb-24">
@@ -44,16 +79,22 @@ const CheckoutSuccessPage = () => {
 							<h1 className="font-semibold text-base md:text-2xl">
 								{isFailed
 									? "Checkout Failed"
-									: isSuccess
-										? "Checkout Success"
-										: "Checkout Status"}
+									: isActionRequired
+										? "Action Required"
+										: isSuccess
+											? "Checkout Success"
+											: isPending
+												? "Checkout Pending"
+												: "Checkout Status"}
 							</h1>
 							<p className="truncate text-muted-foreground text-xs md:text-sm">
 								{isFailed
 									? "Payment could not be processed"
-									: isSuccess
-										? "Your subscription is active"
-										: "Processing your subscription"}
+									: isActionRequired
+										? "Complete payment to activate your subscription"
+										: isSuccess
+											? "Your subscription is active"
+											: "Processing your subscription"}
 							</p>
 						</div>
 					</div>
@@ -68,6 +109,10 @@ const CheckoutSuccessPage = () => {
 								<div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10 md:h-20 md:w-20">
 									<XCircle className="h-8 w-8 text-destructive md:h-10 md:w-10" />
 								</div>
+							) : isActionRequired || isPending ? (
+								<div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/10 md:h-20 md:w-20">
+									<Clock className="h-8 w-8 text-amber-600 md:h-10 md:w-10" />
+								</div>
 							) : isSuccess ? (
 								<div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 md:h-20 md:w-20">
 									<CheckCircle className="h-8 w-8 text-primary md:h-10 md:w-10" />
@@ -81,16 +126,20 @@ const CheckoutSuccessPage = () => {
 						<CardTitle className="text-center text-base md:text-lg">
 							{isFailed
 								? "Payment Failed"
-								: isSuccess
-									? "Subscription Activated!"
-									: "Processing Your Subscription"}
+								: isActionRequired
+									? "Action Required"
+									: isSuccess
+										? "Subscription Activated!"
+										: "Processing Your Subscription"}
 						</CardTitle>
 						<CardDescription className="text-center text-xs md:text-sm">
 							{isFailed
 								? "We couldn't process your payment. Please check your payment method and try again."
-								: isSuccess
-									? "Your subscription has been successfully activated. You now have access to all premium features."
-									: "We're setting up your subscription. This may take a few moments."}
+								: isActionRequired
+									? "Complete payment or update your card to activate your subscription."
+									: isSuccess
+										? "Your subscription has been successfully activated. You now have access to all premium features."
+										: "We're setting up your subscription. This may take a few moments."}
 						</CardDescription>
 					</CardHeader>
 
@@ -100,11 +149,17 @@ const CheckoutSuccessPage = () => {
 								className={`space-y-2.5 rounded-lg border p-3 md:space-y-3 md:p-4 ${
 									isFailed
 										? "border-destructive/20 bg-destructive/5"
-										: "border-border bg-card"
+										: isActionRequired
+											? "border-amber-200/70 bg-amber-50 dark:bg-amber-950/20"
+											: "border-border bg-card"
 								}`}
 							>
 								<h3 className="font-semibold text-sm md:text-base">
-									{isFailed ? "Transaction Details" : "Subscription Details"}
+									{isFailed
+										? "Transaction Details"
+										: isActionRequired
+											? "Payment Action Required"
+											: "Subscription Details"}
 								</h3>
 								<div className="space-y-2 md:space-y-2.5">
 									{subscription ? (
@@ -133,6 +188,16 @@ const CheckoutSuccessPage = () => {
 													{subscription.status}
 												</span>
 											</div>
+											{isActionRequired && (
+												<div className="flex items-center justify-between">
+													<span className="text-muted-foreground text-xs md:text-sm">
+														Action
+													</span>
+													<Badge variant="outline" className="text-xs capitalize">
+														Complete payment
+													</Badge>
+												</div>
+											)}
 											{subscription.currentPeriodEnd && (
 												<div className="flex items-center justify-between">
 													<span className="text-muted-foreground text-xs md:text-sm">
@@ -195,6 +260,32 @@ const CheckoutSuccessPage = () => {
 							</div>
 						)}
 
+						{isActionRequired && (
+							<div className="flex items-start gap-2 rounded-lg border border-amber-200/70 bg-amber-50 p-3 text-amber-800 dark:border-amber-300/30 dark:bg-amber-950/20 dark:text-amber-100 md:gap-2.5 md:p-4">
+								<AlertCircle className="mt-0.5 h-4 w-4 shrink-0 md:h-5 md:w-5" />
+								<div className="space-y-1">
+									<p className="font-medium text-xs md:text-sm">Payment requires action</p>
+									<p className="text-xs leading-relaxed md:text-sm">
+										Confirm the payment or update your card to activate your subscription.
+										You can complete this in the customer portal.
+									</p>
+								</div>
+							</div>
+						)}
+
+						{isPending && (
+							<div className="flex items-start gap-2 rounded-lg border border-border/70 bg-muted/40 p-3 md:gap-2.5 md:p-4">
+								<Clock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground md:h-5 md:w-5" />
+								<div className="space-y-1">
+									<p className="font-medium text-xs md:text-sm">Payment is pending</p>
+									<p className="text-muted-foreground text-xs leading-relaxed md:text-sm">
+										We’re waiting for the payment to finalize. If this stays longer than a few
+										minutes, open the customer portal to complete it.
+									</p>
+								</div>
+							</div>
+						)}
+
 						{isSuccess && (
 							<div className="rounded-lg border border-primary/20 bg-primary/5 p-3 md:p-4">
 								<p className="text-center text-primary text-xs leading-relaxed md:text-sm">
@@ -206,6 +297,15 @@ const CheckoutSuccessPage = () => {
 					</CardContent>
 
 					<CardFooter className="flex flex-col gap-2 px-3 pt-3 pb-3 md:flex-row md:gap-3 md:px-6 md:pt-4 md:pb-6">
+						{isActionRequired && (
+							<Button
+								onClick={handleCompletePayment}
+								variant="default"
+								className="h-9 w-full text-xs md:h-10 md:text-sm"
+							>
+								Complete Payment
+							</Button>
+						)}
 						{isFailed && (
 							<Button
 								onClick={handleGoToPlans}
@@ -216,11 +316,11 @@ const CheckoutSuccessPage = () => {
 							</Button>
 						)}
 						<Button
-							onClick={handleGoToHome}
+							onClick={isActionRequired || isPending ? handleGoToPlans : handleGoToHome}
 							variant={isFailed ? "outline" : "default"}
 							className="h-9 w-full text-xs md:h-10 md:text-sm"
 						>
-							Go to Home
+							{isActionRequired || isPending ? "Go to Plans" : "Go to Home"}
 						</Button>
 					</CardFooter>
 				</Card>
