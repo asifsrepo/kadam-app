@@ -91,15 +91,15 @@ const ShopInfoStep = ({
 	};
 
 	return (
-		<Card>
-			<CardHeader>
+		<Card className="border-border/60">
+			<CardHeader className="px-4 pt-5 pb-3">
 				<CardTitle className="flex items-center gap-2 text-base">
-					<Building2 className="h-4 w-4" />
+					<Building2 className="h-4 w-4 text-primary" />
 					Shop Information
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-2">
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+			<CardContent className="space-y-3 px-4 pb-5">
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
 					<CustomInput
 						label="Business Name"
 						placeholder="Enter your business name"
@@ -128,7 +128,10 @@ const ShopInfoStep = ({
 						<h3 className="font-medium text-sm">Store Branch</h3>
 						<div className="space-y-2">
 							{fields.map((field, index) => (
-								<div key={field.id} className="space-y-2 rounded-lg border border-border bg-card p-2.5">
+								<div
+									key={field.id}
+									className="space-y-2 rounded-2xl border border-border/60 bg-card p-3"
+								>
 									{fields.length > 1 && (
 										<div className="flex items-center justify-between">
 											<h4 className="font-medium text-sm">
@@ -140,7 +143,7 @@ const ShopInfoStep = ({
 												size="sm"
 												onClick={() => remove(index)}
 												disabled={isSubmitting}
-												className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
+												className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10"
 											>
 												<Trash2 className="h-3 w-3" />
 											</Button>
@@ -192,7 +195,7 @@ const ShopInfoStep = ({
 							variant="outline"
 							onClick={onPrevious}
 							disabled={isSubmitting}
-							className="order-2 h-9 text-sm sm:order-1"
+							className="order-2 h-11 text-sm sm:order-1"
 						>
 							<ArrowLeft className="mr-2 h-3 w-3" />
 							Previous
@@ -200,7 +203,7 @@ const ShopInfoStep = ({
 						<SubmitButton
 							isLoading={isSubmitting}
 							disabled={isSubmitting}
-							className="order-1 h-9 text-sm sm:order-2"
+							className="order-1 h-11 text-sm sm:order-2"
 						>
 							Complete Setup
 							<Check className="ml-2 h-3 w-3" />

@@ -13,7 +13,7 @@ const CurrentPlanSection = ({ subscription }: CurrentPlanSectionProps) => {
 	const billingPeriod = subscription.billingPeriod;
 
 	return (
-		<div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 md:gap-3 md:px-4 md:py-3">
+		<div className="flex items-center gap-2 rounded-2xl border border-border/60 bg-card px-3 py-2.5 md:gap-3 md:px-4 md:py-3">
 			<span className="text-muted-foreground text-xs md:text-sm">Current Plan:</span>
 			<Badge variant="default" className="text-xs">
 				{planName}

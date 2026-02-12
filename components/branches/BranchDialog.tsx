@@ -166,9 +166,9 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 					{mode === "edit" ? <Edit className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="bottom" className="h-[90vh] rounded-t-xl p-0">
+			<SheetContent side="bottom" className="h-[90vh] rounded-t-3xl p-0">
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-border border-b px-4 py-4">
+					<SheetHeader className="border-border/60 border-b px-5 py-4">
 						<SheetTitle className="font-semibold text-foreground text-lg">
 							{mode === "edit" ? "Edit Branch" : "Add New Branch"}
 						</SheetTitle>
@@ -179,7 +179,7 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 						</SheetDescription>
 					</SheetHeader>
 
-					<div className="flex-1 overflow-y-auto px-4 py-4">
+					<div className="flex-1 overflow-y-auto px-5 py-4">
 						<form onSubmit={handleSubmit} className="flex h-full flex-col">
 							<div className="flex-1 space-y-4">
 								{/* Plan Limit Info - Only show in create mode */}
@@ -187,10 +187,10 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 									planLimits.maxBranches !== null &&
 									planLimits.maxBranches !== 0 && (
 										<div
-											className={`rounded-lg border p-3 ${
+											className={`rounded-2xl border border-border/60 p-3 ${
 												branchCount >= planLimits.maxBranches
 													? "border-destructive bg-destructive/10"
-													: "border-border bg-muted/50"
+													: "border-border/60 bg-muted/50"
 											}`}
 										>
 											<p className="font-medium text-sm">
@@ -253,14 +253,15 @@ const BranchDialog = ({ branch, mode }: BranchDialogProps) => {
 								</div>
 							</div>
 
-							<SheetFooter className="gap-2 border-border border-t px-4 py-4 sm:flex-row sm:justify-end">
-								<button
+							<SheetFooter className="gap-2 border-border/60 border-t px-5 py-4 sm:flex-row sm:justify-end">
+								<Button
 									type="button"
+									variant="outline"
 									onClick={() => handleOpenChange(false)}
-									className="w-full rounded-md border border-border bg-background px-4 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 sm:w-auto"
+									className="w-full sm:w-auto"
 								>
 									Cancel
-								</button>
+								</Button>
 								<SubmitButton
 									type="submit"
 									isLoading={isLoading}

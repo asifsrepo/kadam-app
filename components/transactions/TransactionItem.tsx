@@ -38,15 +38,9 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
 	const formattedDate = format(new Date(transaction.createdAt), "MMM d, yyyy");
 
 	return (
-		<div
-			className={`flex items-start gap-3 rounded-lg border p-3 ${
-				isCredit
-					? "border-destructive/20 bg-destructive/5"
-					: "border-primary/20 bg-primary/5"
-			}`}
-		>
+		<div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-3">
 			<div
-				className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+				className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
 					isCredit ? "bg-destructive/10" : "bg-primary/10"
 				}`}
 			>
@@ -60,17 +54,17 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
 			<div className="min-w-0 flex-1">
 				<div className="flex items-start justify-between gap-3">
 					<div className="min-w-0 flex-1 space-y-1">
-						<div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+						<div className="flex items-center gap-1 text-[11px] text-muted-foreground">
 							<Calendar className="h-3 w-3" />
 							<span>{formattedDate}</span>
 						</div>
 						{transaction.notes && (
-							<p className="text-[10px] text-muted-foreground">{transaction.notes}</p>
+							<p className="text-[11px] text-muted-foreground">{transaction.notes}</p>
 						)}
 					</div>
 					<div className="shrink-0 text-right">
 						<p
-							className={`font-bold text-base ${
+							className={`font-semibold text-base ${
 								isCredit ? "text-destructive" : "text-primary"
 							}`}
 						>
@@ -80,20 +74,20 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
 					</div>
 				</div>
 
-				<div className="mt-2 space-y-1 border-border border-t pt-2">
+				<div className="mt-2 space-y-1 border-border/60 border-t pt-2">
 					<div className="flex items-center justify-between">
-						<span className="text-[9px] text-muted-foreground">Created By</span>
+						<span className="text-[10px] text-muted-foreground">Created By</span>
 						{isLoadingCreator ? (
 							<Skeleton className="h-3 w-24" />
 						) : (
-							<span className="text-[9px] text-foreground">
+							<span className="text-[10px] text-foreground">
 								{creatorProfile?.name || creatorProfile?.email || "Unknown User"}
 							</span>
 						)}
 					</div>
 					<div className="flex items-center justify-between">
-						<span className="text-[9px] text-muted-foreground">Time</span>
-						<span className="text-[9px] text-foreground">
+						<span className="text-[10px] text-muted-foreground">Time</span>
+						<span className="text-[10px] text-foreground">
 							{format(new Date(transaction.createdAt), "MMM d, h:mm a")}
 						</span>
 					</div>

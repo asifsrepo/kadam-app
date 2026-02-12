@@ -8,7 +8,7 @@ interface BillingToggleProps {
 
 const BillingToggle = ({ isYearly, onChange }: BillingToggleProps) => {
 	return (
-		<div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-2.5 md:gap-3 md:p-4">
+		<div className="flex items-center justify-center gap-2 rounded-2xl border border-border/60 bg-card p-3 md:gap-3 md:p-4">
 			<span
 				className={`font-medium text-xs md:text-sm ${!isYearly ? "text-foreground" : "text-muted-foreground"}`}
 			>

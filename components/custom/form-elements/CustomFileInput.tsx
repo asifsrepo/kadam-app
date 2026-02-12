@@ -83,7 +83,7 @@ const CustomFileInput = ({
 				<>
 					<div
 						className={cn(
-							"relative rounded-md border-2 border-input border-dashed p-6 transition-colors",
+							"relative rounded-2xl border border-border/60 border-dashed bg-muted/20 p-5 transition-colors",
 							dragOver && "border-primary bg-primary/5",
 							error && "border-destructive",
 							className,
@@ -129,7 +129,7 @@ const CustomFileInput = ({
 							{selectedFiles.map((file, index) => (
 								<div
 									key={index}
-									className="flex items-center justify-between rounded-md bg-muted p-2"
+									className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/40 p-3"
 								>
 									<div className="flex items-center space-x-2">
 										<File className="h-4 w-4 text-muted-foreground" />

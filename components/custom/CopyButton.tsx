@@ -84,7 +84,7 @@ const CopyButton = ({
 				{...props}
 			>
 				{isCopied ? (
-					<Check className="h-3 w-3 text-green-600" />
+					<Check className="h-3 w-3 text-success" />
 				) : (
 					<Copy className="h-3 w-3" />
 				)}

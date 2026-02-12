@@ -21,7 +21,9 @@ const BranchCard = ({ branch }: { branch: IBranch }) => {
 	return (
 		<Card
 			key={branch.id}
-			className={`cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md ${isActive ? "border-primary bg-primary/5 shadow-md" : "border-border/50"}`}
+			className={`cursor-pointer border-border/60 transition-colors ${
+				isActive ? "border-primary bg-primary/5 shadow-sm" : "hover:bg-accent/40"
+			}`}
 			onClick={handleCardClick}
 		>
 			<CardContent className="p-3 sm:p-4">
@@ -45,7 +47,7 @@ const BranchCard = ({ branch }: { branch: IBranch }) => {
 										e.stopPropagation();
 										setActiveBranch(branch);
 									}}
-									className="h-8 px-2 text-xs"
+									className="h-9 px-3 text-xs"
 								>
 									<Check className="mr-1 h-3 w-3" />
 									Switch

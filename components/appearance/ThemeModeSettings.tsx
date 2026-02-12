@@ -35,32 +35,32 @@ const ThemeModeSettings = () => {
 
 	if (!mounted) {
 		return (
-			<div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
+			<div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-4">
 				<div className="flex items-center gap-2">
-					<div className="h-8 w-8 animate-pulse rounded-lg bg-muted" />
+					<div className="h-9 w-9 animate-pulse rounded-xl bg-muted" />
 					<div className="flex-1">
 						<div className="mb-1 h-4 w-24 animate-pulse rounded bg-muted" />
 						<div className="h-3 w-32 animate-pulse rounded bg-muted" />
 					</div>
 				</div>
 				<div className="grid grid-cols-3 gap-2">
-					<div className="h-20 animate-pulse rounded-lg bg-muted" />
-					<div className="h-20 animate-pulse rounded-lg bg-muted" />
-					<div className="h-20 animate-pulse rounded-lg bg-muted" />
+					<div className="h-16 animate-pulse rounded-xl bg-muted" />
+					<div className="h-16 animate-pulse rounded-xl bg-muted" />
+					<div className="h-16 animate-pulse rounded-xl bg-muted" />
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4">
-			<div className="flex items-center gap-2">
-				<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+		<div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-4">
+			<div className="flex items-center gap-3">
+				<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
 					<Moon className="h-4 w-4 text-primary" />
 				</div>
 				<div className="flex-1">
 					<h2 className="font-semibold text-base">Theme Mode</h2>
-					<p className="text-muted-foreground text-xs">Choose light, dark, or system</p>
+					<p className="text-muted-foreground text-xs">Light, dark, or system</p>
 				</div>
 			</div>
 
@@ -73,10 +73,10 @@ const ThemeModeSettings = () => {
 						<button
 							key={themeOption.value}
 							onClick={() => setTheme(themeOption.value)}
-							className={`relative flex flex-col items-center gap-2 rounded-lg border-2 p-3 transition-all ${
+							className={`relative flex flex-col items-center gap-2 rounded-xl border p-3 transition-all ${
 								isActive
 									? "border-primary bg-primary/5 shadow-sm"
-									: "border-border bg-card hover:border-primary/30 hover:bg-accent/50"
+									: "border-border/60 bg-card hover:border-primary/30 hover:bg-accent/60"
 							}`}
 						>
 							{isActive && (

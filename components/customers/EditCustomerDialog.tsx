@@ -139,9 +139,9 @@ const EditCustomerDialog = ({ customer, trigger }: EditCustomerDialogProps) => {
 					</Button>
 				</SheetTrigger>
 			)}
-			<SheetContent side="bottom" className="h-[90vh] rounded-t-xl p-0">
+			<SheetContent side="bottom" className="h-[90vh] rounded-t-3xl p-0">
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-border border-b px-4 py-4 text-left">
+					<SheetHeader className="border-border/60 border-b px-5 py-4 text-left">
 						<SheetTitle>Edit Customer</SheetTitle>
 						<SheetDescription>Update customer information and details</SheetDescription>
 					</SheetHeader>
@@ -152,7 +152,7 @@ const EditCustomerDialog = ({ customer, trigger }: EditCustomerDialogProps) => {
 							className="flex h-full flex-col"
 							id={formId}
 						>
-							<div className="flex-1 space-y-4 p-4">
+							<div className="flex-1 space-y-4 p-5">
 								<CustomInput
 									label="Full Name"
 									placeholder="Enter customer name"
@@ -226,7 +226,7 @@ const EditCustomerDialog = ({ customer, trigger }: EditCustomerDialogProps) => {
 							</div>
 
 							{/* Bottom Action Buttons */}
-							<div className="border-border border-t bg-background p-4">
+							<div className="border-border/60 border-t bg-background p-4">
 								<div className="flex gap-2">
 									<Button
 										type="button"

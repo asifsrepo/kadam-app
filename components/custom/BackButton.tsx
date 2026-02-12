@@ -17,9 +17,9 @@ const BackButton = ({ className = "" }: BackButtonProps) => {
 			variant="ghost"
 			size="icon"
 			onClick={() => router.back()}
-			className={cn("h-8 w-8 md:h-9 md:w-9", className)}
+			className={cn("h-10 w-10", className)}
 		>
-			<ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
+			<ArrowLeft className="h-4 w-4" />
 			<span className="sr-only">Go back</span>
 		</Button>
 	);

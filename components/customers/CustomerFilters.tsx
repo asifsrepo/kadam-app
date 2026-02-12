@@ -88,9 +88,9 @@ const CustomerFilters = ({
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
 				<Button
-					variant={hasActiveFilters ? "default" : "outline"}
+					variant={hasActiveFilters ? "tonal" : "outline"}
 					size="sm"
-					className="relative h-9 gap-2 px-3"
+					className="relative h-11 gap-2 px-3"
 				>
 					<Filter className="h-4 w-4" />
 					<span className="hidden sm:inline">Filter</span>
@@ -104,9 +104,9 @@ const CustomerFilters = ({
 					)}
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="bottom" className="h-[85vh] rounded-t-xl p-0">
+			<SheetContent side="bottom" className="h-[85vh] rounded-t-3xl p-0">
 				<div className="flex h-full flex-col">
-					<SheetHeader className="border-border border-b px-4 py-4 text-left">
+					<SheetHeader className="border-border/60 border-b px-5 py-4 text-left">
 						<div className="flex items-center justify-between">
 							<div>
 								<SheetTitle>Filters & Sort</SheetTitle>
@@ -127,7 +127,7 @@ const CustomerFilters = ({
 					</SheetHeader>
 
 					<div className="flex-1 overflow-y-auto">
-						<div className="space-y-5 p-4">
+						<div className="space-y-5 p-5">
 							{/* Status Filter */}
 							<div className="space-y-2.5">
 								<div className="flex items-center justify-between">
@@ -151,12 +151,12 @@ const CustomerFilters = ({
 													option.value as CustomerFilters["status"],
 												)
 											}
-											className={cn(
-												"group relative flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-all",
-												localFilters.status === option.value
-													? "border-primary bg-primary/5"
-													: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
-											)}
+										className={cn(
+											"group relative flex w-full items-start gap-3 rounded-2xl border border-border/60 p-3 text-left transition-all",
+											localFilters.status === option.value
+												? "border-primary bg-primary/5"
+												: "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/40",
+										)}
 										>
 											<div
 												className={cn(
@@ -191,7 +191,7 @@ const CustomerFilters = ({
 								</div>
 							</div>
 
-							<div className="border-border border-t" />
+							<div className="border-border/60 border-t" />
 
 							{/* Balance Filter */}
 							<div className="space-y-2.5">
@@ -216,12 +216,12 @@ const CustomerFilters = ({
 													option.value as CustomerFilters["balance"],
 												)
 											}
-											className={cn(
-												"group relative flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-all",
-												localFilters.balance === option.value
-													? "border-primary bg-primary/5"
-													: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
-											)}
+										className={cn(
+											"group relative flex w-full items-start gap-3 rounded-2xl border border-border/60 p-3 text-left transition-all",
+											localFilters.balance === option.value
+												? "border-primary bg-primary/5"
+												: "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/40",
+										)}
 										>
 											<div
 												className={cn(
@@ -256,7 +256,7 @@ const CustomerFilters = ({
 								</div>
 							</div>
 
-							<div className="border-border border-t" />
+							<div className="border-border/60 border-t" />
 
 							{/* Sort Options */}
 							<div className="space-y-2.5">
@@ -273,10 +273,10 @@ const CustomerFilters = ({
 												)
 											}
 											className={cn(
-												"flex flex-1 flex-col items-center gap-1.5 rounded-lg border p-2.5 transition-all",
+												"flex flex-1 flex-col items-center gap-1.5 rounded-xl border border-border/60 p-2.5 transition-all",
 												localFilters.sortBy === option.value
 													? "border-primary bg-primary/5"
-													: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+													: "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/40",
 											)}
 										>
 											<div
@@ -321,10 +321,10 @@ const CustomerFilters = ({
 										type="button"
 										onClick={() => updateLocalFilter("sortOrder", "asc")}
 										className={cn(
-											"flex items-center gap-2.5 rounded-lg border p-3 transition-all",
+											"flex items-center gap-2.5 rounded-xl border border-border/60 p-3 transition-all",
 											localFilters.sortOrder === "asc"
 												? "border-primary bg-primary/5"
-												: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+												: "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/40",
 										)}
 									>
 										<ArrowUpAZ
@@ -355,10 +355,10 @@ const CustomerFilters = ({
 										type="button"
 										onClick={() => updateLocalFilter("sortOrder", "desc")}
 										className={cn(
-											"flex items-center gap-2.5 rounded-lg border p-3 transition-all",
+											"flex items-center gap-2.5 rounded-xl border border-border/60 p-3 transition-all",
 											localFilters.sortOrder === "desc"
 												? "border-primary bg-primary/5"
-												: "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
+												: "border-border/60 bg-background hover:border-primary/30 hover:bg-muted/40",
 										)}
 									>
 										<ArrowDownAZ
@@ -390,7 +390,7 @@ const CustomerFilters = ({
 						</div>
 					</div>
 
-					<div className="border-border border-t bg-background p-4">
+					<div className="border-border/60 border-t bg-background p-4">
 						<Button onClick={handleApplyFilters} className="h-11 w-full font-semibold">
 							<Check className="mr-2 h-4 w-4" />
 							Apply Filters

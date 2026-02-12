@@ -490,7 +490,7 @@ const MultipleSelector = React.forwardRef<HTMLInputElement, MultipleSelectorProp
 				<div
 					key={option.value}
 					className={cn(
-						"relative inline-flex h-7 animate-fadeIn cursor-pointer items-center rounded-md border bg-background ps-2 pe-7 pl-2 font-medium text-secondary-foreground text-xs transition-all hover:bg-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-fixed:pe-2",
+						"relative inline-flex h-7 animate-fadeIn cursor-pointer items-center rounded-full border border-border/60 bg-muted/40 px-2 pr-7 font-medium text-[11px] text-foreground transition-all hover:bg-muted/60 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-fixed:pr-2",
 						badgeClassName,
 					)}
 					data-fixed={option.fixed ? true : undefined}
@@ -499,7 +499,7 @@ const MultipleSelector = React.forwardRef<HTMLInputElement, MultipleSelectorProp
 					{option.label || option.value}
 					{!option.fixed && (
 						<button
-							className="-inset-y-px -end-px absolute flex size-7 cursor-pointer items-center justify-center rounded-e-md border border-transparent p-0 text-muted-foreground/80 outline-none outline-hidden transition-[color,box-shadow] hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+							className="absolute end-0 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-transparent p-0 text-muted-foreground/80 outline-none outline-hidden transition-[color,box-shadow] hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
 							onKeyDown={(e) => {
 								if (e.key === "Enter") {
 									handleUnselect(option);
@@ -550,7 +550,7 @@ const MultipleSelector = React.forwardRef<HTMLInputElement, MultipleSelectorProp
 					>
 						<div
 							className={cn(
-								"relative rounded-md border border-input py-1 text-sm outline-none transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-aria-invalid:border-destructive has-disabled:opacity-50 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40",
+								"relative rounded-xl border border-border/60 bg-muted/30 py-1.5 text-sm outline-none transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-aria-invalid:border-destructive has-disabled:opacity-50 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40",
 								{
 									"p-1": selected.length !== 0,
 									"cursor-text": !disabled && selected.length !== 0,
@@ -615,7 +615,7 @@ const MultipleSelector = React.forwardRef<HTMLInputElement, MultipleSelectorProp
 									type="button"
 									onClick={handleClearAll}
 									className={cn(
-										"absolute end-0 top-0 flex size-9 cursor-pointer items-center justify-center rounded-md border border-transparent text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+										"absolute end-0 top-0 flex size-8 cursor-pointer items-center justify-center rounded-full border border-transparent text-muted-foreground/80 outline-none transition-[color,box-shadow] hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
 										(hideClearAllButton ||
 											disabled ||
 											selected.length < 1 ||
@@ -632,7 +632,7 @@ const MultipleSelector = React.forwardRef<HTMLInputElement, MultipleSelectorProp
 						<div className="relative">
 							<div
 								className={cn(
-									"absolute top-2 z-10 w-full overflow-hidden rounded-md border border-input",
+									"absolute top-2 z-10 w-full overflow-hidden rounded-2xl border border-border/60 bg-popover shadow-lg",
 									"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=open]:animate-in",
 									!open && "hidden",
 								)}

@@ -7,7 +7,7 @@ interface ActionRequiredCardProps {
 
 const ActionRequiredCard = ({ isPastDue, onUpdatePayment }: ActionRequiredCardProps) => {
 	return (
-		<div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-3 md:p-4">
+		<div className="flex items-center justify-between gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 p-3 md:p-4">
 			<div className="min-w-0 flex-1">
 				<h3 className="font-semibold text-destructive text-sm md:text-base">
 					Action Required
@@ -21,7 +21,7 @@ const ActionRequiredCard = ({ isPastDue, onUpdatePayment }: ActionRequiredCardPr
 			<Button
 				onClick={onUpdatePayment}
 				variant="default"
-				className="h-9 shrink-0 text-xs md:h-10 md:text-sm"
+				className="h-11 shrink-0 text-xs md:h-11 md:text-sm"
 			>
 				Update Payment
 			</Button>

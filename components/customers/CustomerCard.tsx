@@ -23,7 +23,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 	};
 
 	return (
-		<Card className="cursor-pointer transition-shadow hover:shadow-md">
+		<Card className="min-w-[220px] cursor-pointer border-border/60 transition-shadow hover:shadow-md">
 			<CardContent className="p-3" onClick={onCardClick}>
 				<div className="mb-2 flex items-start justify-between gap-2">
 					<div className="min-w-0 flex-1">
@@ -54,7 +54,7 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 								<Button
 									variant="outline"
 									size="sm"
-									className="h-8 w-8 p-0"
+									className="h-9 w-9 p-0"
 									aria-label={`Add transaction for ${customer.name}`}
 								>
 									<Plus className="h-4 w-4" />
@@ -64,25 +64,23 @@ const CustomerCard = ({ customer }: CustomerCardProps) => {
 					</div>
 				</div>
 
-				<div className="mt-3 rounded-lg border p-2">
-					<div className="text-center">
-						<p className="text-[10px] text-muted-foreground">Balance</p>
-						<p
-							className={`font-bold text-lg ${
-								customer.balance > 0
-									? "text-destructive"
-									: customer.balance < 0
-										? "text-primary"
-										: "text-muted-foreground"
-							}`}
-						>
-							{customer.balance > 0
-								? formatAmountWithCode(customer.balance)
+				<div className="mt-3 flex items-center justify-between rounded-xl border border-border/60 bg-muted/30 px-3 py-2">
+					<p className="text-[10px] text-muted-foreground">Balance</p>
+					<p
+						className={`font-semibold text-sm ${
+							customer.balance > 0
+								? "text-destructive"
 								: customer.balance < 0
-									? formatAmountWithCode(Math.abs(customer.balance))
-									: formatAmountWithCode(0)}
-						</p>
-					</div>
+									? "text-primary"
+									: "text-muted-foreground"
+						}`}
+					>
+						{customer.balance > 0
+							? formatAmountWithCode(customer.balance)
+							: customer.balance < 0
+								? formatAmountWithCode(Math.abs(customer.balance))
+								: formatAmountWithCode(0)}
+					</p>
 				</div>
 			</CardContent>
 		</Card>

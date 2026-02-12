@@ -13,20 +13,26 @@ interface CustomersProps {
 
 const Customers = ({ customers, isLoading }: CustomersProps) => {
 	return (
-		<div className="mb-6">
-			<div className="mb-4">
+		<div className="space-y-3">
+			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-foreground text-lg">Recent Customers</h2>
+				<Button variant="ghost" size="sm" asChild className="text-xs">
+					<Link href="/customers">
+						View all
+						<ArrowUpRight className="ml-1 h-3.5 w-3.5" />
+					</Link>
+				</Button>
 			</div>
 
 			{isLoading ? (
-				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-					{Array.from({ length: 8 }).map((_, i) => (
-						<Card key={i}>
+				<div className="flex gap-3 overflow-x-auto pb-2">
+					{Array.from({ length: 6 }).map((_, i) => (
+						<Card key={i} className="min-w-[220px]">
 							<CardContent className="p-3">
 								<Skeleton className="mb-2 h-4 w-3/4" />
 								<Skeleton className="mb-1 h-3 w-1/2" />
 								<Skeleton className="h-3 w-2/3" />
-								<div className="mt-3 rounded-lg border p-2">
+								<div className="mt-3 rounded-xl border border-border/60 p-2">
 									<Skeleton className="mx-auto h-6 w-16" />
 								</div>
 							</CardContent>
@@ -34,28 +40,18 @@ const Customers = ({ customers, isLoading }: CustomersProps) => {
 					))}
 				</div>
 			) : customers.length > 0 ? (
-				<>
-					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-						{customers.map((customer) => (
-							<CustomerCard key={customer.id} customer={customer} />
-						))}
-					</div>
-					<div className="mt-4 flex justify-center">
-						<Button variant="outline" asChild className="w-full">
-							<Link href="/customers">
-								<ArrowUpRight className="mr-2 h-4 w-4" />
-								View All Customers
-							</Link>
-						</Button>
-					</div>
-				</>
+				<div className="flex gap-3 overflow-x-auto pb-2">
+					{customers.map((customer) => (
+						<CustomerCard key={customer.id} customer={customer} />
+					))}
+				</div>
 			) : (
-				<Card>
+				<Card className="border-border/60">
 					<CardContent className="flex flex-col items-center justify-center py-8">
 						<Users className="mb-2 h-8 w-8 text-muted-foreground" />
 						<h3 className="mb-1 font-medium text-foreground">No customers yet</h3>
 						<p className="text-center text-muted-foreground text-sm">
-							Get started by adding your first customer
+							Add your first customer to start tracking balances
 						</p>
 						<Button className="mt-3" asChild>
 							<Link href="/customers/new">

@@ -84,14 +84,14 @@ const PersonalInfoStep = ({ onComplete, isSubmitting, setIsSubmitting }: Persona
 	};
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle className="flex items-center gap-2">
-					<User className="h-5 w-5" />
+		<Card className="border-border/60">
+			<CardHeader className="px-4 pt-5 pb-3">
+				<CardTitle className="flex items-center gap-2 text-base">
+					<User className="h-4 w-4 text-primary" />
 					Personal Information
 				</CardTitle>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="px-4 pb-5">
 				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 					<CustomInput
 						label="Full Name"

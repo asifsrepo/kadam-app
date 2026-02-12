@@ -97,7 +97,7 @@ const AuthClient = () => {
 						variant="outline"
 						type="button"
 						onClick={() => handleOAuthSignIn("github")}
-						className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+						className="flex h-11 w-full items-center justify-center gap-2 font-medium text-sm"
 						disabled={isLoading !== null}
 					>
 						<Github size={18} />
@@ -108,7 +108,7 @@ const AuthClient = () => {
 						variant="outline"
 						type="button"
 						onClick={() => handleOAuthSignIn("google")}
-						className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+						className="flex h-11 w-full items-center justify-center gap-2 font-medium text-sm"
 						disabled={isLoading !== null}
 					>
 						<Image alt="Google" src="/assets/google.svg" width={18} height={18} />
@@ -127,7 +127,7 @@ const AuthClient = () => {
 					variant="outline"
 					type="button"
 					onClick={() => setIsEmailSignIn(true)}
-					className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+					className="flex h-11 w-full items-center justify-center gap-2 font-medium text-sm"
 					disabled={isLoading !== null}
 				>
 					<Mail size={18} />
@@ -157,14 +157,14 @@ const AuthClient = () => {
 						type="button"
 						variant="outline"
 						onClick={() => setIsEmailSignIn(false)}
-						className="h-10 flex-1 font-medium text-sm"
+						className="h-11 flex-1 font-medium text-sm"
 						disabled={isLoading !== null}
 					>
 						Back
 					</Button>
 					<SubmitButton
 						isLoading={isLoading === "email"}
-						className="h-10 flex-1 font-medium text-sm"
+						className="h-11 flex-1 font-medium text-sm"
 					>
 						Sign In
 					</SubmitButton>
@@ -178,7 +178,7 @@ const AuthClient = () => {
 				variant="outline"
 				type="button"
 				onClick={() => handleOAuthSignIn("github")}
-				className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+				className="flex h-11 w-full items-center justify-center gap-2 font-medium text-sm"
 				disabled={isLoading !== null}
 			>
 				<Github size={18} />
@@ -189,7 +189,7 @@ const AuthClient = () => {
 				variant="outline"
 				type="button"
 				onClick={() => handleOAuthSignIn("google")}
-				className="flex h-10 w-full items-center justify-center gap-2 font-medium text-sm"
+				className="flex h-11 w-full items-center justify-center gap-2 font-medium text-sm"
 				disabled={isLoading !== null}
 			>
 				<Image alt="Google" src="/assets/google.svg" width={18} height={18} />
@@ -199,10 +199,10 @@ const AuthClient = () => {
 	);
 
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-background p-4">
-			<Card className="w-full max-w-sm border-0 shadow-lg">
-				<CardHeader className="space-y-1.5 pt-6 pb-4 text-center">
-					<CardTitle className="font-bold text-xl">
+		<div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
+			<Card className="w-full max-w-sm border border-border/60 bg-card/95 shadow-sm">
+				<CardHeader className="space-y-1.5 px-5 pt-6 pb-3 text-center">
+					<CardTitle className="font-semibold text-2xl">
 						{activeTab === "signin" ? "Welcome Back" : "Get Started"}
 					</CardTitle>
 					<CardDescription className="text-muted-foreground text-sm">
@@ -229,7 +229,7 @@ const AuthClient = () => {
 						</TabsContent>
 					</Tabs>
 
-					<div className="text-center text-muted-foreground text-xs">
+					<div className="text-center text-muted-foreground text-[11px]">
 						By continuing, you agree to our terms of service and privacy policy.
 					</div>
 				</CardContent>

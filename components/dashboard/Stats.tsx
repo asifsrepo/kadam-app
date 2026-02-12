@@ -27,8 +27,8 @@ const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: S
 	const isDecrease = percentageChange < 0;
 
 	return (
-		<div className="mb-6">
-			<Card className="overflow-hidden border-border bg-card p-4">
+		<div className="space-y-3">
+			<Card className="overflow-hidden border-border/60 bg-card p-4">
 				<div className="space-y-3">
 					<div className="flex items-center justify-between">
 						<h3 className="font-semibold text-card-foreground text-sm">
@@ -40,7 +40,7 @@ const Stats = ({ currentMonthCredit, previousMonthCredit, isLoading = false }: S
 					</div>
 
 					<div>
-						<div className="font-bold text-3xl text-card-foreground md:text-4xl">
+						<div className="font-semibold text-3xl text-card-foreground md:text-4xl">
 							{isLoading ? (
 								<Skeleton className="h-9 w-32" />
 							) : (

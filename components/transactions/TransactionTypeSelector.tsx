@@ -37,11 +37,11 @@ const TransactionTypeSelector = ({
 					/>
 					<div
 						className={cn(
-							"flex cursor-pointer flex-col items-center gap-1 rounded-lg border-2 p-3 transition-all",
-							"focus-within:ring-2 focus-within:ring-ring hover:bg-muted/50",
+							"flex cursor-pointer flex-col items-center gap-1 rounded-2xl border p-3 transition-all",
+							"focus-within:ring-2 focus-within:ring-ring/40 hover:bg-muted/40",
 							value === "credit"
-								? "border-red-500 bg-red-500/10 text-red-600"
-								: "border-border bg-card",
+								? "border-destructive bg-destructive/10 text-destructive"
+								: "border-border/60 bg-card",
 							disabled && "cursor-not-allowed opacity-50",
 						)}
 					>
@@ -66,11 +66,11 @@ const TransactionTypeSelector = ({
 					/>
 					<div
 						className={cn(
-							"flex cursor-pointer flex-col items-center gap-1 rounded-lg border-2 p-3 transition-all",
-							"focus-within:ring-2 focus-within:ring-ring hover:bg-muted/50",
+							"flex cursor-pointer flex-col items-center gap-1 rounded-2xl border p-3 transition-all",
+							"focus-within:ring-2 focus-within:ring-ring/40 hover:bg-muted/40",
 							value === "payment"
-								? "border-green-500 bg-green-500/10 text-green-600"
-								: "border-border bg-card",
+								? "border-success bg-success/10 text-success"
+								: "border-border/60 bg-card",
 							disabled && "cursor-not-allowed opacity-50",
 						)}
 					>

@@ -73,39 +73,37 @@ const OnboardingPage = () => {
 
 	return (
 		<div className="min-h-screen bg-background">
-			<div className="container mx-auto px-4 py-8">
-				<div className="mx-auto max-w-md">
-					<div className="mb-8 text-center">
-						<h1 className="mb-2 font-bold text-2xl text-foreground">
-							Welcome to Hysabee
-						</h1>
-						<p className="text-muted-foreground text-sm">
-							Let's set up your account in just a few steps
-						</p>
-					</div>
+			<div className="mx-auto flex w-full max-w-md flex-col px-4 py-8">
+				<div className="mb-6 text-center">
+					<h1 className="mb-2 font-semibold text-2xl text-foreground">
+						Welcome to Hysabee
+					</h1>
+					<p className="text-muted-foreground text-sm">
+						Set up your account in a few quick steps
+					</p>
+				</div>
 
-					<div className="mb-6">
-						<div className="mb-2 flex justify-between text-muted-foreground text-xs">
-							<span>
-								Step {step} of {totalSteps}
-							</span>
-							<span>{Math.round(progress)}% Complete</span>
-						</div>
-						<Progress value={progress} className="h-2" />
+				<div className="mb-6 rounded-2xl border border-border/60 bg-card p-4">
+					<div className="mb-2 flex justify-between text-muted-foreground text-xs">
+						<span>
+							Step {step} of {totalSteps}
+						</span>
+						<span>{Math.round(progress)}% Complete</span>
 					</div>
+					<Progress value={progress} className="h-2.5" />
+				</div>
 
-					{renderStep()}
+				{renderStep()}
 
-					<div className="mt-6 flex justify-center gap-2">
-						{Array.from({ length: totalSteps }).map((_, index) => (
-							<div
-								key={index}
-								className={`h-2 w-2 rounded-full ${
-									index + 1 <= step ? "bg-primary" : "bg-muted"
-								}`}
-							/>
-						))}
-					</div>
+				<div className="mt-6 flex justify-center gap-2">
+					{Array.from({ length: totalSteps }).map((_, index) => (
+						<div
+							key={index}
+							className={`h-2 w-2 rounded-full ${
+								index + 1 <= step ? "bg-primary" : "bg-muted"
+							}`}
+						/>
+					))}
 				</div>
 			</div>
 		</div>
